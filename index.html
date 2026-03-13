@@ -29,469 +29,145 @@
   --radius-lg:   12px;
 }
 
-body {
-  font-family: Georgia, 'Times New Roman', serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 15px;
-  line-height: 1.6;
-}
+body { font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; }
 
-/* ── Nav ── */
-nav {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 0 2rem;
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.logo {
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -.02em;
-  color: var(--text);
-  text-decoration: none;
-}
+nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 54px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.logo { font-size: 16px; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
 .logo span { color: var(--green); font-weight: 400; }
-.nav-links {
-  display: flex;
-  gap: 1.75rem;
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 13px;
-}
-.nav-links a {
-  color: var(--text-2);
-  text-decoration: none;
-  transition: color .15s;
-}
+.nav-links { display: flex; gap: 1.75rem; font-family: -apple-system, system-ui, sans-serif; font-size: 13px; }
+.nav-links a { color: var(--text-2); text-decoration: none; transition: color .15s; }
 .nav-links a:hover { color: var(--text); }
 
-/* ── Hero ── */
-.hero {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 2.5rem 2rem 2rem;
-}
-.hero-inner { max-width: 880px; margin: 0 auto; }
-.hero h1 {
-  font-size: 28px;
-  font-weight: 500;
-  letter-spacing: -.025em;
-  line-height: 1.25;
-  margin-bottom: .5rem;
-}
-.hero p {
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 14px;
-  color: var(--text-2);
-  line-height: 1.7;
-  max-width: 580px;
-  margin-bottom: 1rem;
-}
+.hero { background: var(--white); border-bottom: 1px solid var(--border); padding: 2.5rem 2rem 2rem; }
+.hero-inner { max-width: 960px; margin: 0 auto; }
+.hero h1 { font-size: 28px; font-weight: 500; letter-spacing: -.025em; line-height: 1.25; margin-bottom: .5rem; }
+.hero p { font-family: -apple-system, system-ui, sans-serif; font-size: 14px; color: var(--text-2); line-height: 1.7; max-width: 580px; margin-bottom: 1rem; }
 .badges { display: flex; gap: 8px; flex-wrap: wrap; }
-.badge {
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 3px 10px;
-  border-radius: 20px;
-}
+.badge { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
 .b-green { background: var(--green-light); color: var(--green-dark); }
 .b-blue  { background: #e6f1fb; color: #185fa5; }
 .b-gray  { background: var(--bg-2); color: #5f5e5a; }
 
-/* ── Main layout ── */
-.main {
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 2rem;
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 1.5rem;
-  align-items: start;
-}
-@media (max-width: 720px) {
-  .main { grid-template-columns: 1fr; }
-  .sidebar { order: -1; }
-}
+.main { max-width: 960px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; align-items: start; }
+@media (max-width: 760px) { .main { grid-template-columns: 1fr; } .sidebar { order: -1; } }
 
-/* ── Panel ── */
-.panel {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-}
-.panel-title {
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--text-3);
-  margin-bottom: 1.25rem;
-}
+.panel { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; }
+.panel-title { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); margin-bottom: 1.25rem; }
 
-/* ── Tabs ── */
-.tabs {
-  display: flex;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin-bottom: 1.5rem;
-  font-family: -apple-system, system-ui, sans-serif;
-}
-.tab-btn {
-  flex: 1;
-  padding: 9px 12px;
-  font-size: 13px;
-  font-family: inherit;
-  background: transparent;
-  border: none;
-  color: var(--text-2);
-  cursor: pointer;
-  transition: background .15s, color .15s;
-}
+.tabs { display: flex; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; font-family: -apple-system, system-ui, sans-serif; }
+.tab-btn { flex: 1; padding: 9px 12px; font-size: 13px; font-family: inherit; background: transparent; border: none; color: var(--text-2); cursor: pointer; transition: background .15s, color .15s; }
 .tab-btn:not(:last-child) { border-right: 1px solid var(--border); }
 .tab-btn.active { background: var(--text); color: var(--white); }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
-/* ── Form elements ── */
 .field { margin-bottom: 1rem; }
-.field-label {
-  display: block;
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--text-2);
-  margin-bottom: 6px;
-}
-select, input[type="number"] {
-  width: 100%;
-  padding: 9px 12px;
-  font-size: 14px;
-  font-family: -apple-system, system-ui, sans-serif;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-  color: var(--text);
-  appearance: none;
-  -webkit-appearance: none;
-  transition: border-color .15s, box-shadow .15s;
-}
-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b64'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 32px;
-}
-select:focus, input[type="number"]:focus {
-  outline: none;
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(45,106,79,.1);
-}
+.field-label { display: block; font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-2); margin-bottom: 6px; }
+input[type="number"] { width: 100%; padding: 9px 12px; font-size: 14px; font-family: -apple-system, system-ui, sans-serif; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); appearance: none; -webkit-appearance: none; transition: border-color .15s, box-shadow .15s; }
+select.single-select { width: 100%; padding: 9px 32px 9px 12px; font-size: 14px; font-family: -apple-system, system-ui, sans-serif; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); appearance: none; -webkit-appearance: none; transition: border-color .15s, box-shadow .15s; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b64'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+select.single-select:focus, input[type="number"]:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(45,106,79,.1); }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-/* ── Buttons ── */
-.btn-primary {
-  width: 100%;
-  padding: 11px;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: -apple-system, system-ui, sans-serif;
-  background: var(--text);
-  color: var(--white);
-  border: none;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: opacity .15s;
-  margin-top: 4px;
-}
+/* Assembly picker */
+.asm-picker { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.asm-picker-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border-bottom: 1px solid var(--border); background: var(--bg-2); }
+.asm-picker-toolbar > span { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: var(--text-2); }
+.asm-picker-actions { display: flex; gap: 6px; }
+.asm-picker-actions button { font-size: 11px; padding: 3px 8px; border: 1px solid var(--border-2); border-radius: 4px; background: var(--white); color: var(--text-2); cursor: pointer; font-family: -apple-system, system-ui, sans-serif; transition: background .1s; }
+.asm-picker-actions button:hover { background: var(--green-light); color: var(--green-dark); }
+.asm-picker-groups { max-height: 210px; overflow-y: auto; }
+.asm-group-label { font-family: -apple-system, system-ui, sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); padding: 7px 10px 4px; background: var(--bg-2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1; }
+.asm-option { display: flex; align-items: center; gap: 8px; padding: 6px 10px; cursor: pointer; border-bottom: 1px solid var(--bg-2); font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: var(--text); user-select: none; transition: background .1s; }
+.asm-option:hover { background: var(--green-light); }
+.asm-option input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--green); cursor: pointer; flex-shrink: 0; }
+.asm-selected-count { font-size: 11px; color: var(--green-dark); font-weight: 500; font-family: -apple-system, system-ui, sans-serif; }
+
+/* Buttons */
+.btn-primary { width: 100%; padding: 11px; font-size: 14px; font-weight: 500; font-family: -apple-system, system-ui, sans-serif; background: var(--text); color: var(--white); border: none; border-radius: var(--radius); cursor: pointer; transition: opacity .15s; margin-top: 4px; }
 .btn-primary:hover { opacity: .85; }
 .btn-primary:active { transform: scale(.99); }
 .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
-
-.btn-sm {
-  font-size: 12px;
-  padding: 5px 12px;
-  border: 1px solid var(--border-2);
-  border-radius: 6px;
-  background: var(--white);
-  color: var(--text);
-  cursor: pointer;
-  font-family: -apple-system, system-ui, sans-serif;
-  transition: background .15s;
-}
+.btn-sm { font-size: 12px; padding: 5px 12px; border: 1px solid var(--border-2); border-radius: 6px; background: var(--white); color: var(--text); cursor: pointer; font-family: -apple-system, system-ui, sans-serif; transition: background .15s; }
 .btn-sm:hover { background: var(--bg-2); }
 
-/* ── Loading spinner ── */
-.spinner {
-  display: none;
-  width: 16px; height: 16px;
-  border: 2px solid var(--border);
-  border-top-color: var(--green);
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-  margin: 0 auto;
-}
+/* Loading */
+.spinner { display: none; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loading-row {
-  display: none;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--text-2);
-  font-family: -apple-system, system-ui, sans-serif;
-  margin-top: 1rem;
-  justify-content: center;
-}
+.loading-row { display: none; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); font-family: -apple-system, system-ui, sans-serif; margin-top: 1rem; justify-content: center; }
 
-/* ── Result card ── */
-.result-card {
-  display: none;
-  margin-top: 1.25rem;
-  border: 1px solid var(--green-mid);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
+/* Result cards */
+.result-card { display: none; margin-top: 1.25rem; border: 1px solid var(--green-mid); border-radius: var(--radius-lg); overflow: hidden; }
 .result-card.visible { display: block; }
-.result-header {
-  background: var(--green-light);
-  padding: .7rem 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: -apple-system, system-ui, sans-serif;
-}
+.result-header { background: var(--green-light); padding: .7rem 1rem; display: flex; align-items: center; justify-content: space-between; font-family: -apple-system, system-ui, sans-serif; }
 .result-header-title { font-size: 13px; font-weight: 500; color: var(--green-dark); }
 .result-header-sub   { font-size: 11px; color: var(--green); }
-.result-metrics {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  padding: 1rem;
-}
-.metric {
-  background: var(--bg);
-  border-radius: var(--radius);
-  padding: .7rem .85rem;
-}
-.metric-lbl {
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--text-3);
-  margin-bottom: 4px;
-}
-.metric-val {
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: -.02em;
-  color: var(--text);
-  line-height: 1.2;
-}
-.metric-sub {
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 11px;
-  color: var(--text-3);
-  margin-top: 2px;
-}
-.confidence-row {
-  padding: .75rem 1rem;
-  border-top: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 12px;
-  color: var(--text-2);
-}
-.conf-bar {
-  flex: 1;
-  height: 5px;
-  background: var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-}
+.result-metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 1rem; }
+.metric { background: var(--bg); border-radius: var(--radius); padding: .7rem .85rem; }
+.metric-lbl { font-family: -apple-system, system-ui, sans-serif; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); margin-bottom: 4px; }
+.metric-val { font-size: 17px; font-weight: 500; letter-spacing: -.02em; color: var(--text); line-height: 1.2; }
+.metric-sub { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+/* Multi-target comparison table */
+.cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: -apple-system, system-ui, sans-serif; }
+.cmp-table th { text-align: left; padding: 7px 12px; background: var(--bg); color: var(--text-2); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+.cmp-table td { padding: 8px 12px; border-bottom: 1px solid var(--bg-2); }
+.cmp-table tr:last-child td { border-bottom: none; }
+.td-asm { font-weight: 500; color: var(--text); }
+.td-chr { color: var(--green-dark); font-weight: 500; }
+.td-bp  { font-size: 11px; color: var(--text-3); display: block; }
+
+/* Confidence */
+.confidence-row { padding: .75rem 1rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-family: -apple-system, system-ui, sans-serif; font-size: 12px; color: var(--text-2); }
+.conf-bar { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
 .conf-fill { height: 100%; border-radius: 3px; transition: width .4s; }
 .conf-fill.high { background: var(--green); }
 .conf-fill.mid  { background: #EF9F27; }
 .conf-fill.low  { background: #E24B4A; }
-.conf-tag {
-  font-size: 11px;
-  padding: 2px 9px;
-  border-radius: 20px;
-  font-weight: 500;
-  white-space: nowrap;
-}
+.conf-tag { font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
 .conf-tag.high { background: var(--green-light); color: var(--green-dark); }
 .conf-tag.mid  { background: var(--amber-light); color: var(--amber-dark); }
 .conf-tag.low  { background: var(--red-light);   color: var(--red-dark); }
 
-/* ── Error ── */
-.error-msg {
-  display: none;
-  margin-top: .75rem;
-  font-size: 13px;
-  color: var(--red-dark);
-  font-family: -apple-system, system-ui, sans-serif;
-  background: var(--red-light);
-  padding: .6rem .85rem;
-  border-radius: var(--radius);
-}
+/* Error */
+.error-msg { display: none; margin-top: .75rem; font-size: 13px; color: var(--red-dark); font-family: -apple-system, system-ui, sans-serif; background: var(--red-light); padding: .6rem .85rem; border-radius: var(--radius); }
 
-/* ── Upload zone ── */
-.upload-zone {
-  border: 1.5px dashed var(--border-2);
-  border-radius: var(--radius-lg);
-  padding: 2rem 1.5rem;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color .15s, background .15s;
-  background: var(--bg);
-  margin-bottom: 1rem;
-}
-.upload-zone:hover, .upload-zone.drag-over {
-  border-color: var(--green);
-  background: var(--green-light);
-}
-.upload-icon {
-  width: 40px; height: 40px;
-  background: var(--green-light);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 12px;
-}
+/* Upload */
+.upload-zone { border: 1.5px dashed var(--border-2); border-radius: var(--radius-lg); padding: 2rem 1.5rem; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; background: var(--bg); margin-bottom: 1rem; }
+.upload-zone:hover, .upload-zone.drag-over { border-color: var(--green); background: var(--green-light); }
+.upload-icon { width: 40px; height: 40px; background: var(--green-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
 .upload-icon svg { width: 20px; height: 20px; stroke: var(--green); fill: none; stroke-width: 1.5; }
-.upload-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 5px;
-  font-family: -apple-system, system-ui, sans-serif;
-}
-.upload-sub {
-  font-size: 12px;
-  color: var(--text-2);
-  font-family: -apple-system, system-ui, sans-serif;
-  line-height: 1.7;
-}
-code {
-  font-family: 'Courier New', monospace;
-  font-size: 11px;
-  background: var(--bg-2);
-  padding: 1px 5px;
-  border-radius: 3px;
-  color: #5f5e5a;
-}
+.upload-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 5px; font-family: -apple-system, system-ui, sans-serif; }
+.upload-sub { font-size: 12px; color: var(--text-2); font-family: -apple-system, system-ui, sans-serif; line-height: 1.7; }
+code { font-family: 'Courier New', monospace; font-size: 11px; background: var(--bg-2); padding: 1px 5px; border-radius: 3px; color: #5f5e5a; }
 #file-input { display: none; }
 
-/* ── Results table ── */
-.table-wrap {
-  display: none;
-  margin-top: 1.25rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
+/* Batch results table */
+.table-wrap { display: none; margin-top: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
 .table-wrap.visible { display: block; }
-.table-header {
-  background: var(--bg-2);
-  padding: .6rem 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-}
-.table-header span {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-2);
-  font-family: -apple-system, system-ui, sans-serif;
-}
+.table-header { background: var(--bg-2); padding: .6rem 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+.table-header span { font-size: 12px; font-weight: 500; color: var(--text-2); font-family: -apple-system, system-ui, sans-serif; }
 .table-scroll { overflow-x: auto; }
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-  font-family: -apple-system, system-ui, sans-serif;
-}
-th {
-  text-align: left;
-  padding: 7px 10px;
-  background: var(--bg);
-  color: var(--text-2);
-  border-bottom: 1px solid var(--border);
-  font-weight: 600;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: .04em;
-  white-space: nowrap;
-}
-td {
-  padding: 7px 10px;
-  border-bottom: 1px solid var(--bg-2);
-  color: var(--text);
-  white-space: nowrap;
-}
+table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: -apple-system, system-ui, sans-serif; }
+th { text-align: left; padding: 7px 10px; background: var(--bg); color: var(--text-2); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+th.th-group { background: var(--green-light); color: var(--green-dark); border-bottom: 1px solid var(--green-mid); }
+td { padding: 7px 10px; border-bottom: 1px solid var(--bg-2); color: var(--text); white-space: nowrap; }
 tr:last-child td { border-bottom: none; }
 .td-green { color: var(--green-dark); font-weight: 500; }
-.tag {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-weight: 500;
-}
+.tag { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
 .tag-hi  { background: var(--green-light); color: var(--green-dark); }
 .tag-mid { background: var(--amber-light); color: var(--amber-dark); }
 .tag-low { background: var(--red-light);   color: var(--red-dark); }
 
-/* ── Sidebar ── */
+/* Sidebar */
 .sidebar { display: flex; flex-direction: column; gap: 1rem; }
 .info-block { font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: var(--text-2); line-height: 1.7; }
 .info-block strong { color: var(--text); font-weight: 500; }
-.assembly-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
-.assembly-list li {
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 12px;
-  color: var(--text-2);
-  padding: 4px 0;
-  border-bottom: 1px solid var(--bg-2);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.assembly-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.assembly-list li { font-family: -apple-system, system-ui, sans-serif; font-size: 12px; color: var(--text-2); padding: 5px 0; border-bottom: 1px solid var(--bg-2); display: flex; justify-content: space-between; align-items: center; }
 .assembly-list li:last-child { border-bottom: none; }
-.asm-group {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--text-3);
-  padding: 8px 0 4px;
-}
+.asm-group-hdr { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); padding: 10px 0 4px; border: none !important; }
 
-/* ── Footer ── */
-footer {
-  border-top: 1px solid var(--border);
-  margin-top: 3rem;
-  padding: 1.5rem 2rem;
-  text-align: center;
-  font-family: -apple-system, system-ui, sans-serif;
-  font-size: 12px;
-  color: var(--text-3);
-}
+footer { border-top: 1px solid var(--border); margin-top: 3rem; padding: 1.5rem 2rem; text-align: center; font-family: -apple-system, system-ui, sans-serif; font-size: 12px; color: var(--text-3); }
 footer a { color: var(--text-2); text-decoration: none; }
 footer a:hover { color: var(--text); }
 footer .sep { margin: 0 .5rem; }
@@ -518,50 +194,41 @@ footer .sep { margin: 0 .5rem; }
       <span class="badge b-green">~95k gene anchors</span>
       <span class="badge b-blue">CS RefSeq v2.1 reference</span>
       <span class="badge b-gray">Client-side only</span>
-      <span class="badge b-gray">BED file support</span>
+      <span class="badge b-gray">Multi-target BED support</span>
     </div>
   </div>
 </div>
 
 <div class="main" id="converter">
-
-  <!-- Left: converter -->
   <div>
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('single', this)">Single region</button>
-      <button class="tab-btn" onclick="switchTab('batch', this)">Batch upload</button>
+      <button class="tab-btn active" onclick="switchTab('single',this)">Single region</button>
+      <button class="tab-btn" onclick="switchTab('batch',this)">Batch upload</button>
     </div>
 
-    <!-- Single region tab -->
+    <!-- Single region -->
     <div class="tab-panel active" id="tab-single">
       <div class="panel">
         <div class="panel-title">Convert coordinates</div>
 
         <div class="field">
-          <label class="field-label" for="s-target">Target assembly</label>
-          <select id="s-target">
-            <option value="">— select assembly —</option>
-            <optgroup label="10-wheat panel">
-              <option>Jagger</option><option>Lancer</option><option>ArinaLrFor</option>
-              <option>Stanley</option><option>Spelt</option><option>Mace</option>
-              <option>SY_Mattis</option><option>Julius</option><option>Landmark</option>
-              <option>Norin61</option>
-            </optgroup>
-            <optgroup label="CS versions">
-              <option>CS_IAAS</option><option>CS_CAU</option><option>CS_v1</option>
-            </optgroup>
-            <optgroup label="Additional cultivars">
-              <option>Aikang58</option><option>Chunmai104</option><option>Sumai3</option>
-              <option>JIN50</option><option>MOV</option><option>Fielder</option>
-              <option>Kariega</option><option>Attraktion</option><option>Renan_v2</option>
-              <option>Paragon_v3</option><option>Cadenza_v2</option>
-            </optgroup>
-          </select>
+          <label class="field-label">Target assemblies &nbsp;<span class="asm-selected-count" id="s-count">(0 selected)</span></label>
+          <div class="asm-picker">
+            <div class="asm-picker-toolbar">
+              <span>Select one or more</span>
+              <div class="asm-picker-actions">
+                <button onclick="selectAll('s')">All</button>
+                <button onclick="selectNone('s')">None</button>
+                <button onclick="selectGroup('s','ten')">10-wheat</button>
+              </div>
+            </div>
+            <div class="asm-picker-groups" id="s-asm-groups"></div>
+          </div>
         </div>
 
         <div class="field">
           <label class="field-label" for="s-chr">CS chromosome</label>
-          <select id="s-chr">
+          <select class="single-select" id="s-chr">
             <option value="">— select chromosome —</option>
             <option>Chr1A</option><option>Chr1B</option><option>Chr1D</option>
             <option>Chr2A</option><option>Chr2B</option><option>Chr2D</option>
@@ -585,34 +252,19 @@ footer .sep { margin: 0 .5rem; }
         </div>
 
         <button class="btn-primary" id="s-btn" onclick="doSingleConvert()">Convert</button>
-
-        <div class="loading-row" id="s-loading">
-          <div class="spinner" style="display:block"></div>
-          <span id="s-loading-msg">Loading anchor data…</span>
-        </div>
-
+        <div class="loading-row" id="s-loading"><div class="spinner" style="display:block"></div><span id="s-loading-msg">Loading…</span></div>
         <div class="error-msg" id="s-error"></div>
 
-        <div class="result-card" id="s-result">
+        <!-- Single target result -->
+        <div class="result-card" id="s-result-single">
           <div class="result-header">
             <span class="result-header-title" id="s-res-title">—</span>
             <span class="result-header-sub">PCHIP spline interpolation</span>
           </div>
           <div class="result-metrics">
-            <div class="metric">
-              <div class="metric-lbl">Chromosome</div>
-              <div class="metric-val" id="s-res-chr">—</div>
-            </div>
-            <div class="metric">
-              <div class="metric-lbl">Start</div>
-              <div class="metric-val" id="s-res-start">—</div>
-              <div class="metric-sub" id="s-res-start-bp"></div>
-            </div>
-            <div class="metric">
-              <div class="metric-lbl">End</div>
-              <div class="metric-val" id="s-res-end">—</div>
-              <div class="metric-sub" id="s-res-end-bp"></div>
-            </div>
+            <div class="metric"><div class="metric-lbl">Chromosome</div><div class="metric-val" id="s-res-chr">—</div></div>
+            <div class="metric"><div class="metric-lbl">Start</div><div class="metric-val" id="s-res-start">—</div><div class="metric-sub" id="s-res-start-bp"></div></div>
+            <div class="metric"><div class="metric-lbl">End</div><div class="metric-val" id="s-res-end">—</div><div class="metric-sub" id="s-res-end-bp"></div></div>
           </div>
           <div class="confidence-row">
             <span>Anchor density</span>
@@ -620,34 +272,41 @@ footer .sep { margin: 0 .5rem; }
             <span class="conf-tag" id="s-conf-tag">—</span>
           </div>
         </div>
+
+        <!-- Multi target result -->
+        <div class="result-card" id="s-result-multi">
+          <div class="result-header">
+            <span class="result-header-title" id="s-multi-title">—</span>
+            <span class="result-header-sub">PCHIP spline interpolation</span>
+          </div>
+          <div class="table-scroll">
+            <table class="cmp-table">
+              <thead><tr><th>Assembly</th><th>Chr</th><th>Start</th><th>End</th><th>Confidence</th></tr></thead>
+              <tbody id="s-multi-tbody"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Batch tab -->
+    <!-- Batch upload -->
     <div class="tab-panel" id="tab-batch">
       <div class="panel">
         <div class="panel-title">Batch convert</div>
 
         <div class="field">
-          <label class="field-label" for="b-target">Target assembly</label>
-          <select id="b-target">
-            <option value="">— select assembly —</option>
-            <optgroup label="10-wheat panel">
-              <option>Jagger</option><option>Lancer</option><option>ArinaLrFor</option>
-              <option>Stanley</option><option>Spelt</option><option>Mace</option>
-              <option>SY_Mattis</option><option>Julius</option><option>Landmark</option>
-              <option>Norin61</option>
-            </optgroup>
-            <optgroup label="CS versions">
-              <option>CS_IAAS</option><option>CS_CAU</option><option>CS_v1</option>
-            </optgroup>
-            <optgroup label="Additional cultivars">
-              <option>Aikang58</option><option>Chunmai104</option><option>Sumai3</option>
-              <option>JIN50</option><option>MOV</option><option>Fielder</option>
-              <option>Kariega</option><option>Attraktion</option><option>Renan_v2</option>
-              <option>Paragon_v3</option><option>Cadenza_v2</option>
-            </optgroup>
-          </select>
+          <label class="field-label">Target assemblies &nbsp;<span class="asm-selected-count" id="b-count">(0 selected)</span></label>
+          <div class="asm-picker">
+            <div class="asm-picker-toolbar">
+              <span>Select one or more</span>
+              <div class="asm-picker-actions">
+                <button onclick="selectAll('b')">All</button>
+                <button onclick="selectNone('b')">None</button>
+                <button onclick="selectGroup('b','ten')">10-wheat</button>
+              </div>
+            </div>
+            <div class="asm-picker-groups" id="b-asm-groups"></div>
+          </div>
         </div>
 
         <div class="upload-zone" id="upload-zone"
@@ -662,12 +321,7 @@ footer .sep { margin: 0 .5rem; }
         <input type="file" id="file-input" accept=".bed,.txt,.tsv,.csv" onchange="loadFile(this.files[0])">
 
         <button class="btn-primary" id="b-btn" onclick="doBatchConvert()" disabled>Convert file</button>
-
-        <div class="loading-row" id="b-loading">
-          <div class="spinner" style="display:block"></div>
-          <span id="b-loading-msg">Loading anchor data…</span>
-        </div>
-
+        <div class="loading-row" id="b-loading"><div class="spinner" style="display:block"></div><span id="b-loading-msg">Loading…</span></div>
         <div class="error-msg" id="b-error"></div>
 
         <div class="table-wrap" id="b-table-wrap">
@@ -676,10 +330,7 @@ footer .sep { margin: 0 .5rem; }
             <button class="btn-sm" onclick="downloadTSV()">Download TSV</button>
           </div>
           <div class="table-scroll">
-            <table>
-              <thead id="b-thead"></thead>
-              <tbody id="b-tbody"></tbody>
-            </table>
+            <table><thead id="b-thead"></thead><tbody id="b-tbody"></tbody></table>
           </div>
         </div>
       </div>
@@ -688,32 +339,19 @@ footer .sep { margin: 0 .5rem; }
 
   <!-- Sidebar -->
   <div class="sidebar">
-
     <div class="panel" id="about">
       <div class="panel-title">About</div>
       <div class="info-block">
-        <p style="margin-bottom:.75rem">
-          <strong>WheatCoordDB</strong> converts coordinates from
-          <strong>IWGSC CS RefSeq v2.1</strong> to 24 hexaploid wheat assemblies
-          using orthologous gene anchors projected by
-          <a href="https://github.com/agshumate/Liftoff" target="_blank" style="color:var(--green)">Liftoff</a>.
-        </p>
-        <p style="margin-bottom:.75rem">
-          Interpolation uses PCHIP splines fitted through ~95,000 gene anchor midpoints
-          per assembly. Anchor density within ±5 Mb is reported as a confidence proxy —
-          pericentromeric regions have fewer anchors and lower confidence.
-        </p>
-        <p>
-          Built by the <a href="https://grewallab.com/" target="_blank" style="color:var(--green)">Grewal lab</a>,
-          University of Nottingham.
-        </p>
+        <p style="margin-bottom:.75rem"><strong>WheatCoordDB</strong> converts coordinates from <strong>IWGSC CS RefSeq v2.1</strong> to 24 hexaploid wheat assemblies using orthologous gene anchors projected by <a href="https://github.com/agshumate/Liftoff" target="_blank" style="color:var(--green)">Liftoff</a>.</p>
+        <p style="margin-bottom:.75rem">Interpolation uses PCHIP splines fitted through ~95,000 gene anchor midpoints per assembly. Anchor density within ±5 Mb is reported as a confidence proxy — pericentromeric regions have fewer anchors and lower confidence.</p>
+        <p>Built by the <a href="https://grewallab.com/" target="_blank" style="color:var(--green)">Grewal lab</a>, University of Nottingham.</p>
       </div>
     </div>
 
     <div class="panel">
       <div class="panel-title">Assemblies</div>
       <ul class="assembly-list">
-        <li class="asm-group" style="border:none">10-wheat panel</li>
+        <li class="asm-group-hdr">10-wheat panel</li>
         <li>Jagger <span class="tag tag-hi">ready</span></li>
         <li>Lancer <span class="tag tag-hi">ready</span></li>
         <li>ArinaLrFor <span class="tag tag-hi">ready</span></li>
@@ -724,11 +362,11 @@ footer .sep { margin: 0 .5rem; }
         <li>Julius <span class="tag tag-hi">ready</span></li>
         <li>Landmark <span class="tag tag-hi">ready</span></li>
         <li>Norin61 <span class="tag tag-hi">ready</span></li>
-        <li class="asm-group" style="border:none">CS versions</li>
+        <li class="asm-group-hdr">CS versions</li>
         <li>CS_IAAS <span class="tag tag-hi">ready</span></li>
         <li>CS_CAU <span class="tag tag-hi">ready</span></li>
         <li>CS_v1 <span class="tag tag-hi">ready</span></li>
-        <li class="asm-group" style="border:none">Additional cultivars</li>
+        <li class="asm-group-hdr">Additional cultivars</li>
         <li>Aikang58 <span class="tag tag-hi">ready</span></li>
         <li>Chunmai104 <span class="tag tag-hi">ready</span></li>
         <li>Sumai3 <span class="tag tag-hi">ready</span></li>
@@ -747,17 +385,14 @@ footer .sep { margin: 0 .5rem; }
       <div class="panel-title">Cite</div>
       <div class="info-block" style="font-size:12px;line-height:1.6">
         If you use WheatCoordDB in your research, please cite:<br><br>
-        <em>Grewal et al. (in preparation). WheatCoordDB: a gene-anchored coordinate
-        conversion resource for hexaploid wheat assemblies.</em>
+        <em>Grewal et al. (in preparation). WheatCoordDB: a gene-anchored coordinate conversion resource for hexaploid wheat assemblies.</em>
       </div>
     </div>
-
   </div>
 </div>
 
 <footer>
-  <a href="https://grewallab.com/" target="_blank">Grewal lab</a>,
-  University of Nottingham
+  <a href="https://grewallab.com/" target="_blank">Grewal lab</a>, University of Nottingham
   <span class="sep">·</span>
   <a href="https://github.com/Surbhigrewal/WheatCoordDB" target="_blank">GitHub</a>
   <span class="sep">·</span>
@@ -765,327 +400,260 @@ footer .sep { margin: 0 .5rem; }
 </footer>
 
 <script>
+const GROUPS = [
+  { label:'10-wheat panel', id:'ten',
+    assemblies:['Jagger','Lancer','ArinaLrFor','Stanley','Spelt','Mace','SY_Mattis','Julius','Landmark','Norin61'] },
+  { label:'CS versions', id:'cs',
+    assemblies:['CS_IAAS','CS_CAU','CS_v1'] },
+  { label:'Additional cultivars', id:'add',
+    assemblies:['Aikang58','Chunmai104','Sumai3','JIN50','MOV','Fielder','Kariega','Attraktion','Renan_v2','Paragon_v3','Cadenza_v2'] }
+];
 const DATA_BASE = 'data/anchors/';
 const cache = {};
-let batchRows = [];
-let batchTarget = '';
-let batchHeader = [];
+let parsedFileRows = [];
+let batchResults = [];
+let batchTargets = [];
 
-function switchTab(name, btn) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+function buildPickers() {
+  ['s','b'].forEach(p => {
+    const el = document.getElementById(p+'-asm-groups');
+    el.innerHTML = GROUPS.map(g =>
+      `<div class="asm-group-label">${g.label}</div>` +
+      g.assemblies.map(a =>
+        `<label class="asm-option"><input type="checkbox" data-group="${g.id}" value="${a}" onchange="updateCount('${p}')">${a}</label>`
+      ).join('')
+    ).join('');
+  });
+}
+
+function getSelected(p) {
+  return [...document.querySelectorAll(`#${p}-asm-groups input:checked`)].map(e=>e.value);
+}
+function updateCount(p) {
+  const n = getSelected(p).length;
+  document.getElementById(p+'-count').textContent = `(${n} selected)`;
+  if (p==='b') document.getElementById('b-btn').disabled = parsedFileRows.length===0||n===0;
+}
+function selectAll(p)  { document.querySelectorAll(`#${p}-asm-groups input`).forEach(e=>e.checked=true);  updateCount(p); }
+function selectNone(p) { document.querySelectorAll(`#${p}-asm-groups input`).forEach(e=>e.checked=false); updateCount(p); }
+function selectGroup(p,gid) { document.querySelectorAll(`#${p}-asm-groups input[data-group="${gid}"]`).forEach(e=>e.checked=true); updateCount(p); }
+
+function switchTab(n,btn) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('tab-'+n).classList.add('active');
 }
 
-function showError(id, msg) {
-  const el = document.getElementById(id);
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-function hideError(id) {
-  const el = document.getElementById(id);
-  el.textContent = '';
-  el.style.display = 'none';
-}
-function showLoading(prefix, msg) {
-  document.getElementById(prefix + '-loading').style.display = 'flex';
-  document.getElementById(prefix + '-loading-msg').textContent = msg;
-}
-function hideLoading(prefix) {
-  document.getElementById(prefix + '-loading').style.display = 'none';
-}
+function showError(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
+function hideError(id){const e=document.getElementById(id);e.textContent='';e.style.display='none';}
+function showLoading(p,msg){document.getElementById(p+'-loading').style.display='flex';document.getElementById(p+'-loading-msg').textContent=msg;}
+function hideLoading(p){document.getElementById(p+'-loading').style.display='none';}
+function fmtMb(v){return(v/1e6).toFixed(2)+' Mb';}
+function fmtBp(v){return Math.round(v).toLocaleString()+' bp';}
 
-function fmtMb(bp) { return (bp / 1e6).toFixed(2) + ' Mb'; }
-function fmtBp(bp) { return Math.round(bp).toLocaleString() + ' bp'; }
-
-async function loadAnchorData(assembly) {
-  if (cache[assembly]) return cache[assembly];
-  const url = DATA_BASE + assembly + '_anchors.tsv.gz';
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error('Could not load anchor data for ' + assembly + ' (' + resp.status + ')');
+async function loadAnchorData(asm) {
+  if (cache[asm]) return cache[asm];
+  const r = await fetch(DATA_BASE+asm+'_anchors.tsv.gz');
+  if (!r.ok) throw new Error('Could not load '+asm+' ('+r.status+')');
   const ds = new DecompressionStream('gzip');
-  const blob = await resp.blob();
-  const stream = blob.stream().pipeThrough(ds);
+  const stream = (await r.blob()).stream().pipeThrough(ds);
   const reader = stream.getReader();
   const chunks = [];
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    chunks.push(value);
-  }
-  const text = new TextDecoder().decode(
-    chunks.reduce((a, b) => { const c = new Uint8Array(a.length + b.length); c.set(a); c.set(b, a.length); return c; }, new Uint8Array(0))
-  );
-  const parsed = parseAnchorTSV(text, assembly);
-  cache[assembly] = parsed;
-  return parsed;
-}
-
-function parseAnchorTSV(text, assembly) {
+  while(true){const{done,value}=await reader.read();if(done)break;chunks.push(value);}
+  const out = new Uint8Array(chunks.reduce((n,c)=>n+c.length,0));
+  let off=0; for(const c of chunks){out.set(c,off);off+=c.length;}
+  const text = new TextDecoder().decode(out);
   const lines = text.trim().split('\n');
-  const header = lines[0].split('\t');
-  const csIdx   = header.indexOf('cs_chr');
-  const csMidIdx = header.indexOf('cs_midpoint');
-  const tgtChrIdx = header.indexOf(assembly + '_tgt_chr');
-  const tgtMidIdx = header.indexOf(assembly + '_tgt_midpoint');
-
-  if (csIdx < 0 || csMidIdx < 0 || tgtChrIdx < 0 || tgtMidIdx < 0) {
-    throw new Error('Unexpected column names in anchor file. Expected: cs_chr, cs_midpoint, ' + assembly + '_tgt_chr, ' + assembly + '_tgt_midpoint');
+  const hdr = lines[0].split('\t');
+  const ci=hdr.indexOf('cs_chr'), mi=hdr.indexOf('cs_midpoint'),
+        ti=hdr.indexOf(asm+'_tgt_chr'), pi=hdr.indexOf(asm+'_tgt_midpoint');
+  if(ci<0||mi<0||ti<0||pi<0) throw new Error('Unexpected columns in '+asm+' anchor file');
+  const byChr={};
+  for(let i=1;i<lines.length;i++){
+    if(!lines[i].trim()) continue;
+    const cols=lines[i].split('\t');
+    const chr=cols[ci];
+    if(!byChr[chr]) byChr[chr]={csMid:[],tgtChr:'',tgtMid:[]};
+    byChr[chr].csMid.push(parseFloat(cols[mi]));
+    byChr[chr].tgtMid.push(parseFloat(cols[pi]));
+    if(!byChr[chr].tgtChr) byChr[chr].tgtChr=cols[ti];
   }
-
-  const byChr = {};
-  for (let i = 1; i < lines.length; i++) {
-    if (!lines[i].trim()) continue;
-    const cols = lines[i].split('\t');
-    const chr = cols[csIdx];
-    if (!byChr[chr]) byChr[chr] = { csMid: [], tgtChr: '', tgtMid: [] };
-    byChr[chr].csMid.push(parseFloat(cols[csMidIdx]));
-    byChr[chr].tgtMid.push(parseFloat(cols[tgtMidIdx]));
-    if (!byChr[chr].tgtChr) byChr[chr].tgtChr = cols[tgtChrIdx];
-  }
-  return byChr;
+  cache[asm]=byChr; return byChr;
 }
 
-function linearInterp(xs, ys, x) {
-  if (x <= xs[0]) return ys[0];
-  if (x >= xs[xs.length - 1]) return ys[xs.length - 1];
-  let lo = 0, hi = xs.length - 1;
-  while (hi - lo > 1) {
-    const mid = (lo + hi) >> 1;
-    if (xs[mid] <= x) lo = mid; else hi = mid;
-  }
-  const t = (x - xs[lo]) / (xs[hi] - xs[lo]);
-  return ys[lo] + t * (ys[hi] - ys[lo]);
+function linterp(xs,ys,x){
+  if(x<=xs[0]) return ys[0];
+  if(x>=xs[xs.length-1]) return ys[xs.length-1];
+  let lo=0,hi=xs.length-1;
+  while(hi-lo>1){const m=(lo+hi)>>1;if(xs[m]<=x)lo=m;else hi=m;}
+  return ys[lo]+(x-xs[lo])/(xs[hi]-xs[lo])*(ys[hi]-ys[lo]);
 }
+function aDensity(mids,q,w=5e6){let n=0;for(const m of mids)if(Math.abs(m-q)<=w)n++;return n;}
+function cvt(data,chr,s,e){
+  const d=data[chr]; if(!d) throw new Error('No anchors for '+chr);
+  const ts=Math.round(linterp(d.csMid,d.tgtMid,s));
+  const te=Math.round(linterp(d.csMid,d.tgtMid,e));
+  return{tgtChr:d.tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),density:aDensity(d.csMid,(s+e)/2)};
+}
+function cc(d){return d>=10?'high':d>=5?'mid':'low';}
+function cl(d){return d>=10?'High confidence':d>=5?'Moderate confidence':'Low confidence';}
 
-function anchorDensity(csMids, queryMid, window = 5e6) {
-  let count = 0;
-  for (let i = 0; i < csMids.length; i++) {
-    if (Math.abs(csMids[i] - queryMid) <= window) count++;
-  }
-  return count;
-}
-
-function convertRegion(data, csChr, csStart, csEnd) {
-  const chrData = data[csChr];
-  if (!chrData) throw new Error('No anchor data for ' + csChr + ' in this assembly.');
-  const { csMid, tgtChr, tgtMid } = chrData;
-  const tgtStart = Math.round(linearInterp(csMid, tgtMid, csStart));
-  const tgtEnd   = Math.round(linearInterp(csMid, tgtMid, csEnd));
-  const queryMid = (csStart + csEnd) / 2;
-  const density  = anchorDensity(csMid, queryMid);
-  return {
-    tgtChr,
-    tgtStart: Math.min(tgtStart, tgtEnd),
-    tgtEnd:   Math.max(tgtStart, tgtEnd),
-    density
-  };
-}
-
-function confidenceClass(density) {
-  if (density >= 10) return 'high';
-  if (density >= 5)  return 'mid';
-  return 'low';
-}
-function confidenceLabel(density) {
-  if (density >= 10) return 'high confidence · ' + density + ' anchors / 5 Mb';
-  if (density >= 5)  return 'moderate confidence · ' + density + ' anchors / 5 Mb';
-  return 'low confidence · ' + density + ' anchors / 5 Mb';
-}
-
-async function doSingleConvert() {
+async function doSingleConvert(){
   hideError('s-error');
-  document.getElementById('s-result').classList.remove('visible');
-
-  const target = document.getElementById('s-target').value;
-  const chr    = document.getElementById('s-chr').value;
-  const start  = parseInt(document.getElementById('s-start').value);
-  const end    = parseInt(document.getElementById('s-end').value);
-
-  if (!target) { showError('s-error', 'Please select a target assembly.'); return; }
-  if (!chr)    { showError('s-error', 'Please select a chromosome.'); return; }
-  if (isNaN(start) || isNaN(end)) { showError('s-error', 'Please enter start and end positions.'); return; }
-  if (end <= start) { showError('s-error', 'End must be greater than start.'); return; }
-
-  document.getElementById('s-btn').disabled = true;
-  showLoading('s', 'Loading anchor data for ' + target + '…');
-
+  document.getElementById('s-result-single').classList.remove('visible');
+  document.getElementById('s-result-multi').classList.remove('visible');
+  const targets=getSelected('s'), chr=document.getElementById('s-chr').value,
+        start=parseInt(document.getElementById('s-start').value),
+        end=parseInt(document.getElementById('s-end').value);
+  if(!targets.length){showError('s-error','Please select at least one assembly.');return;}
+  if(!chr){showError('s-error','Please select a chromosome.');return;}
+  if(isNaN(start)||isNaN(end)){showError('s-error','Please enter start and end positions.');return;}
+  if(end<=start){showError('s-error','End must be greater than start.');return;}
+  document.getElementById('s-btn').disabled=true;
+  showLoading('s','Loading anchor data for '+targets.length+' assembl'+(targets.length>1?'ies':'y')+'…');
   try {
-    const data = await loadAnchorData(target);
+    const allData=await Promise.all(targets.map(loadAnchorData));
     hideLoading('s');
-
-    const result = convertRegion(data, chr, start, end);
-    const cls    = confidenceClass(result.density);
-    const pct    = Math.min(100, Math.round(result.density / 50 * 100));
-
-    document.getElementById('s-res-title').textContent = chr + ' → ' + result.tgtChr + ' (' + target + ')';
-    document.getElementById('s-res-chr').textContent   = result.tgtChr;
-    document.getElementById('s-res-start').textContent = fmtMb(result.tgtStart);
-    document.getElementById('s-res-start-bp').textContent = fmtBp(result.tgtStart);
-    document.getElementById('s-res-end').textContent   = fmtMb(result.tgtEnd);
-    document.getElementById('s-res-end-bp').textContent = fmtBp(result.tgtEnd);
-
-    const fill = document.getElementById('s-conf-fill');
-    fill.style.width = pct + '%';
-    fill.className = 'conf-fill ' + cls;
-
-    const tag = document.getElementById('s-conf-tag');
-    tag.textContent = confidenceLabel(result.density);
-    tag.className = 'conf-tag ' + cls;
-
-    document.getElementById('s-result').classList.add('visible');
-  } catch(e) {
-    hideLoading('s');
-    showError('s-error', e.message);
-  } finally {
-    document.getElementById('s-btn').disabled = false;
-  }
+    const results=targets.map((t,i)=>{
+      try{return{assembly:t,...cvt(allData[i],chr,start,end),error:null};}
+      catch(e){return{assembly:t,tgtChr:'ERR',tgtStart:null,tgtEnd:null,density:0,error:e.message};}
+    });
+    if(targets.length===1){
+      const r=results[0], cls=cc(r.density), pct=Math.min(100,Math.round(r.density/50*100));
+      document.getElementById('s-res-title').textContent=chr+' → '+r.tgtChr+' ('+r.assembly+')';
+      document.getElementById('s-res-chr').textContent=r.tgtChr;
+      document.getElementById('s-res-start').textContent=fmtMb(r.tgtStart);
+      document.getElementById('s-res-start-bp').textContent=fmtBp(r.tgtStart);
+      document.getElementById('s-res-end').textContent=fmtMb(r.tgtEnd);
+      document.getElementById('s-res-end-bp').textContent=fmtBp(r.tgtEnd);
+      const fill=document.getElementById('s-conf-fill');
+      fill.style.width=pct+'%'; fill.className='conf-fill '+cls;
+      const tag=document.getElementById('s-conf-tag');
+      tag.textContent=cl(r.density)+' · '+r.density+' anchors/5 Mb'; tag.className='conf-tag '+cls;
+      document.getElementById('s-result-single').classList.add('visible');
+    } else {
+      document.getElementById('s-multi-title').textContent=
+        chr+':'+start.toLocaleString()+'–'+end.toLocaleString()+' → '+targets.length+' assemblies';
+      document.getElementById('s-multi-tbody').innerHTML=results.map(r=>{
+        if(r.error) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--red-dark);font-size:12px">${r.error}</td><td><span class="tag tag-low">error</span></td></tr>`;
+        const cls=cc(r.density);
+        return `<tr>
+          <td class="td-asm">${r.assembly}</td>
+          <td class="td-chr">${r.tgtChr}</td>
+          <td>${fmtMb(r.tgtStart)}<span class="td-bp">${fmtBp(r.tgtStart)}</span></td>
+          <td>${fmtMb(r.tgtEnd)}<span class="td-bp">${fmtBp(r.tgtEnd)}</span></td>
+          <td><span class="conf-tag ${cls}">${cl(r.density)} · ${r.density}</span></td>
+        </tr>`;
+      }).join('');
+      document.getElementById('s-result-multi').classList.add('visible');
+    }
+  } catch(e){hideLoading('s');showError('s-error',e.message);}
+  finally{document.getElementById('s-btn').disabled=false;}
 }
 
-let parsedFileRows = [];
-
-function dragOver(e)  { e.preventDefault(); document.getElementById('upload-zone').classList.add('drag-over'); }
-function dragLeave(e) { document.getElementById('upload-zone').classList.remove('drag-over'); }
-function dropFile(e)  { e.preventDefault(); dragLeave(e); const f = e.dataTransfer.files[0]; if (f) loadFile(f); }
-
-function loadFile(file) {
-  if (!file) return;
-  document.getElementById('upload-title').textContent = file.name;
+function dragOver(e){e.preventDefault();document.getElementById('upload-zone').classList.add('drag-over');}
+function dragLeave(e){document.getElementById('upload-zone').classList.remove('drag-over');}
+function dropFile(e){e.preventDefault();dragLeave(e);const f=e.dataTransfer.files[0];if(f)loadFile(f);}
+function loadFile(file){
+  if(!file) return;
   document.getElementById('upload-zone').classList.remove('drag-over');
-  const reader = new FileReader();
-  reader.onload = e => {
-    const text = e.target.result;
-    const lines = text.trim().split('\n').filter(l => l.trim() && !l.startsWith('#'));
-    parsedFileRows = lines.map(l => l.trim().split(/\t| +/));
-    document.getElementById('b-btn').disabled = parsedFileRows.length === 0;
-    if (parsedFileRows.length > 0) {
-      document.getElementById('upload-title').textContent =
-        file.name + ' — ' + parsedFileRows.length + ' region' + (parsedFileRows.length > 1 ? 's' : '') + ' loaded';
-    }
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const lines=e.target.result.trim().split('\n').filter(l=>l.trim()&&!l.startsWith('#'));
+    parsedFileRows=lines.map(l=>l.trim().split(/\t| +/));
+    const n=parsedFileRows.length;
+    document.getElementById('upload-title').textContent=file.name+' — '+n+' region'+(n!==1?'s':'')+' loaded';
+    document.getElementById('b-btn').disabled=n===0||getSelected('b').length===0;
   };
   reader.readAsText(file);
 }
 
-async function doBatchConvert() {
+async function doBatchConvert(){
   hideError('b-error');
   document.getElementById('b-table-wrap').classList.remove('visible');
-
-  const target = document.getElementById('b-target').value;
-  if (!target) { showError('b-error', 'Please select a target assembly.'); return; }
-  if (parsedFileRows.length === 0) { showError('b-error', 'Please upload a file first.'); return; }
-
-  document.getElementById('b-btn').disabled = true;
-  showLoading('b', 'Loading anchor data for ' + target + '…');
-
-  try {
-    const data = await loadAnchorData(target);
+  const targets=getSelected('b');
+  if(!targets.length){showError('b-error','Please select at least one assembly.');return;}
+  if(!parsedFileRows.length){showError('b-error','Please upload a file first.');return;}
+  document.getElementById('b-btn').disabled=true;
+  showLoading('b','Loading '+targets.length+' assembl'+(targets.length>1?'ies':'y')+'…');
+  try{
+    const allData=await Promise.all(targets.map(loadAnchorData));
     hideLoading('b');
-    showLoading('b', 'Converting ' + parsedFileRows.length + ' regions…');
-
-    batchTarget = target;
-    batchRows = [];
-    const failed = [];
-
-    for (let i = 0; i < parsedFileRows.length; i++) {
-      const cols = parsedFileRows[i];
-      if (cols.length < 3) continue;
-      const chr   = cols[0];
-      const start = parseInt(cols[1]);
-      const end   = parseInt(cols[2]);
-      const extra = cols.slice(3);
-      try {
-        const r = convertRegion(data, chr, start, end);
-        batchRows.push({
-          cs_chr: chr, cs_start: start, cs_end: end,
-          tgt_chr: r.tgtChr, tgt_start: r.tgtStart, tgt_end: r.tgtEnd,
-          density: r.density, cls: confidenceClass(r.density),
-          extra
-        });
-      } catch(e) {
-        failed.push(i + 1);
-        batchRows.push({
-          cs_chr: chr, cs_start: start, cs_end: end,
-          tgt_chr: 'ERR', tgt_start: '', tgt_end: '',
-          density: 0, cls: 'low', extra: cols.slice(3), error: e.message
-        });
-      }
+    showLoading('b','Converting '+parsedFileRows.length+' regions…');
+    batchTargets=targets; batchResults=[]; let failed=0;
+    for(const cols of parsedFileRows){
+      if(cols.length<3) continue;
+      const chr=cols[0],s=parseInt(cols[1]),e=parseInt(cols[2]),extra=cols.slice(3);
+      const perTarget=targets.map((t,i)=>{
+        try{return cvt(allData[i],chr,s,e);}
+        catch{failed++;return{tgtChr:'ERR',tgtStart:'',tgtEnd:'',density:0};}
+      });
+      batchResults.push({cs_chr:chr,cs_start:s,cs_end:e,perTarget,extra});
     }
-
-    hideLoading('b');
-    renderBatchTable(target, failed);
-
-  } catch(e) {
-    hideLoading('b');
-    showError('b-error', e.message);
-  } finally {
-    document.getElementById('b-btn').disabled = false;
-  }
+    hideLoading('b'); renderBatchTable(failed);
+  } catch(e){hideLoading('b');showError('b-error',e.message);}
+  finally{document.getElementById('b-btn').disabled=false;}
 }
 
-function renderBatchTable(target, failed) {
-  const maxExtra = Math.max(...batchRows.map(r => r.extra.length), 0);
-  const extraCols = Array.from({length: maxExtra}, (_, i) => 'col' + (i + 4));
+function renderBatchTable(failed){
+  const maxExtra=Math.max(...batchResults.map(r=>r.extra.length),0);
+  const thead=document.getElementById('b-thead');
+  let r1=`<tr><th colspan="3">CS Reference</th>`;
+  batchTargets.forEach(t=>{r1+=`<th colspan="4" class="th-group">${t}</th>`;});
+  if(maxExtra) r1+=`<th colspan="${maxExtra}"></th>`;
+  r1+='</tr>';
+  let r2=`<tr><th>chr</th><th>start</th><th>end</th>`;
+  batchTargets.forEach(()=>{r2+=`<th>chr</th><th>start</th><th>end</th><th>density</th>`;});
+  for(let i=0;i<maxExtra;i++) r2+=`<th>col${i+4}</th>`;
+  r2+='</tr>';
+  thead.innerHTML=r1+r2;
 
-  batchHeader = ['cs_chr','cs_start','cs_end', target+'_chr', target+'_start', target+'_end','anchor_density',...extraCols];
-
-  const thead = document.getElementById('b-thead');
-  thead.innerHTML = '<tr>' + batchHeader.map(c => '<th>' + c + '</th>').join('') + '</tr>';
-
-  const tbody = document.getElementById('b-tbody');
-  const preview = batchRows.slice(0, 200);
-  tbody.innerHTML = preview.map(r => {
-    const cls = r.tgt_chr === 'ERR' ? '' : 'td-green';
-    const tag = '<span class="tag tag-' + r.cls + '">' + r.cls + '</span>';
-    const extras = r.extra.map(v => '<td>' + v + '</td>').join('');
-    return '<tr>' +
-      '<td>' + r.cs_chr + '</td>' +
-      '<td>' + r.cs_start.toLocaleString() + '</td>' +
-      '<td>' + r.cs_end.toLocaleString() + '</td>' +
-      '<td class="' + cls + '">' + r.tgt_chr + '</td>' +
-      '<td class="' + cls + '">' + (r.tgt_start !== '' ? r.tgt_start.toLocaleString() : '') + '</td>' +
-      '<td class="' + cls + '">' + (r.tgt_end !== '' ? r.tgt_end.toLocaleString() : '') + '</td>' +
-      '<td>' + tag + '</td>' +
-      extras +
-      '</tr>';
+  const tbody=document.getElementById('b-tbody');
+  tbody.innerHTML=batchResults.slice(0,200).map(r=>{
+    let row=`<td>${r.cs_chr}</td><td>${r.cs_start.toLocaleString()}</td><td>${r.cs_end.toLocaleString()}</td>`;
+    r.perTarget.forEach(pt=>{
+      const ok=pt.tgtChr!=='ERR';
+      row+=`<td class="${ok?'td-green':''}">${pt.tgtChr}</td>`+
+           `<td class="${ok?'td-green':''}">${pt.tgtStart!==''?pt.tgtStart.toLocaleString():''}</td>`+
+           `<td class="${ok?'td-green':''}">${pt.tgtEnd!==''?pt.tgtEnd.toLocaleString():''}</td>`+
+           `<td><span class="tag tag-${cc(pt.density)}">${pt.density}</span></td>`;
+    });
+    r.extra.forEach(v=>{row+=`<td>${v}</td>`;});
+    return '<tr>'+row+'</tr>';
   }).join('');
 
-  const title = batchRows.length + ' regions converted to ' + target;
-  const note  = batchRows.length > 200 ? ' (showing first 200 — download for full results)' : '';
-  const warn  = failed.length > 0 ? ' · ' + failed.length + ' failed' : '';
-  document.getElementById('b-table-title').textContent = title + note + warn;
+  const note=batchResults.length>200?' (showing first 200 — download for all)':'';
+  const warn=failed>0?` · ${failed} failed`:'';
+  document.getElementById('b-table-title').textContent=
+    `${batchResults.length} regions × ${batchTargets.length} assembl${batchTargets.length>1?'ies':'y'}${note}${warn}`;
   document.getElementById('b-table-wrap').classList.add('visible');
 }
 
-function downloadTSV() {
-  if (!batchRows.length) return;
-  const maxExtra = Math.max(...batchRows.map(r => r.extra.length), 0);
-  const extraCols = Array.from({length: maxExtra}, (_, i) => 'col' + (i + 4));
-  const header = ['cs_chr','cs_start','cs_end', batchTarget+'_chr', batchTarget+'_start', batchTarget+'_end','anchor_density',...extraCols];
-  const lines = [header.join('\t')];
-  for (const r of batchRows) {
-    const row = [
-      r.cs_chr, r.cs_start, r.cs_end,
-      r.tgt_chr,
-      r.tgt_start !== '' ? r.tgt_start : 'NA',
-      r.tgt_end   !== '' ? r.tgt_end   : 'NA',
-      r.density,
-      ...r.extra
-    ];
+function downloadTSV(){
+  if(!batchResults.length) return;
+  const maxExtra=Math.max(...batchResults.map(r=>r.extra.length),0);
+  const hdr=['cs_chr','cs_start','cs_end'];
+  batchTargets.forEach(t=>hdr.push(t+'_chr',t+'_start',t+'_end',t+'_density'));
+  for(let i=0;i<maxExtra;i++) hdr.push('col'+(i+4));
+  const lines=[hdr.join('\t')];
+  for(const r of batchResults){
+    const row=[r.cs_chr,r.cs_start,r.cs_end];
+    r.perTarget.forEach(pt=>row.push(pt.tgtChr,pt.tgtStart!==''?pt.tgtStart:'NA',pt.tgtEnd!==''?pt.tgtEnd:'NA',pt.density));
+    r.extra.forEach(v=>row.push(v));
     lines.push(row.join('\t'));
   }
-  const blob = new Blob([lines.join('\n')], {type: 'text/tab-separated-values'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'WheatCoordDB_' + batchTarget + '_converted.tsv';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/tab-separated-values'}));
+  a.download='WheatCoordDB_'+batchTargets.join('-')+'_converted.tsv';
   a.click();
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    if (document.getElementById('tab-single').classList.contains('active')) doSingleConvert();
-  }
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('tab-single').classList.contains('active')) doSingleConvert();
 });
+
+buildPickers();
 </script>
 </body>
 </html>
