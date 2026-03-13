@@ -548,7 +548,7 @@ async function loadAnchorData(asm) {
     if(!byChr[chr]) byChr[chr]={csMid:[],tgtChr:[],tgtMid:[]};
     byChr[chr].csMid.push(parseFloat(cols[mi]));
     byChr[chr].tgtMid.push(parseFloat(cols[pi]));
-    byChr[chr].tgtChr.push(cols[ti]);  // store per-anchor tgtChr
+    byChr[chr].tgtChr.push(cols[ti]);
   }
   cache[asm]=byChr; return byChr;
 }
@@ -579,30 +579,22 @@ function chrIsInverted(d){
   return neg>pos;
 }
 
-// Find the tgtChr at a given cs position by nearest anchor
-function nearestTgtChr(d, csPos) {
-  const xs = d.csMid;
-  let bestIdx = 0, bestDist = Infinity;
-  for (let i = 0; i < xs.length; i++) {
-    const dist = Math.abs(xs[i] - csPos);
-    if (dist < bestDist) { bestDist = dist; bestIdx = i; }
-  }
-  return d.tgtChr[bestIdx];
+function nearestTgtChr(d, pos) {
+  let bi=0, bd=Infinity;
+  for(let i=0;i<d.csMid.length;i++){const dist=Math.abs(d.csMid[i]-pos);if(dist<bd){bd=dist;bi=i;}}
+  return d.tgtChr[bi];
 }
-
 function cvt(data,chr,s,e){
   const d=data[chr]; if(!d) throw new Error('No anchors for '+chr);
-  const midPos = (s+e)/2;
-  // Determine tgtChr from nearest anchor to query midpoint
-  const tgtChr = nearestTgtChr(d, midPos);
-  // Interpolate only within anchors on the same tgtChr (correct segment)
-  const segIdx = d.tgtChr.map((c,i)=>c===tgtChr?i:-1).filter(i=>i>=0);
-  const segCs  = segIdx.map(i=>d.csMid[i]);
-  const segTgt = segIdx.map(i=>d.tgtMid[i]);
-  const ts=Math.round(linterp(segCs, segTgt, s));
-  const te=Math.round(linterp(segCs, segTgt, e));
-  const localInv = te < ts;
-  return{tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),density:aDensity(d.csMid,midPos),inverted:localInv,wholeChrInv:false};
+  const mid=(s+e)/2;
+  const tgtChr=nearestTgtChr(d,mid);
+  // Interpolate within the correct segment only
+  const si=d.tgtChr.reduce((a,c,i)=>{if(c===tgtChr)a.push(i);return a;},[]);
+  const sc=si.map(i=>d.csMid[i]), st=si.map(i=>d.tgtMid[i]);
+  const ts=Math.round(linterp(sc,st,s));
+  const te=Math.round(linterp(sc,st,e));
+  const localInv=te<ts;
+  return{tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),density:aDensity(d.csMid,mid),inverted:localInv,wholeChrInv:false};
 }
 function cc(d){return d>=10?'high':d>=5?'mid':'low';}
 function cl(d){return d>=10?'High confidence':d>=5?'Moderate confidence':'Low confidence';}
@@ -846,16 +838,6 @@ function drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQuer
   if (!chrData) return;
   const xs = chrData.csMid;
   const ys = chrData.tgtMid;
-  const tc = chrData.tgtChr;  // per-anchor tgtChr array
-
-  // Identify unique target chromosomes (in order of first appearance)
-  const tgtChrs = [];
-  const seen = new Set();
-  for (const c of tc) { if (!seen.has(c)) { tgtChrs.push(c); seen.add(c); } }
-  // Colour palette: single tgtChr = dark blue; multiple = tab10-ish
-  const SEG_COLORS = ['rgba(13,8,135,0.6)', 'rgba(140,60,10,0.6)', 'rgba(0,128,0,0.6)', 'rgba(180,0,180,0.6)'];
-  const chrColor = {};
-  tgtChrs.forEach((c,i) => chrColor[c] = SEG_COLORS[i % SEG_COLORS.length]);
 
   const csMax  = Math.max(...xs) * 1.02;
   const tgtMax = Math.max(...ys) * 1.02;
@@ -874,16 +856,18 @@ function drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQuer
     ctx.beginPath(); ctx.moveTo(ml, y); ctx.lineTo(ml+pw, y); ctx.stroke();
   }
 
-  // Plot anchor dots, coloured by tgtChr
+  // Plot anchor dots (subsample if >8000 for performance)
   const step = xs.length > 8000 ? Math.ceil(xs.length / 8000) : 1;
   for (let i = 0; i < xs.length; i += step) {
-    ctx.fillStyle = chrColor[tc[i]] || 'rgba(13,8,135,0.55)';
+    // Use identity if available, else default high
+    const t = 1.0; // all anchors passed 0.9 threshold; shade uniformly dark blue
+    ctx.fillStyle = 'rgba(13,8,135,0.55)';
     ctx.beginPath();
     ctx.arc(cx(xs[i]), cy(ys[i]), 1.2, 0, Math.PI*2);
     ctx.fill();
   }
 
-  // Query region highlight box — use result tgtStart/tgtEnd directly
+  // Query region highlight box
   if (csQueryStart != null && result) {
     const x1 = cx(csQueryStart);
     const x2 = cx(csQueryEnd);
@@ -891,6 +875,8 @@ function drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQuer
     const y2 = cy(result.tgtEnd);
     const bx = Math.min(x1,x2), bw = Math.abs(x2-x1)||2;
     const by = Math.min(y1,y2), bh = Math.abs(y2-y1)||2;
+
+    // Shadow/glow
     ctx.save();
     ctx.shadowColor = 'rgba(229,77,28,0.4)';
     ctx.shadowBlur = 8;
@@ -934,33 +920,14 @@ function drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQuer
     ctx.fillStyle = '#9c9a92';
     ctx.fillText(Math.round(v/1e6)+'', ml-6, y+3);
   }
-  // Y axis title (rotated) — show target chr(s)
-  const yLabel = tgtChrs.join(' / ') + ' (Mb)';
+  // Y axis title (rotated)
   ctx.save();
   ctx.translate(13, mt + ph/2);
   ctx.rotate(-Math.PI/2);
   ctx.textAlign = 'center';
   ctx.fillStyle = '#6b6b64';
-  ctx.fillText(yLabel, 0, 0);
+  ctx.fillText(`${assembly} (Mb)`, 0, 0);
   ctx.restore();
-
-  // Legend for multi-tgtChr
-  if (tgtChrs.length > 1) {
-    const lx = ml + pw - 4, ly = mt + 8;
-    const lh = 16, lw = 70;
-    ctx.fillStyle = 'rgba(250,249,247,0.85)';
-    ctx.fillRect(lx - lw, ly - 4, lw + 4, tgtChrs.length * lh + 6);
-    tgtChrs.forEach((c, i) => {
-      ctx.fillStyle = chrColor[c];
-      ctx.beginPath();
-      ctx.arc(lx - lw + 8, ly + i * lh + 5, 4, 0, Math.PI*2);
-      ctx.fill();
-      ctx.fillStyle = '#4a4a44';
-      ctx.font = `10px -apple-system, system-ui, sans-serif`;
-      ctx.textAlign = 'left';
-      ctx.fillText(c, lx - lw + 17, ly + i * lh + 9);
-    });
-  }
 }
 
 function makeDotplotBlock(assembly, data, csChr, result, csQueryStart, csQueryEnd, autoShow) {
@@ -996,18 +963,10 @@ function makeDotplotBlock(assembly, data, csChr, result, csQueryStart, csQueryEn
   canvas.height = 374;
   canvasWrap.appendChild(canvas);
 
-  // Build legend: show tgtChr colours if multi-target
-  const SEG_COLORS_LEGEND = ['#0d0887', 'rgba(140,60,10,0.8)', 'rgba(0,128,0,0.8)'];
-  const chrData = data[csChr];
-  const legendTgtChrs = chrData ? [...new Set(chrData.tgtChr)] : [];
-  const anchorLegend = legendTgtChrs.length > 1
-    ? legendTgtChrs.map((c,i) => `<div class="legend-box" style="background:${SEG_COLORS_LEGEND[i%SEG_COLORS_LEGEND.length]}"></div> ${c}`).join('&nbsp;&nbsp;')
-    : `<div class="legend-box" style="background:#0d0887"></div> Gene anchors (identity ≥0.9)`;
-
   const legend = document.createElement('div');
   legend.className = 'dotplot-legend';
-  legend.innerHTML = anchorLegend +
-    `&nbsp;&nbsp;<div class="legend-box" style="background:rgba(229,77,28,0.3);border:1.5px solid #e54d1c"></div> Query region`;
+  legend.innerHTML = `<div class="legend-box" style="background:#0d0887"></div> Gene anchors (identity ≥0.9)
+    &nbsp;&nbsp;<div class="legend-box" style="background:rgba(229,77,28,0.3);border:1.5px solid #e54d1c"></div> Query region`;
   canvasWrap.appendChild(legend);
 
   wrap.appendChild(canvasWrap);
