@@ -719,7 +719,8 @@ function plasmaColor(t) {
 
 function drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQueryEnd) {
   const DPR = window.devicePixelRatio || 1;
-  const W = canvas.offsetWidth || 520;
+  const parent = canvas.parentElement;
+  const W = (parent ? parent.getBoundingClientRect().width : 0) || canvas.offsetWidth || 520;
   const H = Math.round(W * 0.72);
   canvas.width  = W * DPR;
   canvas.height = H * DPR;
@@ -859,6 +860,7 @@ function makeDotplotBlock(assembly, data, csChr, result, csQueryStart, csQueryEn
   const canvas = document.createElement('canvas');
   canvas.className = 'dotplot';
   canvas.style.width = '100%';
+  canvas.style.minHeight = '260px';
   canvasWrap.appendChild(canvas);
 
   const legend = document.createElement('div');
@@ -870,9 +872,9 @@ function makeDotplotBlock(assembly, data, csChr, result, csQueryStart, csQueryEn
   wrap.appendChild(canvasWrap);
 
   if (autoShow) {
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQueryEnd);
-    });
+    }, 50);
   } else {
     // Draw lazily on first show
     wrap._drawn = false;
@@ -891,7 +893,7 @@ function toggleDotplot(btn) {
   if (visible && !wrap._drawn) {
     wrap._drawn = true;
     const [canvas, data, chr, result, asm, s, e] = wrap._drawArgs;
-    requestAnimationFrame(() => drawDotplot(canvas, data, chr, result, asm, s, e));
+    setTimeout(() => drawDotplot(canvas, data, chr, result, asm, s, e), 20);
   }
 }
 
