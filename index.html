@@ -171,6 +171,20 @@ footer { border-top: 1px solid var(--border); margin-top: 3rem; padding: 1.5rem 
 footer a { color: var(--text-2); text-decoration: none; }
 footer a:hover { color: var(--text); }
 footer .sep { margin: 0 .5rem; }
+
+/* Dotplot */
+.dotplot-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: .75rem; }
+.dotplot-header { display: flex; align-items: center; justify-content: space-between; padding: .6rem 1rem; background: var(--bg-2); border-bottom: 1px solid var(--border); font-family: -apple-system, system-ui, sans-serif; }
+.dotplot-header-title { font-size: 12px; font-weight: 500; color: var(--text); }
+.dotplot-header-sub { font-size: 11px; color: var(--text-3); }
+.dotplot-toggle { font-size: 11px; padding: 3px 10px; border: 1px solid var(--border-2); border-radius: 5px; background: var(--white); color: var(--text-2); cursor: pointer; font-family: -apple-system, system-ui, sans-serif; transition: background .1s; }
+.dotplot-toggle:hover { background: var(--green-light); color: var(--green-dark); border-color: var(--green-mid); }
+.dotplot-toggle.active { background: var(--green-light); color: var(--green-dark); border-color: var(--green-mid); }
+.dotplot-canvas-wrap { padding: .75rem 1rem 1rem; display: none; }
+.dotplot-canvas-wrap.visible { display: block; }
+canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; }
+.dotplot-legend { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: var(--text-2); }
+.legend-box { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -281,10 +295,15 @@ footer .sep { margin: 0 .5rem; }
           </div>
           <div class="table-scroll">
             <table class="cmp-table">
-              <thead><tr><th>Assembly</th><th>Chr</th><th>Start</th><th>End</th><th>Confidence</th></tr></thead>
+              <thead><tr><th>Assembly</th><th>Chr</th><th>Start</th><th>End</th><th>Confidence</th><th></th></tr></thead>
               <tbody id="s-multi-tbody"></tbody>
             </table>
           </div>
+        </div>
+
+        <!-- Dotplot section -->
+        <div id="s-dotplot-section" style="display:none; margin-top:1rem;">
+          <div id="s-dotplot-container"></div>
         </div>
       </div>
     </div>
@@ -503,6 +522,7 @@ async function doSingleConvert(){
   hideError('s-error');
   document.getElementById('s-result-single').classList.remove('visible');
   document.getElementById('s-result-multi').classList.remove('visible');
+  document.getElementById('s-dotplot-section').style.display='none';
   const targets=getSelected('s'), chr=document.getElementById('s-chr').value,
         start=parseInt(document.getElementById('s-start').value),
         end=parseInt(document.getElementById('s-end').value);
@@ -532,11 +552,19 @@ async function doSingleConvert(){
       const tag=document.getElementById('s-conf-tag');
       tag.textContent=cl(r.density)+' · '+r.density+' anchors/5 Mb'; tag.className='conf-tag '+cls;
       document.getElementById('s-result-single').classList.add('visible');
+
+      // Dotplot — auto-shown for single target
+      const dp = document.getElementById('s-dotplot-section');
+      const dc = document.getElementById('s-dotplot-container');
+      dc.innerHTML = '';
+      dp.style.display = 'block';
+      dc.appendChild(makeDotplotBlock(r.assembly, allData[0], chr, r, start, end, true));
+
     } else {
       document.getElementById('s-multi-title').textContent=
         chr+':'+start.toLocaleString()+'–'+end.toLocaleString()+' → '+targets.length+' assemblies';
-      document.getElementById('s-multi-tbody').innerHTML=results.map(r=>{
-        if(r.error) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--red-dark);font-size:12px">${r.error}</td><td><span class="tag tag-low">error</span></td></tr>`;
+      document.getElementById('s-multi-tbody').innerHTML=results.map((r,i)=>{
+        if(r.error) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--red-dark);font-size:12px">${r.error}</td><td><span class="tag tag-low">error</span></td><td></td></tr>`;
         const cls=cc(r.density);
         return `<tr>
           <td class="td-asm">${r.assembly}</td>
@@ -544,9 +572,20 @@ async function doSingleConvert(){
           <td>${fmtMb(r.tgtStart)}<span class="td-bp">${fmtBp(r.tgtStart)}</span></td>
           <td>${fmtMb(r.tgtEnd)}<span class="td-bp">${fmtBp(r.tgtEnd)}</span></td>
           <td><span class="conf-tag ${cls}">${cl(r.density)} · ${r.density}</span></td>
+          <td></td>
         </tr>`;
       }).join('');
       document.getElementById('s-result-multi').classList.add('visible');
+
+      // Dotplots — one per assembly, toggle to show
+      const dp = document.getElementById('s-dotplot-section');
+      const dc = document.getElementById('s-dotplot-container');
+      dc.innerHTML = '';
+      dp.style.display = 'block';
+      results.forEach((r,i) => {
+        if (r.error) return;
+        dc.appendChild(makeDotplotBlock(r.assembly, allData[i], chr, r, start, end, false));
+      });
     }
   } catch(e){hideLoading('s');showError('s-error',e.message);}
   finally{document.getElementById('s-btn').disabled=false;}
@@ -652,6 +691,209 @@ function downloadTSV(){
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.getElementById('tab-single').classList.contains('active')) doSingleConvert();
 });
+
+// ── Dotplot rendering ─────────────────────────────────────────────
+// plasma_r colormap: maps identity 0.9–1.0 → yellow→purple→dark blue
+const PLASMA_STOPS = [
+  [0.0,  [253,231,37]],
+  [0.25, [94,201,98]],
+  [0.5,  [33,145,140]],
+  [0.75, [59,82,139]],
+  [1.0,  [13,8,135]]
+];
+function plasmaColor(t) {
+  // t: 0=yellow (low identity), 1=dark blue (high identity)
+  t = Math.max(0, Math.min(1, t));
+  let lo = PLASMA_STOPS[0], hi = PLASMA_STOPS[PLASMA_STOPS.length-1];
+  for (let i = 0; i < PLASMA_STOPS.length-1; i++) {
+    if (t >= PLASMA_STOPS[i][0] && t <= PLASMA_STOPS[i+1][0]) {
+      lo = PLASMA_STOPS[i]; hi = PLASMA_STOPS[i+1]; break;
+    }
+  }
+  const f = (t - lo[0]) / (hi[0] - lo[0]);
+  const r = Math.round(lo[1][0] + f*(hi[1][0]-lo[1][0]));
+  const g = Math.round(lo[1][1] + f*(hi[1][1]-lo[1][1]));
+  const b = Math.round(lo[1][2] + f*(hi[1][2]-lo[1][2]));
+  return `rgb(${r},${g},${b})`;
+}
+
+function drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQueryEnd) {
+  const DPR = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth || 520;
+  const H = Math.round(W * 0.72);
+  canvas.width  = W * DPR;
+  canvas.height = H * DPR;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(DPR, DPR);
+
+  // Margins
+  const ml=52, mr=20, mt=20, mb=42;
+  const pw = W - ml - mr;
+  const ph = H - mt - mb;
+
+  // Background
+  ctx.fillStyle = '#faf9f7';
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(ml, mt, pw, ph);
+
+  // Get anchor data for this chr
+  const chrData = data[csChr];
+  if (!chrData) return;
+  const xs = chrData.csMid;
+  const ys = chrData.tgtMid;
+
+  const csMax  = Math.max(...xs) * 1.02;
+  const tgtMax = Math.max(...ys) * 1.02;
+
+  function cx(v) { return ml + (v / csMax)  * pw; }
+  function cy(v) { return mt + ph - (v / tgtMax) * ph; }
+
+  // Grid lines
+  ctx.strokeStyle = '#e8e6e0';
+  ctx.lineWidth = 0.5;
+  const nGrid = 5;
+  for (let i=1; i<nGrid; i++) {
+    const x = ml + (i/nGrid)*pw;
+    ctx.beginPath(); ctx.moveTo(x, mt); ctx.lineTo(x, mt+ph); ctx.stroke();
+    const y = mt + (i/nGrid)*ph;
+    ctx.beginPath(); ctx.moveTo(ml, y); ctx.lineTo(ml+pw, y); ctx.stroke();
+  }
+
+  // Plot anchor dots (subsample if >8000 for performance)
+  const step = xs.length > 8000 ? Math.ceil(xs.length / 8000) : 1;
+  for (let i = 0; i < xs.length; i += step) {
+    // Use identity if available, else default high
+    const t = 1.0; // all anchors passed 0.9 threshold; shade uniformly dark blue
+    ctx.fillStyle = 'rgba(13,8,135,0.55)';
+    ctx.beginPath();
+    ctx.arc(cx(xs[i]), cy(ys[i]), 1.2, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  // Query region highlight box
+  if (csQueryStart != null && result) {
+    const x1 = cx(csQueryStart);
+    const x2 = cx(csQueryEnd);
+    const y1 = cy(result.tgtStart);
+    const y2 = cy(result.tgtEnd);
+    const bx = Math.min(x1,x2), bw = Math.abs(x2-x1)||2;
+    const by = Math.min(y1,y2), bh = Math.abs(y2-y1)||2;
+
+    // Shadow/glow
+    ctx.save();
+    ctx.shadowColor = 'rgba(229,77,28,0.4)';
+    ctx.shadowBlur = 8;
+    ctx.strokeStyle = '#e54d1c';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(bx, by, bw, bh);
+    ctx.restore();
+    ctx.fillStyle = 'rgba(229,77,28,0.08)';
+    ctx.fillRect(bx, by, bw, bh);
+  }
+
+  // Axes border
+  ctx.strokeStyle = '#c8c6be';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(ml, mt, pw, ph);
+
+  // Axis labels
+  ctx.fillStyle = '#6b6b64';
+  ctx.font = `${11*DPR/DPR}px -apple-system, system-ui, sans-serif`;
+  ctx.textAlign = 'center';
+
+  // X axis ticks & labels
+  const xTicks = 5;
+  for (let i=0; i<=xTicks; i++) {
+    const v = (csMax/xTicks)*i;
+    const x = cx(v);
+    ctx.fillStyle = '#9c9a92';
+    ctx.fillText(Math.round(v/1e6)+'', x, mt+ph+14);
+    ctx.fillStyle = '#e8e6e0';
+    ctx.fillRect(x-0.5, mt+ph, 1, 4);
+  }
+  ctx.fillStyle = '#6b6b64';
+  ctx.fillText(`CS ${csChr} (Mb)`, ml + pw/2, mt+ph+30);
+
+  // Y axis ticks & labels
+  ctx.textAlign = 'right';
+  const yTicks = 4;
+  for (let i=0; i<=yTicks; i++) {
+    const v = (tgtMax/yTicks)*i;
+    const y = cy(v);
+    ctx.fillStyle = '#9c9a92';
+    ctx.fillText(Math.round(v/1e6)+'', ml-6, y+3);
+  }
+  // Y axis title (rotated)
+  ctx.save();
+  ctx.translate(13, mt + ph/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#6b6b64';
+  ctx.fillText(`${assembly} (Mb)`, 0, 0);
+  ctx.restore();
+}
+
+function makeDotplotBlock(assembly, data, csChr, result, csQueryStart, csQueryEnd, autoShow) {
+  const wrap = document.createElement('div');
+  wrap.className = 'dotplot-wrap';
+
+  const header = document.createElement('div');
+  header.className = 'dotplot-header';
+  header.innerHTML = `
+    <div>
+      <div class="dotplot-header-title">${csChr} → ${assembly}</div>
+      <div class="dotplot-header-sub">Synteny anchors · query region highlighted</div>
+    </div>
+    <button class="dotplot-toggle ${autoShow?'active':''}" onclick="toggleDotplot(this)">
+      ${autoShow ? 'Hide dotplot' : 'Show dotplot'}
+    </button>`;
+  wrap.appendChild(header);
+
+  const canvasWrap = document.createElement('div');
+  canvasWrap.className = 'dotplot-canvas-wrap' + (autoShow?' visible':'');
+
+  const canvas = document.createElement('canvas');
+  canvas.className = 'dotplot';
+  canvas.style.width = '100%';
+  canvasWrap.appendChild(canvas);
+
+  const legend = document.createElement('div');
+  legend.className = 'dotplot-legend';
+  legend.innerHTML = `<div class="legend-box" style="background:#0d0887"></div> Gene anchors (identity ≥0.9)
+    &nbsp;&nbsp;<div class="legend-box" style="background:rgba(229,77,28,0.3);border:1.5px solid #e54d1c"></div> Query region`;
+  canvasWrap.appendChild(legend);
+
+  wrap.appendChild(canvasWrap);
+
+  if (autoShow) {
+    requestAnimationFrame(() => {
+      drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQueryEnd);
+    });
+  } else {
+    // Draw lazily on first show
+    wrap._drawn = false;
+    wrap._drawArgs = [canvas, data, csChr, result, assembly, csQueryStart, csQueryEnd];
+  }
+
+  return wrap;
+}
+
+function toggleDotplot(btn) {
+  const wrap = btn.closest('.dotplot-wrap');
+  const cw = wrap.querySelector('.dotplot-canvas-wrap');
+  const visible = cw.classList.toggle('visible');
+  btn.textContent = visible ? 'Hide dotplot' : 'Show dotplot';
+  btn.classList.toggle('active', visible);
+  if (visible && !wrap._drawn) {
+    wrap._drawn = true;
+    const [canvas, data, chr, result, asm, s, e] = wrap._drawArgs;
+    requestAnimationFrame(() => drawDotplot(canvas, data, chr, result, asm, s, e));
+  }
+}
 
 buildPickers();
 </script>
