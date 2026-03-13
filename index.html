@@ -185,6 +185,24 @@ footer .sep { margin: 0 .5rem; }
 canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; }
 .dotplot-legend { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: var(--text-2); }
 .legend-box { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+
+/* Result actions row */
+.result-actions { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.inversion-badge { display: inline-flex; align-items: center; gap: 5px; font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 600; color: var(--amber-dark); background: var(--amber-light); border: 1px solid #e8c87a; padding: 4px 10px; border-radius: 20px; }
+.copy-btn { display: inline-flex; align-items: center; gap: 6px; font-family: -apple-system, system-ui, sans-serif; font-size: 12px; font-weight: 500; color: var(--text-2); background: var(--bg-2); border: 1px solid var(--border-2); padding: 5px 12px; border-radius: 6px; cursor: pointer; transition: background .15s, color .15s, border-color .15s; margin-left: auto; }
+.copy-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+.copy-btn:hover { background: var(--green-light); color: var(--green-dark); border-color: var(--green-mid); }
+.copy-btn.copied { background: var(--green-light); color: var(--green-dark); border-color: var(--green-mid); }
+.copy-btn-sm { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: var(--text-3); background: transparent; border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px; cursor: pointer; white-space: nowrap; transition: background .1s, color .1s; }
+.copy-btn-sm:hover, .copy-btn-sm.copied { background: var(--green-light); color: var(--green-dark); border-color: var(--green-mid); }
+.inv-inline { color: #c47a00; font-size: 11px; cursor: help; }
+
+/* Coming soon panel */
+.coming-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.coming-list li { display: flex; gap: 10px; align-items: flex-start; }
+.coming-icon { font-size: 16px; line-height: 1.3; flex-shrink: 0; }
+.coming-title { font-family: -apple-system, system-ui, sans-serif; font-size: 13px; font-weight: 600; color: var(--text); }
+.coming-desc { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: var(--text-2); line-height: 1.5; margin-top: 1px; }
 </style>
 </head>
 <body>
@@ -284,6 +302,13 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
             <span>Anchor density</span>
             <div class="conf-bar"><div class="conf-fill" id="s-conf-fill"></div></div>
             <span class="conf-tag" id="s-conf-tag">—</span>
+          </div>
+          <div class="result-actions">
+            <span class="inversion-badge" id="s-inv-badge" style="display:none">⚠ inverted orientation</span>
+            <button class="copy-btn" id="s-copy-btn" onclick="copyCoords()" title="Copy coordinates to clipboard">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="9" height="11" rx="1.5"/><path d="M3 11H2.5A1.5 1.5 0 011 9.5v-7A1.5 1.5 0 012.5 1h7A1.5 1.5 0 0111 2.5V3"/></svg>
+              Copy coordinates
+            </button>
           </div>
         </div>
 
@@ -407,6 +432,33 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
         <em>Grewal et al. (in preparation). WheatCoordDB: a gene-anchored coordinate conversion resource for hexaploid wheat assemblies.</em>
       </div>
     </div>
+
+    <div class="panel" id="coming-soon">
+      <div class="panel-title">Coming soon</div>
+      <ul class="coming-list">
+        <li>
+          <span class="coming-icon">⇄</span>
+          <div>
+            <div class="coming-title">Reverse lookup</div>
+            <div class="coming-desc">Convert target assembly coordinates back to CS v2.1</div>
+          </div>
+        </li>
+        <li>
+          <span class="coming-icon">🌾</span>
+          <div>
+            <div class="coming-title">T2T-based references</div>
+            <div class="coming-desc">All assemblies referenced to CS-IAAS and CS-CAU T2T assemblies</div>
+          </div>
+        </li>
+        <li>
+          <span class="coming-icon">📥</span>
+          <div>
+            <div class="coming-title">API access</div>
+            <div class="coming-desc">Programmatic coordinate conversion via REST endpoint</div>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
 
@@ -513,7 +565,8 @@ function cvt(data,chr,s,e){
   const d=data[chr]; if(!d) throw new Error('No anchors for '+chr);
   const ts=Math.round(linterp(d.csMid,d.tgtMid,s));
   const te=Math.round(linterp(d.csMid,d.tgtMid,e));
-  return{tgtChr:d.tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),density:aDensity(d.csMid,(s+e)/2)};
+  const inverted = te < ts;
+  return{tgtChr:d.tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),density:aDensity(d.csMid,(s+e)/2),inverted};
 }
 function cc(d){return d>=10?'high':d>=5?'mid':'low';}
 function cl(d){return d>=10?'High confidence':d>=5?'Moderate confidence':'Low confidence';}
@@ -551,6 +604,12 @@ async function doSingleConvert(){
       fill.style.width=pct+'%'; fill.className='conf-fill '+cls;
       const tag=document.getElementById('s-conf-tag');
       tag.textContent=cl(r.density)+' · '+r.density+' anchors/5 Mb'; tag.className='conf-tag '+cls;
+      // Inversion badge
+      const invBadge=document.getElementById('s-inv-badge');
+      invBadge.style.display = r.inverted ? 'inline-flex' : 'none';
+      // Copy button
+      const copyBtn=document.getElementById('s-copy-btn');
+      copyBtn.dataset.coords=r.tgtChr+':'+Math.round(r.tgtStart).toLocaleString()+'-'+Math.round(r.tgtEnd).toLocaleString();
       document.getElementById('s-result-single').classList.add('visible');
 
       // Dotplot — auto-shown for single target
@@ -566,13 +625,14 @@ async function doSingleConvert(){
       document.getElementById('s-multi-tbody').innerHTML=results.map((r,i)=>{
         if(r.error) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--red-dark);font-size:12px">${r.error}</td><td><span class="tag tag-low">error</span></td><td></td></tr>`;
         const cls=cc(r.density);
+        const coords=r.tgtChr+':'+Math.round(r.tgtStart).toLocaleString()+'-'+Math.round(r.tgtEnd).toLocaleString();
         return `<tr>
           <td class="td-asm">${r.assembly}</td>
-          <td class="td-chr">${r.tgtChr}</td>
+          <td class="td-chr">${r.tgtChr}${r.inverted?' <span class="inv-inline" title="Inverted orientation">⚠</span>':''}</td>
           <td>${fmtMb(r.tgtStart)}<span class="td-bp">${fmtBp(r.tgtStart)}</span></td>
           <td>${fmtMb(r.tgtEnd)}<span class="td-bp">${fmtBp(r.tgtEnd)}</span></td>
           <td><span class="conf-tag ${cls}">${cl(r.density)} · ${r.density}</span></td>
-          <td></td>
+          <td><button class="copy-btn-sm" onclick="copyText('${coords}',this)" title="Copy coordinates">Copy</button></td>
         </tr>`;
       }).join('');
       document.getElementById('s-result-multi').classList.add('visible');
@@ -848,9 +908,15 @@ function makeDotplotBlock(assembly, data, csChr, result, csQueryStart, csQueryEn
       <div class="dotplot-header-title">${csChr} → ${assembly}</div>
       <div class="dotplot-header-sub">Synteny anchors · query region highlighted</div>
     </div>
-    <button class="dotplot-toggle ${autoShow?'active':''}" onclick="toggleDotplot(this)">
-      ${autoShow ? 'Hide dotplot' : 'Show dotplot'}
-    </button>`;
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="dotplot-toggle" onclick="downloadDotplot(this)" title="Download as PNG">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="width:12px;height:12px;vertical-align:-1px"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2"/></svg>
+        PNG
+      </button>
+      <button class="dotplot-toggle ${autoShow?'active':''}" onclick="toggleDotplot(this)">
+        ${autoShow ? 'Hide dotplot' : 'Show dotplot'}
+      </button>
+    </div>`;
   wrap.appendChild(header);
 
   const canvasWrap = document.createElement('div');
@@ -894,6 +960,42 @@ function toggleDotplot(btn) {
     const [canvas, data, chr, result, asm, s, e] = wrap._drawArgs;
     drawDotplot(canvas, data, chr, result, asm, s, e);
   }
+}
+
+function copyCoords(){
+  const btn=document.getElementById('s-copy-btn');
+  copyText(btn.dataset.coords, btn);
+}
+function copyText(text, btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig=btn.innerHTML;
+    btn.textContent='Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.innerHTML=orig;btn.classList.remove('copied');},1800);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent='Copied!'; btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},1800);
+  });
+}
+function downloadDotplot(btn){
+  const wrap=btn.closest('.dotplot-wrap');
+  const canvas=wrap.querySelector('canvas');
+  if(!canvas) return;
+  // If dotplot not drawn yet, draw it first
+  if(!wrap._drawn && wrap._drawArgs){
+    wrap._drawn=true;
+    const [c,data,chr,result,asm,s,e]=wrap._drawArgs;
+    drawDotplot(c,data,chr,result,asm,s,e);
+  }
+  const titleEl=wrap.querySelector('.dotplot-header-title');
+  const fname=(titleEl?titleEl.textContent.replace(/\s*→\s*/,'_to_').replace(/\s/g,''):'dotplot')+'.png';
+  const link=document.createElement('a');
+  link.download=fname;
+  link.href=canvas.toDataURL('image/png');
+  link.click();
 }
 
 buildPickers();
