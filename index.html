@@ -561,12 +561,30 @@ function linterp(xs,ys,x){
   return ys[lo]+(x-xs[lo])/(xs[hi]-xs[lo])*(ys[hi]-ys[lo]);
 }
 function aDensity(mids,q,w=5e6){let n=0;for(const m of mids)if(Math.abs(m-q)<=w)n++;return n;}
+
+// Detect if a chromosome's anchors run in reverse (whole-chr inversion)
+// Uses Spearman-like check: if majority of consecutive tgtMid diffs are negative, it's inverted
+function chrIsInverted(d){
+  const ys=d.tgtMid; if(ys.length<4) return false;
+  let neg=0,pos=0;
+  for(let i=1;i<ys.length;i++){const dv=ys[i]-ys[i-1];if(dv<0)neg++;else if(dv>0)pos++;}
+  return neg>pos;
+}
+
 function cvt(data,chr,s,e){
   const d=data[chr]; if(!d) throw new Error('No anchors for '+chr);
-  const ts=Math.round(linterp(d.csMid,d.tgtMid,s));
-  const te=Math.round(linterp(d.csMid,d.tgtMid,e));
-  const inverted = te < ts;
-  return{tgtChr:d.tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),density:aDensity(d.csMid,(s+e)/2),inverted};
+  const wholeChrInv = chrIsInverted(d);
+  let tgtMid = d.tgtMid;
+  if(wholeChrInv){
+    // Reverse tgtMid so linterp works correctly, then map back
+    tgtMid = [...d.tgtMid].reverse();
+  }
+  const ts=Math.round(linterp(d.csMid, tgtMid, s));
+  const te=Math.round(linterp(d.csMid, tgtMid, e));
+  // Local inversion: te<ts after whole-chr correction
+  const localInv = te < ts;
+  const inverted = wholeChrInv || localInv;
+  return{tgtChr:d.tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),density:aDensity(d.csMid,(s+e)/2),inverted,wholeChrInv};
 }
 function cc(d){return d>=10?'high':d>=5?'mid':'low';}
 function cl(d){return d>=10?'High confidence':d>=5?'Moderate confidence':'Low confidence';}
@@ -606,7 +624,12 @@ async function doSingleConvert(){
       tag.textContent=cl(r.density)+' · '+r.density+' anchors/5 Mb'; tag.className='conf-tag '+cls;
       // Inversion badge
       const invBadge=document.getElementById('s-inv-badge');
-      invBadge.style.display = r.inverted ? 'inline-flex' : 'none';
+      if(r.inverted){
+        invBadge.textContent = r.wholeChrInv ? '⚠ whole-chromosome inversion' : '⚠ inverted orientation';
+        invBadge.style.display='inline-flex';
+      } else {
+        invBadge.style.display='none';
+      }
       // Copy button
       const copyBtn=document.getElementById('s-copy-btn');
       copyBtn.dataset.coords=r.tgtChr+':'+Math.round(r.tgtStart).toLocaleString()+'-'+Math.round(r.tgtEnd).toLocaleString();
@@ -628,7 +651,7 @@ async function doSingleConvert(){
         const coords=r.tgtChr+':'+Math.round(r.tgtStart).toLocaleString()+'-'+Math.round(r.tgtEnd).toLocaleString();
         return `<tr>
           <td class="td-asm">${r.assembly}</td>
-          <td class="td-chr">${r.tgtChr}${r.inverted?' <span class="inv-inline" title="Inverted orientation">⚠</span>':''}</td>
+          <td class="td-chr">${r.tgtChr}${r.inverted?` <span class="inv-inline" title="${r.wholeChrInv?'Whole-chromosome inversion':'Inverted orientation'}">⚠</span>`:''}</td>
           <td>${fmtMb(r.tgtStart)}<span class="td-bp">${fmtBp(r.tgtStart)}</span></td>
           <td>${fmtMb(r.tgtEnd)}<span class="td-bp">${fmtBp(r.tgtEnd)}</span></td>
           <td><span class="conf-tag ${cls}">${cl(r.density)} · ${r.density}</span></td>
