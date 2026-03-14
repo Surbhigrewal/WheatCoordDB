@@ -8,17 +8,8 @@
 
 ## What it does
 
-WheatCoordDB converts any genomic position — QTL intervals, KASP marker 
-positions, introgression breakpoints, or arbitrary regions — from IWGSC 
-Chinese Spring RefSeq v2.1 coordinates to equivalent positions across 24 
-chromosome-scale wheat assemblies. Unlike gene-homology tools, WheatCoordDB 
-supports continuous coordinate interpolation: any position, genic or 
-intergenic, can be converted.
-
-Conversion uses ~94,000 orthologous gene anchors per assembly (projected by 
-Liftoff) as reference points, with PCHIP spline interpolation at 1 kb 
-resolution across all 21 wheat chromosomes. An anchor density score is 
-returned with every query as a confidence proxy.
+WheatCoordDB converts any genomic position (QTL intervals, KASP marker positions, introgression breakpoints, or arbitrary regions) from IWGSC Chinese Spring RefSeq v2.1 coordinates to equivalent positions across 24 chromosome-scale wheat assemblies. Unlike gene-homology tools, WheatCoordDB supports continuous coordinate interpolation: any position, genic or intergenic, can be converted.
+Conversion uses approximately 94,000 orthologous gene anchors per assembly (projected by Liftoff) as reference points, with PCHIP spline interpolation at 1 kb resolution across all 21 wheat chromosomes. An anchor density score is returned with every query as a confidence proxy.
 
 ---
 
@@ -27,7 +18,7 @@ returned with every query as a confidence proxy.
 No installation needed. Visit **https://surbhigrewal.github.io/WheatCoordDB/**
 
 - Single region, BED batch upload, and multi-assembly comparison
-- All computation runs in your browser — no data leaves your machine
+- All computation runs in your browser.
 - Translocation-aware: ArinaLrFor and SY_Mattis 5B/7B queries return 
   split results with correct inverted-orientation coordinates
 - Interactive synteny dotplot per query, downloadable as PNG
@@ -52,7 +43,7 @@ Arabidopsis, rice, or any other species.
 git clone https://github.com/Surbhigrewal/WheatCoordDB
 cd WheatCoordDB/scripts
 
-# 1. Edit config.sh — set paths to your reference and target assemblies
+# 1. Edit config.sh to set paths to your reference and target assemblies
 #    and update assembly names/FASTAs in 1_run_rename_all.sh
 
 # 2. Create the conda environment
@@ -77,32 +68,45 @@ python3 03_generate_converter.py \
 python3 04_postprocess.py
 ```
 
-**Programmatic access** — first generate the converter scripts:
-```bash
-python3 scripts/03_generate_converter.py \
-    --conversion-dir outputs/conversion_tables \
-    --target-names Assembly1 Assembly2 \
-    --output-dir outputs/converter
-```
+**Programmatic access** 
+First generate the converter scripts using step 5 above, then:
 
-**Then use the generated scripts**
 **(Python):**
 ```python
 from cs_coordinate_converter import CSCoordinateConverter
 
-conv = CSCoordinateConverter('/path/to/outputs/conversion_tables')
+conv = CSCoordinateConverter('outputs/conversion_tables')
+
+# Single position
 tgt_chr, tgt_pos, density = conv.convert('Chr5A', 557_234_900, 'Kariega')
-df = conv.convert_bed('my_qtl_intervals.bed', 'Jagger')
+
+# Region
+tgt_chr, tgt_start, tgt_end, density = conv.convert_region('Chr1B', 500e6, 550e6, 'Mace')
+
+# BED file
+df = conv.convert_bed('my_qtl_intervals.bed', 'Jagger', output_file='converted.tsv')
+
+# List available assemblies
+print(conv.available_targets())
 ```
 
 **(R):**
 ```r
 source("cs_coordinate_converter.R")
 conv <- load_cs_converter("/path/to/outputs/conversion_tables")
+result <- cs_convert(conv, "Chr5A", 557234900, "Kariega")
 result <- cs_convert_region(conv, "Chr1B", 500e6, 550e6, "Mace")
+result_df <- cs_convert_bed(conv, my_bed_df, "Jagger")
 ```
 
 ---
+**Confidence guide:**
+
+| anchor_density | Confidence | Typical region |
+|---|---|---|
+| 10 or above | High | Gene-rich chromosome arms |
+| 5 to 10 | Moderate | Interstitial regions |
+| Below 5 | Low | Pericentromeric heterochromatin |
 
 ## Repository contents
 ```
