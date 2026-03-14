@@ -617,7 +617,6 @@ function cvt(data,chr,s,e){
       const rs=linterpEx(sc,st,qs), re=linterpEx(sc,st,qe);
       const ts=Math.round(rs.val), te=Math.round(re.val);
       const localInv=te<ts;
-      console.log('split part',tgtChr,'ts=',ts/1e6,'te=',te/1e6,'inv=',localInv,'qs=',qs/1e6,'qe=',qe/1e6);
       parts.push({tgtChr,tgtStart:ts,tgtEnd:te,
                   csQueryStart:qs,csQueryEnd:qe,
                   density:aDensity(d.csMid,(qs+qe)/2),
@@ -626,6 +625,13 @@ function cvt(data,chr,s,e){
                   splitResult:true});
     }
     if(parts.length>0) return{split:true, parts, tgtChr:parts.map(p=>p.tgtChr).join('/')};
+    // parts empty = query entirely within breakpoint gap — flag as breakpoint
+    if(parts.length===0 && segsInRange.size>1){
+      return{split:false,tgtChr:'breakpoint',tgtStart:0,tgtEnd:0,
+             density:0,inverted:false,wholeChrInv:false,
+             extrapolated:true,csAnchorMin:s,csAnchorMax:e,
+             inBreakpointGap:true};
+    }
   }
 
   // Single segment — normal path
@@ -638,7 +644,6 @@ function cvt(data,chr,s,e){
   const extrapolated=rs.extrapolated||re.extrapolated;
   const csAnchorMin=sc[0], csAnchorMax=sc[sc.length-1];
   const localInv=te<ts;
-  console.log('cvt',tgtChr,'ts=',ts/1e6,'te=',te/1e6,'inv=',localInv,'sc[0]=',sc[0]/1e6,'sc[-1]=',sc[sc.length-1]/1e6);
   return{split:false,tgtChr,tgtStart:ts,tgtEnd:te,
          density:aDensity(d.csMid,mid),inverted:localInv,wholeChrInv:false,
          extrapolated,csAnchorMin,csAnchorMax};
@@ -681,7 +686,21 @@ async function doSingleConvert(){
       if(r.split){
         document.getElementById('s-res-title').textContent=chr+' → '+r.tgtChr+' ('+r.assembly+') — spans translocation breakpoint';
         const firstPart=r.parts[0];
-        document.getElementById('s-res-chr').textContent=r.tgtChr;
+        if(r.inBreakpointGap){
+        document.getElementById('s-res-title').textContent=chr+' → breakpoint gap ('+r.assembly+')';
+        document.getElementById('s-res-chr').textContent='—';
+        document.getElementById('s-res-start').textContent='—';
+        document.getElementById('s-res-start-bp').textContent='translocation breakpoint region';
+        document.getElementById('s-res-end').textContent='—';
+        document.getElementById('s-res-end-bp').textContent='no anchors in this region';
+        const fill=document.getElementById('s-conf-fill');
+        fill.style.width='0%'; fill.className='conf-fill low';
+        const tag=document.getElementById('s-conf-tag');
+        tag.textContent='Query falls in translocation breakpoint gap'; tag.className='conf-tag low';
+        document.getElementById('s-result-single').classList.add('visible');
+        document.getElementById('s-btn').disabled=false; hideLoading('s'); return;
+      }
+      document.getElementById('s-res-chr').textContent=r.tgtChr;
         document.getElementById('s-res-start').textContent='split';
         document.getElementById('s-res-start-bp').textContent='spans breakpoint';
         document.getElementById('s-res-end').textContent='';
@@ -722,6 +741,20 @@ async function doSingleConvert(){
       if(splitDiv) splitDiv.style.display='none';
       const cls=cc(r.density), pct=Math.min(100,Math.round(r.density/50*100));
       document.getElementById('s-res-title').textContent=chr+' → '+r.tgtChr+' ('+r.assembly+')';
+      if(r.inBreakpointGap){
+        document.getElementById('s-res-title').textContent=chr+' → breakpoint gap ('+r.assembly+')';
+        document.getElementById('s-res-chr').textContent='—';
+        document.getElementById('s-res-start').textContent='—';
+        document.getElementById('s-res-start-bp').textContent='translocation breakpoint region';
+        document.getElementById('s-res-end').textContent='—';
+        document.getElementById('s-res-end-bp').textContent='no anchors in this region';
+        const fill=document.getElementById('s-conf-fill');
+        fill.style.width='0%'; fill.className='conf-fill low';
+        const tag=document.getElementById('s-conf-tag');
+        tag.textContent='Query falls in translocation breakpoint gap'; tag.className='conf-tag low';
+        document.getElementById('s-result-single').classList.add('visible');
+        document.getElementById('s-btn').disabled=false; hideLoading('s'); return;
+      }
       document.getElementById('s-res-chr').textContent=r.tgtChr;
       document.getElementById('s-res-start').textContent=fmtMb(r.tgtStart);
       document.getElementById('s-res-start-bp').textContent=fmtBp(r.tgtStart);
@@ -768,6 +801,7 @@ async function doSingleConvert(){
         chr+':'+start.toLocaleString()+'–'+end.toLocaleString()+' → '+targets.length+' assemblies';
       document.getElementById('s-multi-tbody').innerHTML=results.map((r,i)=>{
         if(r.error) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--red-dark);font-size:12px">${r.error}</td><td><span class="tag tag-low">error</span></td><td></td></tr>`;
+        if(r.inBreakpointGap) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--amber-dark);font-size:12px">Query falls within translocation breakpoint gap — no anchor coverage</td><td><span class="tag tag-mid">breakpoint</span></td><td></td></tr>`;
         if(r.split){
           // Render one row per part, with assembly name only on first
           return r.parts.map((p,pi)=>{
