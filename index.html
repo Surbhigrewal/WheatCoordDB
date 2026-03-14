@@ -766,6 +766,21 @@ async function doSingleConvert(){
         chr+':'+start.toLocaleString()+'–'+end.toLocaleString()+' → '+targets.length+' assemblies';
       document.getElementById('s-multi-tbody').innerHTML=results.map((r,i)=>{
         if(r.error) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--red-dark);font-size:12px">${r.error}</td><td><span class="tag tag-low">error</span></td><td></td></tr>`;
+        if(r.split){
+          // Render one row per part, with assembly name only on first
+          return r.parts.map((p,pi)=>{
+            const cls=cc(p.density);
+            const coords=p.tgtChr+':'+Math.round(p.tgtStart).toLocaleString()+'-'+Math.round(p.tgtEnd).toLocaleString();
+            return `<tr>
+              <td class="td-asm">${pi===0?r.assembly:''}</td>
+              <td class="td-chr">${p.tgtChr} <span style="font-size:10px;color:var(--text-3)">(CS ${fmtMb(p.csQueryStart)}–${fmtMb(p.csQueryEnd)})</span></td>
+              <td>${fmtMb(p.tgtStart)}<span class="td-bp">${fmtBp(p.tgtStart)}</span></td>
+              <td>${fmtMb(p.tgtEnd)}<span class="td-bp">${fmtBp(p.tgtEnd)}</span></td>
+              <td><span class="conf-tag ${cls}">${cl(p.density)} · ${p.density}</span></td>
+              <td><button class="copy-btn-sm" data-coords="${coords}" onclick="copyText('${coords}',this)">Copy</button></td>
+            </tr>`;
+          }).join('');
+        }
         const cls=cc(r.density);
         const coords=r.tgtChr+':'+Math.round(r.tgtStart).toLocaleString()+'-'+Math.round(r.tgtEnd).toLocaleString();
         return `<tr>
@@ -779,14 +794,20 @@ async function doSingleConvert(){
       }).join('');
       document.getElementById('s-result-multi').classList.add('visible');
 
-      // Dotplots — one per assembly, toggle to show
+      // Dotplots — one per assembly (split results get one dotplot per part)
       const dp = document.getElementById('s-dotplot-section');
       const dc = document.getElementById('s-dotplot-container');
       dc.innerHTML = '';
       dp.style.display = 'block';
       results.forEach((r,i) => {
         if (r.error) return;
-        dc.appendChild(makeDotplotBlock(r.assembly, allData[i], chr, r, start, end, false));
+        if (r.split) {
+          r.parts.forEach(p => {
+            dc.appendChild(makeDotplotBlock(r.assembly, allData[i], chr, p, p.csQueryStart, p.csQueryEnd, false));
+          });
+        } else {
+          dc.appendChild(makeDotplotBlock(r.assembly, allData[i], chr, r, start, end, false));
+        }
       });
     }
   } catch(e){hideLoading('s');showError('s-error',e.message);}
