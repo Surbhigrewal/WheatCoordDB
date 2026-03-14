@@ -1,0 +1,32 @@
+# Known inter-chromosomal translocations for WheatCoordDB pipeline
+# Format (tab-separated):
+#   assembly  cs_chr  bp_proximal  bp_distal  tgt_chr_translocated  trans_side
+#
+# trans_side: which CS arm goes to tgt_chr_translocated
+#   distal   -- cs_midpoint >= bp_distal maps to tgt_chr_trans
+#   proximal -- cs_midpoint <= bp_proximal maps to tgt_chr_trans
+#
+# bp_proximal / bp_distal define the CS breakpoint interval (bp).
+# Genes between bp_proximal and bp_distal are in the transition zone and
+# are assigned by their actual tgt_chr mapping (pass-through).
+#
+# Source: Walkowiak et al. (2020) Nature https://doi.org/10.1038/s41586-020-2961-x
+# Robertsonian 5B/7B translocation in ArinaLrFor and SY Mattis.
+#
+# ArinaLrFor / SY_Mattis chromosome structure:
+#   Assembly Chr5B (488 Mb) = 5BS (from CS Chr5B 0-157 Mb)
+#                           + 7BS (from CS Chr7B 0-325 Mb, inverted)
+#   Assembly Chr7B (993 Mb) = 7BL (from CS Chr7B 325-762 Mb, inverted)
+#                           + 5BL (from CS Chr5B 166-715 Mb)
+#
+# Therefore:
+#   CS Chr5B 0-157 Mb (5BS)    -> assembly Chr5B  [collinear, no entry needed]
+#   CS Chr5B 166+ Mb (5BL)     -> assembly Chr7B  [distal translocation]
+#   CS Chr7B 0-325 Mb (7BS)    -> assembly Chr5B  [collinear, inverted orientation]
+#   CS Chr7B 380+ Mb (7BL)     -> assembly Chr7B  [distal translocation, inverted]
+#
+# assembly	cs_chr	bp_proximal	bp_distal	tgt_chr_translocated	trans_side
+ArinaLrFor	Chr5B	156600000	166300000	Chr7B	distal
+ArinaLrFor	Chr7B	324800000	380000000	Chr7B	distal
+SY_Mattis	Chr5B	156600000	166300000	Chr7B	distal
+SY_Mattis	Chr7B	324800000	380000000	Chr7B	distal
