@@ -605,11 +605,14 @@ function cvt(data,chr,s,e){
     const parts = [];
     for(const tgtChr of segsInRange){
       const si=d.tgtChr.reduce((a,c,i)=>{if(c===tgtChr)a.push(i);return a;},[]);
-      const sc=si.map(i=>d.csMid[i]), st=si.map(i=>d.tgtMid[i]);
-      // Clamp query to this segment's CS range
+      // Sort by cs position (linterp requires sorted xs)
+      const pairs=si.map(i=>({cs:d.csMid[i],tgt:d.tgtMid[i]})).sort((a,b)=>a.cs-b.cs);
+      const sc=pairs.map(p=>p.cs), st=pairs.map(p=>p.tgt);
+      if(sc.length < 2) continue; // need at least 2 anchors to interpolate
+      // Clamp query to this segment's CS anchor range
       const segCs0=sc[0], segCs1=sc[sc.length-1];
       const qs=Math.max(s,segCs0), qe=Math.min(e,segCs1);
-      if(qs>=qe) continue; // no real overlap
+      if(qs>=qe) continue; // no real overlap with this segment
       const rs=linterpEx(sc,st,qs), re=linterpEx(sc,st,qe);
       const ts=Math.round(rs.val), te=Math.round(re.val);
       const localInv=te<ts;
