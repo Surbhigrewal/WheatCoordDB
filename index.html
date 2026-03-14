@@ -617,6 +617,7 @@ function cvt(data,chr,s,e){
       const rs=linterpEx(sc,st,qs), re=linterpEx(sc,st,qe);
       const ts=Math.round(rs.val), te=Math.round(re.val);
       const localInv=te<ts;
+      console.log('split part',tgtChr,'ts=',ts/1e6,'te=',te/1e6,'inv=',localInv,'qs=',qs/1e6,'qe=',qe/1e6);
       parts.push({tgtChr,tgtStart:ts,tgtEnd:te,
                   csQueryStart:qs,csQueryEnd:qe,
                   density:aDensity(d.csMid,(qs+qe)/2),
@@ -637,8 +638,7 @@ function cvt(data,chr,s,e){
   const extrapolated=rs.extrapolated||re.extrapolated;
   const csAnchorMin=sc[0], csAnchorMax=sc[sc.length-1];
   const localInv=te<ts;
-  // Preserve orientation: tgtStart is at query start, tgtEnd at query end
-  // For inverted segments ts > te (e.g. 427 -> 236)
+  console.log('cvt',tgtChr,'ts=',ts/1e6,'te=',te/1e6,'inv=',localInv,'sc[0]=',sc[0]/1e6,'sc[-1]=',sc[sc.length-1]/1e6);
   return{split:false,tgtChr,tgtStart:ts,tgtEnd:te,
          density:aDensity(d.csMid,mid),inverted:localInv,wholeChrInv:false,
          extrapolated,csAnchorMin,csAnchorMax};
