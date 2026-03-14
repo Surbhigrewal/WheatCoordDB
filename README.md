@@ -153,10 +153,7 @@ matplotlib, openpyxl) · R (data.table)
 
 ## AI disclosure
 
-Pipeline development, script writing, and web application implementation 
-were conducted with assistance from Claude AI (Anthropic). All scientific 
-decisions, assembly selection, biological interpretation, and validation 
-were performed by the author.
+Pipeline development, script writing, and web application implementation were conducted with assistance from Claude AI (Anthropic). All scientific  decisions, assembly selection, biological interpretation, feature specification, site design, and validation were performed by the author.
 
 ---
 
