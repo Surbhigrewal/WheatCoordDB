@@ -568,6 +568,9 @@ function linterp(xs,ys,x){
   while(hi-lo>1){const m=(lo+hi)>>1;if(xs[m]<=x)lo=m;else hi=m;}
   return ys[lo]+(x-xs[lo])/(xs[hi]-xs[lo])*(ys[hi]-ys[lo]);
 }
+function linterpEx(xs,ys,x){
+  return {val:linterp(xs,ys,x), extrapolated: x<xs[0]||x>xs[xs.length-1]};
+}
 function aDensity(mids,q,w=5e6){let n=0;for(const m of mids)if(Math.abs(m-q)<=w)n++;return n;}
 
 // Detect if a chromosome's anchors run in reverse (whole-chr inversion)
@@ -587,14 +590,51 @@ function nearestTgtChr(d, pos) {
 function cvt(data,chr,s,e){
   const d=data[chr]; if(!d) throw new Error('No anchors for '+chr);
   const mid=(s+e)/2;
+
+  // Detect all unique tgtChrs covered by anchors within the query range
+  const segsInRange = new Set();
+  for(let i=0;i<d.csMid.length;i++){
+    if(d.csMid[i]>=s && d.csMid[i]<=e) segsInRange.add(d.tgtChr[i]);
+  }
+  // Also add segment at start and end positions (for narrow queries)
+  segsInRange.add(nearestTgtChr(d,s));
+  segsInRange.add(nearestTgtChr(d,e));
+
+  if(segsInRange.size > 1){
+    // Query spans a translocation breakpoint — return split results
+    const parts = [];
+    for(const tgtChr of segsInRange){
+      const si=d.tgtChr.reduce((a,c,i)=>{if(c===tgtChr)a.push(i);return a;},[]);
+      const sc=si.map(i=>d.csMid[i]), st=si.map(i=>d.tgtMid[i]);
+      // Clamp query to this segment's CS range
+      const segCs0=sc[0], segCs1=sc[sc.length-1];
+      const qs=Math.max(s,segCs0), qe=Math.min(e,segCs1);
+      if(qs>=qe) continue; // no real overlap
+      const rs=linterpEx(sc,st,qs), re=linterpEx(sc,st,qe);
+      const ts=Math.round(rs.val), te=Math.round(re.val);
+      const localInv=te<ts;
+      parts.push({tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),
+                  csQueryStart:qs,csQueryEnd:qe,
+                  density:aDensity(d.csMid,(qs+qe)/2),
+                  inverted:localInv,wholeChrInv:false,
+                  extrapolated:false,csAnchorMin:segCs0,csAnchorMax:segCs1,
+                  splitResult:true});
+    }
+    if(parts.length>0) return{split:true, parts, tgtChr:parts.map(p=>p.tgtChr).join('/')};
+  }
+
+  // Single segment — normal path
   const tgtChr=nearestTgtChr(d,mid);
-  // Interpolate within the correct segment only
   const si=d.tgtChr.reduce((a,c,i)=>{if(c===tgtChr)a.push(i);return a;},[]);
   const sc=si.map(i=>d.csMid[i]), st=si.map(i=>d.tgtMid[i]);
-  const ts=Math.round(linterp(sc,st,s));
-  const te=Math.round(linterp(sc,st,e));
+  const rs=linterpEx(sc,st,s), re=linterpEx(sc,st,e);
+  const ts=Math.round(rs.val), te=Math.round(re.val);
+  const extrapolated=rs.extrapolated||re.extrapolated;
+  const csAnchorMin=sc[0], csAnchorMax=sc[sc.length-1];
   const localInv=te<ts;
-  return{tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),density:aDensity(d.csMid,mid),inverted:localInv,wholeChrInv:false};
+  return{split:false,tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),
+         density:aDensity(d.csMid,mid),inverted:localInv,wholeChrInv:false,
+         extrapolated,csAnchorMin,csAnchorMax};
 }
 function cc(d){return d>=10?'high':d>=5?'mid':'low';}
 function cl(d){return d>=10?'High confidence':d>=5?'Moderate confidence':'Low confidence';}
@@ -617,11 +657,55 @@ async function doSingleConvert(){
     const allData=await Promise.all(targets.map(loadAnchorData));
     hideLoading('s');
     const results=targets.map((t,i)=>{
-      try{return{assembly:t,...cvt(allData[i],chr,start,end),error:null};}
+      try{const r=cvt(allData[i],chr,start,end);r._data=allData[i];return{assembly:t,...r,error:null};}
       catch(e){return{assembly:t,tgtChr:'ERR',tgtStart:null,tgtEnd:null,density:0,error:e.message};}
     });
     if(targets.length===1){
-      const r=results[0], cls=cc(r.density), pct=Math.min(100,Math.round(r.density/50*100));
+      const r=results[0];
+      // Handle breakpoint-spanning split result
+      if(r.split){
+        document.getElementById('s-res-title').textContent=chr+' → '+r.tgtChr+' ('+r.assembly+') — spans translocation breakpoint';
+        const firstPart=r.parts[0];
+        document.getElementById('s-res-chr').textContent=r.tgtChr;
+        document.getElementById('s-res-start').textContent='split';
+        document.getElementById('s-res-start-bp').textContent='spans breakpoint';
+        document.getElementById('s-res-end').textContent='';
+        document.getElementById('s-res-end-bp').textContent='';
+        const fill=document.getElementById('s-conf-fill');
+        fill.style.width='60%'; fill.className='conf-fill mid';
+        const tag=document.getElementById('s-conf-tag');
+        tag.textContent='Spans translocation breakpoint'; tag.className='conf-tag mid';
+        document.getElementById('s-result-single').classList.add('visible');
+        // Show split parts as a mini table injected after metrics
+        let splitDiv=document.getElementById('s-split-parts');
+        if(!splitDiv){
+          splitDiv=document.createElement('div');
+          splitDiv.id='s-split-parts';
+          splitDiv.style.cssText='margin:.5rem 1rem 0;font-family:-apple-system,system-ui,sans-serif;font-size:12px;';
+          document.getElementById('s-result-single').querySelector('.result-metrics').after(splitDiv);
+        }
+        splitDiv.innerHTML='<div style="background:#faeeda;border:1px solid #e8c87a;border-radius:6px;padding:.6rem .85rem;color:#854f0b;margin-bottom:.5rem"><strong>⚠ Query spans a translocation breakpoint.</strong> Results are split below.</div>'+
+          r.parts.map(p=>`<div style="padding:.4rem 0;border-bottom:1px solid #f1efe8;display:flex;gap:1rem;align-items:center">
+            <span style="color:var(--green-dark);font-weight:500;min-width:60px">${p.tgtChr}</span>
+            <span>${fmtMb(p.tgtStart)} – ${fmtMb(p.tgtEnd)}</span>
+            <span style="color:var(--text-3);font-size:11px">(CS ${fmtMb(p.csQueryStart)}–${fmtMb(p.csQueryEnd)})</span>
+            <button class="copy-btn-sm" onclick="copyText('${p.tgtChr}:${p.tgtStart}-${p.tgtEnd}',this)">Copy</button>
+          </div>`).join('');
+        splitDiv.style.display='block';
+        const dp=document.getElementById('s-dotplot-section');
+        const dc=document.getElementById('s-dotplot-container');
+        dc.innerHTML=''; dp.style.display='block';
+        r.parts.forEach(p=>{
+          dc.appendChild(makeDotplotBlock(r.assembly,results[0]._data,chr,p,p.csQueryStart,p.csQueryEnd,true));
+        });
+        document.getElementById('s-btn').disabled=false;
+        hideLoading('s');
+        return;
+      }
+      // Normal (non-split) single result
+      let splitDiv=document.getElementById('s-split-parts');
+      if(splitDiv) splitDiv.style.display='none';
+      const cls=cc(r.density), pct=Math.min(100,Math.round(r.density/50*100));
       document.getElementById('s-res-title').textContent=chr+' → '+r.tgtChr+' ('+r.assembly+')';
       document.getElementById('s-res-chr').textContent=r.tgtChr;
       document.getElementById('s-res-start').textContent=fmtMb(r.tgtStart);
@@ -640,6 +724,18 @@ async function doSingleConvert(){
       } else {
         invBadge.style.display='none';
       }
+      // Extrapolation warning
+      let extWarn=document.getElementById('s-extrap-warn');
+      if(!extWarn){
+        extWarn=document.createElement('div');
+        extWarn.id='s-extrap-warn';
+        extWarn.style.cssText='display:none;margin-top:.6rem;font-size:12px;font-family:-apple-system,system-ui,sans-serif;color:#854f0b;background:#faeeda;padding:.5rem .85rem;border-radius:6px;border:1px solid #e8c87a;';
+        document.getElementById('s-result-single').appendChild(extWarn);
+      }
+      if(r.extrapolated){
+        extWarn.innerHTML=`<strong>⚠ Extrapolated coordinates</strong> — query extends beyond anchor range on ${chr} (anchors cover ${(r.csAnchorMin/1e6).toFixed(1)}–${(r.csAnchorMax/1e6).toFixed(1)} Mb). Returned coordinates are linearly extrapolated and may be unreliable.`;
+        extWarn.style.display='block';
+      } else { extWarn.style.display='none'; }
       // Copy button
       const copyBtn=document.getElementById('s-copy-btn');
       copyBtn.dataset.coords=r.tgtChr+':'+Math.round(r.tgtStart).toLocaleString()+'-'+Math.round(r.tgtEnd).toLocaleString();
@@ -661,7 +757,7 @@ async function doSingleConvert(){
         const coords=r.tgtChr+':'+Math.round(r.tgtStart).toLocaleString()+'-'+Math.round(r.tgtEnd).toLocaleString();
         return `<tr>
           <td class="td-asm">${r.assembly}</td>
-          <td class="td-chr">${r.tgtChr}${r.inverted?` <span class="inv-inline" title="${r.wholeChrInv?'Whole-chromosome inversion':'Inverted orientation'}">⚠</span>`:''}</td>
+          <td class="td-chr">${r.tgtChr}${r.inverted?` <span class="inv-inline" title="${r.wholeChrInv?'Whole-chromosome inversion':'Inverted orientation'}">⚠</span>`:''}${r.extrapolated?' <span class="inv-inline" title="Query outside anchor range — extrapolated">~</span>':''}</td>
           <td>${fmtMb(r.tgtStart)}<span class="td-bp">${fmtBp(r.tgtStart)}</span></td>
           <td>${fmtMb(r.tgtEnd)}<span class="td-bp">${fmtBp(r.tgtEnd)}</span></td>
           <td><span class="conf-tag ${cls}">${cl(r.density)} · ${r.density}</span></td>
@@ -833,17 +929,32 @@ function drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQuer
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(ml, mt, pw, ph);
 
-  // Get anchor data for this chr
+  // Get anchor data for this chr — filter to result.tgtChr if translocation
   const chrData = data[csChr];
   if (!chrData) return;
-  const xs = chrData.csMid;
-  const ys = chrData.tgtMid;
+  const _tcArr = Array.isArray(chrData.tgtChr) ? chrData.tgtChr : null;
+  const _filterChr = (result && result.tgtChr && _tcArr && new Set(_tcArr).size > 1) ? result.tgtChr : null;
+  let xs, ys;
+  if (_filterChr) {
+    const _idx = _tcArr.reduce((a,c,i)=>{if(c===_filterChr)a.push(i);return a;},[]);
+    xs = _idx.map(i=>chrData.csMid[i]);
+    ys = _idx.map(i=>chrData.tgtMid[i]);
+  } else {
+    xs = chrData.csMid;
+    ys = chrData.tgtMid;
+  }
+  // For inverted segments, tgtMid decreases as csPos increases.
+  // Scale y-axis to the actual range of this segment's tgt positions.
+  const csMax   = Math.max(...xs) * 1.02;
+  const tgtMin  = Math.min(...ys);
+  const tgtMax  = Math.max(...ys);
+  const tgtRange = tgtMax - tgtMin;
+  const tgtPad  = tgtRange * 0.02;
+  const tgtLo   = Math.max(0, tgtMin - tgtPad);
+  const tgtHi   = tgtMax + tgtPad;
 
-  const csMax  = Math.max(...xs) * 1.02;
-  const tgtMax = Math.max(...ys) * 1.02;
-
-  function cx(v) { return ml + (v / csMax)  * pw; }
-  function cy(v) { return mt + ph - (v / tgtMax) * ph; }
+  function cx(v) { return ml + (v / csMax) * pw; }
+  function cy(v) { return mt + ph - ((v - tgtLo) / (tgtHi - tgtLo)) * ph; }
 
   // Grid lines
   ctx.strokeStyle = '#e8e6e0';
@@ -915,7 +1026,7 @@ function drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQuer
   ctx.textAlign = 'right';
   const yTicks = 4;
   for (let i=0; i<=yTicks; i++) {
-    const v = (tgtMax/yTicks)*i;
+    const v = tgtLo + (tgtHi - tgtLo) * (i / yTicks);
     const y = cy(v);
     ctx.fillStyle = '#9c9a92';
     ctx.fillText(Math.round(v/1e6)+'', ml-6, y+3);
@@ -926,7 +1037,8 @@ function drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQuer
   ctx.rotate(-Math.PI/2);
   ctx.textAlign = 'center';
   ctx.fillStyle = '#6b6b64';
-  ctx.fillText(`${assembly} (Mb)`, 0, 0);
+  const _yLbl = (result && result.tgtChr) ? `${result.tgtChr} (Mb)` : `${assembly} (Mb)`;
+  ctx.fillText(_yLbl, 0, 0);
   ctx.restore();
 }
 
