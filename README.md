@@ -124,10 +124,14 @@ scripts/                          # Pipeline scripts (species-agnostic)
   translocation_map.tsv           # Translocation breakpoint definitions
 data/anchors/                     # Per-assembly anchor TSV files (24 assemblies)
 index.html                        # Web application (GitHub Pages)
-```
+outputs/
+  conversion_tables/      504 gzip-compressed conversion tables (21 chr x 24 assemblies)
+  plots/                  528 synteny dotplots (21-chr overviews + per-chromosome)
+  master_conversion_summary.xlsx   Per-chromosome summary across all assemblies
 
-Full dataset (conversion tables, dotplots, master workbooks) is deposited 
-at Zenodo: [DOI to be added on publication]
+# master_anchors.xlsx is not included due to file size.
+# Regenerate with: python3 scripts/04_postprocess.py
+```
 
 ---
 
