@@ -317,10 +317,11 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
           <div class="result-header">
             <span class="result-header-title" id="s-multi-title">—</span>
             <span class="result-header-sub">PCHIP spline interpolation</span>
+            <button class="btn-sm" id="s-multi-copy-all" onclick="copyAllCoords()" style="font-size:11px;padding:3px 10px">Copy all</button>
           </div>
           <div class="table-scroll">
             <table class="cmp-table">
-              <thead><tr><th>Assembly</th><th>Chr</th><th>Start</th><th>End</th><th>Confidence</th><th></th></tr></thead>
+              <thead><tr><th>Assembly</th><th>Chr</th><th>Start</th><th>End</th><th>Confidence</th><th>Copy</th></tr></thead>
               <tbody id="s-multi-tbody"></tbody>
             </table>
           </div>
@@ -629,7 +630,8 @@ function cvt(data,chr,s,e){
   // Single segment — normal path
   const tgtChr=nearestTgtChr(d,mid);
   const si=d.tgtChr.reduce((a,c,i)=>{if(c===tgtChr)a.push(i);return a;},[]);
-  const sc=si.map(i=>d.csMid[i]), st=si.map(i=>d.tgtMid[i]);
+  const _pairs=si.map(i=>({cs:d.csMid[i],tgt:d.tgtMid[i]})).sort((a,b)=>a.cs-b.cs);
+  const sc=_pairs.map(p=>p.cs), st=_pairs.map(p=>p.tgt);
   const rs=linterpEx(sc,st,s), re=linterpEx(sc,st,e);
   const ts=Math.round(rs.val), te=Math.round(re.val);
   const extrapolated=rs.extrapolated||re.extrapolated;
@@ -660,7 +662,15 @@ async function doSingleConvert(){
     const allData=await Promise.all(targets.map(loadAnchorData));
     hideLoading('s');
     const results=targets.map((t,i)=>{
-      try{const r=cvt(allData[i],chr,start,end);r._data=allData[i];return{assembly:t,...r,error:null};}
+      try{
+        const r=cvt(allData[i],chr,start,end);
+        r._data=allData[i];
+        r.assembly=t;
+        r.error=null;
+        // For split results tgtStart/tgtEnd are undefined — set safe defaults
+        if(r.split){r.tgtStart=r.parts[0].tgtStart;r.tgtEnd=r.parts[r.parts.length-1].tgtEnd;}
+        return r;
+      }
       catch(e){return{assembly:t,tgtChr:'ERR',tgtStart:null,tgtEnd:null,density:0,error:e.message};}
     });
     if(targets.length===1){
@@ -764,7 +774,7 @@ async function doSingleConvert(){
           <td>${fmtMb(r.tgtStart)}<span class="td-bp">${fmtBp(r.tgtStart)}</span></td>
           <td>${fmtMb(r.tgtEnd)}<span class="td-bp">${fmtBp(r.tgtEnd)}</span></td>
           <td><span class="conf-tag ${cls}">${cl(r.density)} · ${r.density}</span></td>
-          <td><button class="copy-btn-sm" onclick="copyText('${coords}',this)" title="Copy coordinates">Copy</button></td>
+          <td><button class="copy-btn-sm" data-coords="${coords}" onclick="copyText('${coords}',this)" title="Copy coordinates">Copy</button></td>
         </tr>`;
       }).join('');
       document.getElementById('s-result-multi').classList.add('visible');
@@ -987,19 +997,29 @@ function drawDotplot(canvas, data, csChr, result, assembly, csQueryStart, csQuer
     const x2 = cx(csQueryEnd);
     const y1 = cy(result.tgtStart);
     const y2 = cy(result.tgtEnd);
-    const bx = Math.min(x1,x2), bw = Math.abs(x2-x1)||2;
-    const by = Math.min(y1,y2), bh = Math.abs(y2-y1)||2;
-
-    // Shadow/glow
+    const bx = Math.min(x1,x2);
+    const bw = Math.max(Math.abs(x2-x1), 4);
+    const by = Math.min(y1,y2);
+    const bh = Math.max(Math.abs(y2-y1), 4);
+    ctx.fillStyle = 'rgba(229,77,28,0.12)';
+    ctx.fillRect(bx, by, bw, bh);
     ctx.save();
-    ctx.shadowColor = 'rgba(229,77,28,0.4)';
-    ctx.shadowBlur = 8;
+    ctx.shadowColor = 'rgba(229,77,28,0.5)';
+    ctx.shadowBlur = 6;
     ctx.strokeStyle = '#e54d1c';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 2;
     ctx.strokeRect(bx, by, bw, bh);
     ctx.restore();
-    ctx.fillStyle = 'rgba(229,77,28,0.08)';
-    ctx.fillRect(bx, by, bw, bh);
+    // Red dot at query midpoint on the synteny line
+    const xMid = cx((csQueryStart + csQueryEnd) / 2);
+    const yMid = cy((result.tgtStart + result.tgtEnd) / 2);
+    ctx.beginPath();
+    ctx.arc(xMid, yMid, 4, 0, Math.PI*2);
+    ctx.fillStyle = '#e54d1c';
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.stroke();
   }
 
   // Axes border
@@ -1144,6 +1164,17 @@ function downloadDotplot(btn){
   link.download=fname;
   link.href=canvas.toDataURL('image/png');
   link.click();
+}
+
+function copyAllCoords(){
+  const btns=[...document.querySelectorAll('#s-multi-tbody .copy-btn-sm[data-coords]')];
+  if(!btns.length) return;
+  const lines=btns.map(b=>{
+    const asm=b.closest('tr')?.querySelector('.td-asm')?.textContent?.trim()||'';
+    return asm+'	'+b.dataset.coords;
+  });
+  const btn=document.getElementById('s-multi-copy-all');
+  copyText(lines.join(String.fromCharCode(10)), btn);
 }
 
 buildPickers();
