@@ -723,10 +723,10 @@ async function doSingleConvert(){
       const cls=cc(r.density), pct=Math.min(100,Math.round(r.density/50*100));
       document.getElementById('s-res-title').textContent=chr+' → '+r.tgtChr+' ('+r.assembly+')';
       document.getElementById('s-res-chr').textContent=r.tgtChr;
-      document.getElementById('s-res-start').textContent=fmtMb(r.inverted?r.tgtEnd:r.tgtStart);
-      document.getElementById('s-res-start-bp').textContent=fmtBp(r.inverted?r.tgtEnd:r.tgtStart);
-      document.getElementById('s-res-end').textContent=fmtMb(r.inverted?r.tgtStart:r.tgtEnd);
-      document.getElementById('s-res-end-bp').textContent=fmtBp(r.inverted?r.tgtStart:r.tgtEnd);
+      document.getElementById('s-res-start').textContent=fmtMb(r.tgtStart);
+      document.getElementById('s-res-start-bp').textContent=fmtBp(r.tgtStart);
+      document.getElementById('s-res-end').textContent=fmtMb(r.tgtEnd);
+      document.getElementById('s-res-end-bp').textContent=fmtBp(r.tgtEnd);
       const fill=document.getElementById('s-conf-fill');
       fill.style.width=pct+'%'; fill.className='conf-fill '+cls;
       const tag=document.getElementById('s-conf-tag');
@@ -778,8 +778,8 @@ async function doSingleConvert(){
             return `<tr>
               <td class="td-asm">${pi===0?r.assembly:''}</td>
               <td class="td-chr">${p.tgtChr}${p.inverted?' <span class="inv-inline" title="Inverted">⚠</span>':''} <span style="font-size:10px;color:var(--text-3)">(CS ${fmtMb(p.csQueryStart)}–${fmtMb(p.csQueryEnd)})</span></td>
-              <td>${fmtMb(p.inverted?p.tgtEnd:p.tgtStart)}<span class="td-bp">${fmtBp(p.inverted?p.tgtEnd:p.tgtStart)}</span></td>
-              <td>${fmtMb(p.inverted?p.tgtStart:p.tgtEnd)}<span class="td-bp">${fmtBp(p.inverted?p.tgtStart:p.tgtEnd)}</span></td>
+              <td>${fmtMb(p.tgtStart)}<span class="td-bp">${fmtBp(p.tgtStart)}</span></td>
+              <td>${fmtMb(p.tgtEnd)}<span class="td-bp">${fmtBp(p.tgtEnd)}</span></td>
               <td><span class="conf-tag ${cls}">${cl(p.density)} · ${p.density}</span></td>
               <td><button class="copy-btn-sm" data-coords="${pCoords}" onclick="copyText('${pCoords}',this)">Copy</button></td>
             </tr>`;
@@ -791,8 +791,8 @@ async function doSingleConvert(){
         return `<tr>
           <td class="td-asm">${r.assembly}</td>
           <td class="td-chr">${r.tgtChr}${r.inverted?` <span class="inv-inline" title="Inverted orientation — coordinates shown high→low">⚠</span>`:''}${r.extrapolated?' <span class="inv-inline" title="Query outside anchor range — extrapolated">~</span>':''}</td>
-          <td>${fmtMb(r.inverted?r.tgtEnd:r.tgtStart)}<span class="td-bp">${fmtBp(r.inverted?r.tgtEnd:r.tgtStart)}</span></td>
-          <td>${fmtMb(r.inverted?r.tgtStart:r.tgtEnd)}<span class="td-bp">${fmtBp(r.inverted?r.tgtStart:r.tgtEnd)}</span></td>
+          <td>${fmtMb(r.tgtStart)}<span class="td-bp">${fmtBp(r.tgtStart)}</span></td>
+          <td>${fmtMb(r.tgtEnd)}<span class="td-bp">${fmtBp(r.tgtEnd)}</span></td>
           <td><span class="conf-tag ${cls}">${cl(r.density)} · ${r.density}</span></td>
           <td><button class="copy-btn-sm" data-coords="${coords}" onclick="copyText('${coords}',this)" title="Copy coordinates">Copy</button></td>
         </tr>`;
