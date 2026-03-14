@@ -617,7 +617,7 @@ function cvt(data,chr,s,e){
       const rs=linterpEx(sc,st,qs), re=linterpEx(sc,st,qe);
       const ts=Math.round(rs.val), te=Math.round(re.val);
       const localInv=te<ts;
-      parts.push({tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),
+      parts.push({tgtChr,tgtStart:ts,tgtEnd:te,
                   csQueryStart:qs,csQueryEnd:qe,
                   density:aDensity(d.csMid,(qs+qe)/2),
                   inverted:localInv,wholeChrInv:false,
@@ -637,7 +637,9 @@ function cvt(data,chr,s,e){
   const extrapolated=rs.extrapolated||re.extrapolated;
   const csAnchorMin=sc[0], csAnchorMax=sc[sc.length-1];
   const localInv=te<ts;
-  return{split:false,tgtChr,tgtStart:Math.min(ts,te),tgtEnd:Math.max(ts,te),
+  // Preserve orientation: tgtStart is at query start, tgtEnd at query end
+  // For inverted segments ts > te (e.g. 427 -> 236)
+  return{split:false,tgtChr,tgtStart:ts,tgtEnd:te,
          density:aDensity(d.csMid,mid),inverted:localInv,wholeChrInv:false,
          extrapolated,csAnchorMin,csAnchorMax};
 }
@@ -721,10 +723,10 @@ async function doSingleConvert(){
       const cls=cc(r.density), pct=Math.min(100,Math.round(r.density/50*100));
       document.getElementById('s-res-title').textContent=chr+' → '+r.tgtChr+' ('+r.assembly+')';
       document.getElementById('s-res-chr').textContent=r.tgtChr;
-      document.getElementById('s-res-start').textContent=fmtMb(r.tgtStart);
-      document.getElementById('s-res-start-bp').textContent=fmtBp(r.tgtStart);
-      document.getElementById('s-res-end').textContent=fmtMb(r.tgtEnd);
-      document.getElementById('s-res-end-bp').textContent=fmtBp(r.tgtEnd);
+      document.getElementById('s-res-start').textContent=fmtMb(r.inverted?r.tgtEnd:r.tgtStart);
+      document.getElementById('s-res-start-bp').textContent=fmtBp(r.inverted?r.tgtEnd:r.tgtStart);
+      document.getElementById('s-res-end').textContent=fmtMb(r.inverted?r.tgtStart:r.tgtEnd);
+      document.getElementById('s-res-end-bp').textContent=fmtBp(r.inverted?r.tgtStart:r.tgtEnd);
       const fill=document.getElementById('s-conf-fill');
       fill.style.width=pct+'%'; fill.className='conf-fill '+cls;
       const tag=document.getElementById('s-conf-tag');
@@ -751,7 +753,7 @@ async function doSingleConvert(){
       } else { extWarn.style.display='none'; }
       // Copy button
       const copyBtn=document.getElementById('s-copy-btn');
-      copyBtn.dataset.coords=r.tgtChr+':'+Math.round(r.tgtStart).toLocaleString()+'-'+Math.round(r.tgtEnd).toLocaleString();
+      copyBtn.dataset.coords=r.tgtChr+':'+Math.min(Math.round(r.tgtStart),Math.round(r.tgtEnd)).toLocaleString()+'-'+Math.max(Math.round(r.tgtStart),Math.round(r.tgtEnd)).toLocaleString()+(r.inverted?' (inverted)':'');
       document.getElementById('s-result-single').classList.add('visible');
 
       // Dotplot — auto-shown for single target
@@ -771,23 +773,26 @@ async function doSingleConvert(){
           return r.parts.map((p,pi)=>{
             const cls=cc(p.density);
             const coords=p.tgtChr+':'+Math.round(p.tgtStart).toLocaleString()+'-'+Math.round(p.tgtEnd).toLocaleString();
+            const pLo=Math.min(p.tgtStart,p.tgtEnd), pHi=Math.max(p.tgtStart,p.tgtEnd);
+            const pCoords=p.tgtChr+':'+Math.round(pLo).toLocaleString()+'-'+Math.round(pHi).toLocaleString()+(p.inverted?' (inverted)':'');
             return `<tr>
               <td class="td-asm">${pi===0?r.assembly:''}</td>
-              <td class="td-chr">${p.tgtChr} <span style="font-size:10px;color:var(--text-3)">(CS ${fmtMb(p.csQueryStart)}–${fmtMb(p.csQueryEnd)})</span></td>
-              <td>${fmtMb(p.tgtStart)}<span class="td-bp">${fmtBp(p.tgtStart)}</span></td>
-              <td>${fmtMb(p.tgtEnd)}<span class="td-bp">${fmtBp(p.tgtEnd)}</span></td>
+              <td class="td-chr">${p.tgtChr}${p.inverted?' <span class="inv-inline" title="Inverted">⚠</span>':''} <span style="font-size:10px;color:var(--text-3)">(CS ${fmtMb(p.csQueryStart)}–${fmtMb(p.csQueryEnd)})</span></td>
+              <td>${fmtMb(p.inverted?p.tgtEnd:p.tgtStart)}<span class="td-bp">${fmtBp(p.inverted?p.tgtEnd:p.tgtStart)}</span></td>
+              <td>${fmtMb(p.inverted?p.tgtStart:p.tgtEnd)}<span class="td-bp">${fmtBp(p.inverted?p.tgtStart:p.tgtEnd)}</span></td>
               <td><span class="conf-tag ${cls}">${cl(p.density)} · ${p.density}</span></td>
-              <td><button class="copy-btn-sm" data-coords="${coords}" onclick="copyText('${coords}',this)">Copy</button></td>
+              <td><button class="copy-btn-sm" data-coords="${pCoords}" onclick="copyText('${pCoords}',this)">Copy</button></td>
             </tr>`;
           }).join('');
         }
         const cls=cc(r.density);
-        const coords=r.tgtChr+':'+Math.round(r.tgtStart).toLocaleString()+'-'+Math.round(r.tgtEnd).toLocaleString();
+        const tgtLo=Math.min(r.tgtStart,r.tgtEnd), tgtHi=Math.max(r.tgtStart,r.tgtEnd);
+        const coords=r.tgtChr+':'+Math.round(tgtLo).toLocaleString()+'-'+Math.round(tgtHi).toLocaleString()+(r.inverted?' (inverted)':'');
         return `<tr>
           <td class="td-asm">${r.assembly}</td>
-          <td class="td-chr">${r.tgtChr}${r.inverted?` <span class="inv-inline" title="${r.wholeChrInv?'Whole-chromosome inversion':'Inverted orientation'}">⚠</span>`:''}${r.extrapolated?' <span class="inv-inline" title="Query outside anchor range — extrapolated">~</span>':''}</td>
-          <td>${fmtMb(r.tgtStart)}<span class="td-bp">${fmtBp(r.tgtStart)}</span></td>
-          <td>${fmtMb(r.tgtEnd)}<span class="td-bp">${fmtBp(r.tgtEnd)}</span></td>
+          <td class="td-chr">${r.tgtChr}${r.inverted?` <span class="inv-inline" title="Inverted orientation — coordinates shown high→low">⚠</span>`:''}${r.extrapolated?' <span class="inv-inline" title="Query outside anchor range — extrapolated">~</span>':''}</td>
+          <td>${fmtMb(r.inverted?r.tgtEnd:r.tgtStart)}<span class="td-bp">${fmtBp(r.inverted?r.tgtEnd:r.tgtStart)}</span></td>
+          <td>${fmtMb(r.inverted?r.tgtStart:r.tgtEnd)}<span class="td-bp">${fmtBp(r.inverted?r.tgtStart:r.tgtEnd)}</span></td>
           <td><span class="conf-tag ${cls}">${cl(r.density)} · ${r.density}</span></td>
           <td><button class="copy-btn-sm" data-coords="${coords}" onclick="copyText('${coords}',this)" title="Copy coordinates">Copy</button></td>
         </tr>`;
