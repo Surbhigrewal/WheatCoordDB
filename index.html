@@ -698,6 +698,7 @@ async function doSingleConvert(){
         const tag=document.getElementById('s-conf-tag');
         tag.textContent='Query falls in translocation breakpoint gap'; tag.className='conf-tag low';
         document.getElementById('s-result-single').classList.add('visible');
+        document.getElementById('s-copy-btn').style.display='none';
         document.getElementById('s-btn').disabled=false; hideLoading('s'); return;
       }
       document.getElementById('s-res-chr').textContent=r.tgtChr;
@@ -753,6 +754,7 @@ async function doSingleConvert(){
         const tag=document.getElementById('s-conf-tag');
         tag.textContent='Query falls in translocation breakpoint gap'; tag.className='conf-tag low';
         document.getElementById('s-result-single').classList.add('visible');
+        document.getElementById('s-copy-btn').style.display='none';
         document.getElementById('s-btn').disabled=false; hideLoading('s'); return;
       }
       document.getElementById('s-res-chr').textContent=r.tgtChr;
@@ -786,6 +788,7 @@ async function doSingleConvert(){
       } else { extWarn.style.display='none'; }
       // Copy button
       const copyBtn=document.getElementById('s-copy-btn');
+      copyBtn.style.display='';
       copyBtn.dataset.coords=r.tgtChr+':'+Math.min(Math.round(r.tgtStart),Math.round(r.tgtEnd)).toLocaleString()+'-'+Math.max(Math.round(r.tgtStart),Math.round(r.tgtEnd)).toLocaleString()+(r.inverted?' (inverted)':'');
       document.getElementById('s-result-single').classList.add('visible');
 
@@ -887,7 +890,20 @@ async function doBatchConvert(){
       if(cols.length<3) continue;
       const chr=cols[0],s=parseInt(cols[1]),e=parseInt(cols[2]),extra=cols.slice(3);
       const perTarget=targets.map((t,i)=>{
-        try{return cvt(allData[i],chr,s,e);}
+        try{
+          const r=cvt(allData[i],chr,s,e);
+          if(r.split){
+            // For split results, return the first part as primary with a note
+            // Full split info stored in r.parts for TSV export
+            const p0=r.parts[0], p1=r.parts[1]||null;
+            return{tgtChr:r.tgtChr,
+                   tgtStart:p0?Math.min(p0.tgtStart,p0.tgtEnd):'',
+                   tgtEnd:p1?Math.max(p1.tgtStart,p1.tgtEnd):Math.max(p0.tgtStart,p0.tgtEnd),
+                   density:p0?p0.density:0,
+                   split:true, parts:r.parts};
+          }
+          return r;
+        }
         catch{failed++;return{tgtChr:'ERR',tgtStart:'',tgtEnd:'',density:0};}
       });
       batchResults.push({cs_chr:chr,cs_start:s,cs_end:e,perTarget,extra});
@@ -915,9 +931,10 @@ function renderBatchTable(failed){
     let row=`<td>${r.cs_chr}</td><td>${r.cs_start.toLocaleString()}</td><td>${r.cs_end.toLocaleString()}</td>`;
     r.perTarget.forEach(pt=>{
       const ok=pt.tgtChr!=='ERR';
-      row+=`<td class="${ok?'td-green':''}">${pt.tgtChr}</td>`+
-           `<td class="${ok?'td-green':''}">${pt.tgtStart!==''?pt.tgtStart.toLocaleString():''}</td>`+
-           `<td class="${ok?'td-green':''}">${pt.tgtEnd!==''?pt.tgtEnd.toLocaleString():''}</td>`+
+      const splitNote=pt.split?` <span style="font-size:10px;color:#854f0b" title="Spans translocation breakpoint">⚠split</span>`:'';
+      row+=`<td class="${ok?'td-green':''}">${pt.tgtChr}${splitNote}</td>`+
+           `<td class="${ok?'td-green':''}">${pt.tgtStart!==''&&pt.tgtStart!=null?Math.round(pt.tgtStart).toLocaleString():''}</td>`+
+           `<td class="${ok?'td-green':''}">${pt.tgtEnd!==''&&pt.tgtEnd!=null?Math.round(pt.tgtEnd).toLocaleString():''}</td>`+
            `<td><span class="tag tag-${cc(pt.density)}">${pt.density}</span></td>`;
     });
     r.extra.forEach(v=>{row+=`<td>${v}</td>`;});
@@ -940,7 +957,12 @@ function downloadTSV(){
   const lines=[hdr.join('\t')];
   for(const r of batchResults){
     const row=[r.cs_chr,r.cs_start,r.cs_end];
-    r.perTarget.forEach(pt=>row.push(pt.tgtChr,pt.tgtStart!==''?pt.tgtStart:'NA',pt.tgtEnd!==''?pt.tgtEnd:'NA',pt.density));
+    r.perTarget.forEach(pt=>{
+      const tChr=pt.split?pt.tgtChr+'(split)':pt.tgtChr;
+      const tS=pt.tgtStart!==''&&pt.tgtStart!=null?Math.round(pt.tgtStart):'NA';
+      const tE=pt.tgtEnd!==''&&pt.tgtEnd!=null?Math.round(pt.tgtEnd):'NA';
+      row.push(tChr,tS,tE,pt.density);
+    });
     r.extra.forEach(v=>row.push(v));
     lines.push(row.join('\t'));
   }
