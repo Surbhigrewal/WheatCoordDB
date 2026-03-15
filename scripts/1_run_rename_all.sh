@@ -45,7 +45,7 @@ NAMES=(
     "Landmark"        # 9
     "Norin61"         # 10
     "Aikang58"        # 11
-    "Chunmai104"      # 12
+    "Chuanmai104"      # 12
     "CS_IAAS"         # 13
     "CS_CAU"          # 14
     "Sumai3"          # 15
@@ -73,7 +73,7 @@ FASTAS=(
     "$ASSEMBLIES_DIR/GCA_903995565.1_10wheat_assembly_landmark1_genomic.fna"                           # 9  Landmark
     "$ASSEMBLIES_DIR/GCA_904066035.1_10wheat_assembly_norin61_genomic.fna"                             # 10 Norin61
     "$OTHER_DIR/GCA_025895885.1_ASM2589588v1_genomic.fna.gz"                                          # 11 Aikang58
-    "$OTHER_DIR/GCA_039655515.1_ASM3965551v1_genomic.fna.gz"                                          # 12 Chunmai104
+    "$OTHER_DIR/GCA_039655515.1_ASM3965551v1_genomic.fna.gz"                                          # 12 Chuanmai104
     "$OTHER_DIR/GCA_040256815.2_ASM4025681v2_genomic.fna.gz"                                          # 13 CS_IAAS
     "$OTHER_DIR/GCA_046250135.1_ASM4625013v1_genomic.fna.gz"                                          # 14 CS_CAU
     "$OTHER_DIR/GCA_051988995.1_ASM5198899v1_genomic.fna.gz"                                          # 15 Sumai3
