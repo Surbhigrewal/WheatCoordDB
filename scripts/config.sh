@@ -38,7 +38,7 @@ TARGET_NAMES=(
     "Landmark"         # 8
     "Norin61"          # 9
     "Aikang58"         # 10
-    "Chunmai104"       # 11
+    "Chuanmai104"       # 11
     "CS_IAAS"          # 12
     "CS_CAU"           # 13
     "Sumai3"           # 14
@@ -65,7 +65,7 @@ TARGET_GENOMES=(
     "$OUTDIR/renamed/Landmark/Landmark.fa"
     "$OUTDIR/renamed/Norin61/Norin61.fa"
     "$OUTDIR/renamed/Aikang58/Aikang58.fa"
-    "$OUTDIR/renamed/Chunmai104/Chunmai104.fa"
+    "$OUTDIR/renamed/Chuanmai104/Chuanmai104.fa"
     "$OUTDIR/renamed/CS_IAAS/CS_IAAS.fa"
     "$OUTDIR/renamed/CS_CAU/CS_CAU.fa"
     "$OUTDIR/renamed/Sumai3/Sumai3.fa"
