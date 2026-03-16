@@ -388,7 +388,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
       <div class="panel-title">About</div>
       <div class="info-block">
         <p style="margin-bottom:.75rem"><strong>WheatCoordDB</strong> converts coordinates from <strong>IWGSC CS RefSeq v2.1</strong> to 24 hexaploid wheat assemblies using orthologous gene anchors projected by <a href="https://github.com/agshumate/Liftoff" target="_blank" style="color:var(--green)">Liftoff</a>.</p>
-        <p style="margin-bottom:.75rem">Interpolation uses PCHIP splines fitted through ~95,000 gene anchor midpoints per assembly. Confidence is reported as a <strong>local collinearity score</strong> (0–100%): the fraction of gene anchors within ±5 Mb whose target positions agree with the fitted spline (residual &lt;2 Mb). Introgressions and structural variants show low collinearity even when anchor density is high.</p>
+        <p style="margin-bottom:.75rem">Interpolation uses PCHIP splines fitted through ~95,000 gene anchor midpoints per assembly. Confidence is the <strong>minimum anchor density</strong> sampled at 10 points across the query region (±5 Mb window) — the lowest-density zone in the query determines the score. For large queries (&gt;50 Mb), check the dotplot for regional variation.</p>
         <p>Built by the <a href="https://grewallab.com/" target="_blank" style="color:var(--green)">Grewal lab</a>, University of Nottingham.</p>
       </div>
     </div>
@@ -573,43 +573,16 @@ function linterpEx(xs,ys,x){
   return {val:linterp(xs,ys,x), extrapolated: x<xs[0]||x>xs[xs.length-1]};
 }
 function aDensity(mids,q,w=5e6){let n=0;for(const m of mids)if(Math.abs(m-q)<=w)n++;return n;}
-
-// Collinearity score: fraction of local anchors whose tgt position is close
-// to what the SPLINE (fitted through all anchors on this chr/tgtChr) predicts.
-// Uses the same linterp already computed for coordinate conversion.
-// residualThresh=2e6 bp: anchors deviating >2 Mb from spline are "non-collinear"
-// This correctly flags introgressions: rye anchors in Lancer Chr2B map to
-// shifted positions and have large spline residuals → low score.
-function aCollinearity(csMids,tgtMids,queryPos,w=5e6,residualThresh=2e6){
-  // Gather anchors in window
-  const idx=[];
-  for(let i=0;i<csMids.length;i++) if(Math.abs(csMids[i]-queryPos)<=w) idx.push(i);
-  if(idx.length===0) return NaN;
-  if(idx.length===1) return 1.0;
-  // For each anchor, predict its tgt position using the GLOBAL spline
-  // (linterp through all csMids/tgtMids — same arrays used for conversion)
-  let good=0;
-  for(const i of idx){
-    const predicted=linterp(csMids,tgtMids,csMids[i]);
-    if(Math.abs(tgtMids[i]-predicted)<residualThresh) good++;
+// Use minimum density across N sample points — catches any sparse zone in the query
+function aDensityMin(mids,s,e,w=5e6,nSamples=10){
+  if(s>=e) return aDensity(mids,(s+e)/2,w);
+  let mn=Infinity;
+  for(let i=0;i<nSamples;i++){
+    const q=s+(e-s)*i/(nSamples-1);
+    const d=aDensity(mids,q,w);
+    if(d<mn) mn=d;
   }
-  return good/idx.length;
-}
-
-function aCollinearityRegion(csMids,tgtMids,s,e,w=5e6,nSamples=10){
-  // Sample collinearity at nSamples points across the region, return mean
-  // Also return raw anchor density for secondary display
-  const pts=s>=e?[( s+e)/2]:Array.from({length:nSamples},(_,i)=>s+(e-s)*i/(nSamples-1));
-  let totalScore=0, validPts=0, totalDensity=0;
-  for(const q of pts){
-    const sc=aCollinearity(csMids,tgtMids,q,w);
-    totalDensity+=aDensity(csMids,q,w);
-    if(!isNaN(sc)){totalScore+=sc;validPts++;}
-  }
-  return {
-    score:   validPts>0 ? totalScore/validPts : NaN,
-    density: Math.round(totalDensity/pts.length)
-  };
+  return mn===Infinity?0:mn;
 }
 
 // Detect if a chromosome's anchors run in reverse (whole-chr inversion)
@@ -655,10 +628,10 @@ function cvt(data,chr,s,e){
       const rs=linterpEx(sc,st,qs), re=linterpEx(sc,st,qe);
       const ts=Math.round(rs.val), te=Math.round(re.val);
       const localInv=te<ts;
-      const col=aCollinearityRegion(sc,st,qs,qe);
+      const qMid=(qs+qe)/2;
       parts.push({tgtChr,tgtStart:ts,tgtEnd:te,
                   csQueryStart:qs,csQueryEnd:qe,
-                  colScore:col.score,density:col.density,
+                  density:aDensityMin(sc,qs,qe),
                   inverted:localInv,wholeChrInv:false,
                   extrapolated:false,csAnchorMin:segCs0,csAnchorMax:segCs1,
                   splitResult:true});
@@ -667,7 +640,7 @@ function cvt(data,chr,s,e){
     // parts empty = query entirely within breakpoint gap — flag as breakpoint
     if(parts.length===0 && segsInRange.size>1){
       return{split:false,tgtChr:'breakpoint',tgtStart:0,tgtEnd:0,
-             density:0,colScore:NaN,inverted:false,wholeChrInv:false,
+             density:0,inverted:false,wholeChrInv:false,
              extrapolated:true,csAnchorMin:s,csAnchorMax:e,
              inBreakpointGap:true};
     }
@@ -683,18 +656,13 @@ function cvt(data,chr,s,e){
   const extrapolated=rs.extrapolated||re.extrapolated;
   const csAnchorMin=sc[0], csAnchorMax=sc[sc.length-1];
   const localInv=te<ts;
-  const col=aCollinearityRegion(sc,st,s,e);
+  const density=aDensityMin(sc,s,e);
   return{split:false,tgtChr,tgtStart:ts,tgtEnd:te,
-         colScore:col.score,density:col.density,
-         inverted:localInv,wholeChrInv:false,
+         density,inverted:localInv,wholeChrInv:false,
          extrapolated,csAnchorMin,csAnchorMax};
 }
-function cc(s){return isNaN(s)?'low':s>=0.8?'high':s>=0.5?'mid':'low';}
-function cl(s,density){
-  if(isNaN(s)) return 'No anchors nearby';
-  const label=s>=0.8?'High confidence':s>=0.5?'Moderate confidence':'Low confidence';
-  return label+' · '+Math.round(s*100)+'% collinear · '+density+' anchors';
-}
+function cc(d){return d>=10?'high':d>=5?'mid':'low';}
+function cl(d){return d>=10?'High confidence':d>=5?'Moderate confidence':'Low confidence';}
 
 async function doSingleConvert(){
   hideError('s-error');
@@ -723,7 +691,7 @@ async function doSingleConvert(){
         if(r.split){r.tgtStart=r.parts[0].tgtStart;r.tgtEnd=r.parts[r.parts.length-1].tgtEnd;}
         return r;
       }
-      catch(e){return{assembly:t,tgtChr:'ERR',tgtStart:null,tgtEnd:null,colScore:NaN,density:0,error:e.message};}
+      catch(e){return{assembly:t,tgtChr:'ERR',tgtStart:null,tgtEnd:null,density:0,error:e.message};}
     });
     if(targets.length===1){
       const r=results[0];
@@ -785,7 +753,7 @@ async function doSingleConvert(){
       // Normal (non-split) single result
       let splitDiv=document.getElementById('s-split-parts');
       if(splitDiv) splitDiv.style.display='none';
-      const cls=cc(r.colScore), pct=Math.min(100,Math.round((isNaN(r.colScore)?0:r.colScore)*100));
+      const cls=cc(r.density), pct=Math.min(100,Math.round(r.density/50*100));
       document.getElementById('s-res-title').textContent=chr+' → '+r.tgtChr+' ('+r.assembly+')';
       if(r.inBreakpointGap){
         document.getElementById('s-res-title').textContent=chr+' → breakpoint gap ('+r.assembly+')';
@@ -810,7 +778,7 @@ async function doSingleConvert(){
       const fill=document.getElementById('s-conf-fill');
       fill.style.width=pct+'%'; fill.className='conf-fill '+cls;
       const tag=document.getElementById('s-conf-tag');
-      tag.textContent=cl(r.colScore,r.density); tag.className='conf-tag '+cls;
+      tag.textContent=cl(r.density)+(end-start>50e6?' · see dotplot for regional variation':'')+' · '+r.density+' anchors/5 Mb'; tag.className='conf-tag '+cls;
       // Inversion badge
       const invBadge=document.getElementById('s-inv-badge');
       if(r.inverted){
@@ -853,7 +821,7 @@ async function doSingleConvert(){
         if(r.split){
           // Render one row per part, with assembly name only on first
           return r.parts.map((p,pi)=>{
-            const cls=cc(p.colScore);
+            const cls=cc(p.density);
             const coords=p.tgtChr+':'+Math.round(p.tgtStart).toLocaleString()+'-'+Math.round(p.tgtEnd).toLocaleString();
             const pLo=Math.min(p.tgtStart,p.tgtEnd), pHi=Math.max(p.tgtStart,p.tgtEnd);
             const pCoords=p.tgtChr+':'+Math.round(pLo).toLocaleString()+'-'+Math.round(pHi).toLocaleString()+(p.inverted?' (inverted)':'');
@@ -862,12 +830,12 @@ async function doSingleConvert(){
               <td class="td-chr">${p.tgtChr}${p.inverted?' <span class="inv-inline" title="Inverted">⚠</span>':''} <span style="font-size:10px;color:var(--text-3)">(CS ${fmtMb(p.csQueryStart)}–${fmtMb(p.csQueryEnd)})</span></td>
               <td>${fmtMb(p.tgtStart)}<span class="td-bp">${fmtBp(p.tgtStart)}</span></td>
               <td>${fmtMb(p.tgtEnd)}<span class="td-bp">${fmtBp(p.tgtEnd)}</span></td>
-              <td><span class="conf-tag ${cls}">${cl(p.colScore,p.density)}</span></td>
+              <td><span class="conf-tag ${cls}">${cl(p.density)} · ${p.density}</span></td>
               <td><button class="copy-btn-sm" data-coords="${pCoords}" onclick="copyText('${pCoords}',this)">Copy</button></td>
             </tr>`;
           }).join('');
         }
-        const cls=cc(r.colScore);
+        const cls=cc(r.density);
         const tgtLo=Math.min(r.tgtStart,r.tgtEnd), tgtHi=Math.max(r.tgtStart,r.tgtEnd);
         const coords=r.tgtChr+':'+Math.round(tgtLo).toLocaleString()+'-'+Math.round(tgtHi).toLocaleString()+(r.inverted?' (inverted)':'');
         return `<tr>
@@ -875,7 +843,7 @@ async function doSingleConvert(){
           <td class="td-chr">${r.tgtChr}${r.inverted?` <span class="inv-inline" title="Inverted orientation — coordinates shown high→low">⚠</span>`:''}${r.extrapolated?' <span class="inv-inline" title="Query outside anchor range — extrapolated">~</span>':''}</td>
           <td>${fmtMb(r.tgtStart)}<span class="td-bp">${fmtBp(r.tgtStart)}</span></td>
           <td>${fmtMb(r.tgtEnd)}<span class="td-bp">${fmtBp(r.tgtEnd)}</span></td>
-          <td><span class="conf-tag ${cls}">${cl(r.colScore,r.density)}</span></td>
+          <td><span class="conf-tag ${cls}">${cl(r.density)} · ${r.density}</span></td>
           <td><button class="copy-btn-sm" data-coords="${coords}" onclick="copyText('${coords}',this)" title="Copy coordinates">Copy</button></td>
         </tr>`;
       }).join('');
@@ -954,12 +922,12 @@ async function doBatchConvert(){
             return{tgtChr:r.tgtChr,
                    tgtStart:p0?Math.min(p0.tgtStart,p0.tgtEnd):'',
                    tgtEnd:p1?Math.max(p1.tgtStart,p1.tgtEnd):Math.max(p0.tgtStart,p0.tgtEnd),
-                   colScore:p0?p0.colScore:NaN, density:p0?p0.density:0,
+                   density:p0?p0.density:0,
                    split:true, parts:r.parts};
           }
           return r;
         }
-        catch{failed++;return{tgtChr:'ERR',tgtStart:'',tgtEnd:'',colScore:NaN,density:0};}
+        catch{failed++;return{tgtChr:'ERR',tgtStart:'',tgtEnd:'',density:0};}
       });
       batchResults.push({cs_chr:chr,cs_start:s,cs_end:e,perTarget,extra});
     }
@@ -976,7 +944,7 @@ function renderBatchTable(failed){
   if(maxExtra) r1+=`<th colspan="${maxExtra}"></th>`;
   r1+='</tr>';
   let r2=`<tr><th>chr</th><th>start</th><th>end</th>`;
-  batchTargets.forEach(()=>{r2+=`<th>chr</th><th>start</th><th>end</th><th>collinearity</th>`;});
+  batchTargets.forEach(()=>{r2+=`<th>chr</th><th>start</th><th>end</th><th>density</th>`;});
   for(let i=0;i<maxExtra;i++) r2+=`<th>col${i+4}</th>`;
   r2+='</tr>';
   thead.innerHTML=r1+r2;
@@ -990,7 +958,7 @@ function renderBatchTable(failed){
       row+=`<td class="${ok?'td-green':''}">${pt.tgtChr}${splitNote}</td>`+
            `<td class="${ok?'td-green':''}">${pt.tgtStart!==''&&pt.tgtStart!=null?Math.round(pt.tgtStart).toLocaleString():''}</td>`+
            `<td class="${ok?'td-green':''}">${pt.tgtEnd!==''&&pt.tgtEnd!=null?Math.round(pt.tgtEnd).toLocaleString():''}</td>`+
-           `<td><span class="tag tag-${cc(pt.colScore)}">${isNaN(pt.colScore)?'—':Math.round(pt.colScore*100)+'%'}</span></td>`;
+           `<td><span class="tag tag-${cc(pt.density)}">${pt.density}</span></td>`;
     });
     r.extra.forEach(v=>{row+=`<td>${v}</td>`;});
     return '<tr>'+row+'</tr>';
@@ -1007,7 +975,7 @@ function downloadTSV(){
   if(!batchResults.length) return;
   const maxExtra=Math.max(...batchResults.map(r=>r.extra.length),0);
   const hdr=['cs_chr','cs_start','cs_end'];
-  batchTargets.forEach(t=>hdr.push(t+'_chr',t+'_start',t+'_end',t+'_collinearity'));
+  batchTargets.forEach(t=>hdr.push(t+'_chr',t+'_start',t+'_end',t+'_density'));
   for(let i=0;i<maxExtra;i++) hdr.push('col'+(i+4));
   const lines=[hdr.join('\t')];
   for(const r of batchResults){
@@ -1016,8 +984,7 @@ function downloadTSV(){
       const tChr=pt.split?pt.tgtChr+'(split)':pt.tgtChr;
       const tS=pt.tgtStart!==''&&pt.tgtStart!=null?Math.round(pt.tgtStart):'NA';
       const tE=pt.tgtEnd!==''&&pt.tgtEnd!=null?Math.round(pt.tgtEnd):'NA';
-      const colVal=isNaN(pt.colScore)?'NA':pt.colScore.toFixed(3);
-      row.push(tChr,tS,tE,colVal);
+      row.push(tChr,tS,tE,pt.density);
     });
     r.extra.forEach(v=>row.push(v));
     lines.push(row.join('\t'));
