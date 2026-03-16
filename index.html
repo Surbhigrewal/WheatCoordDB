@@ -575,28 +575,25 @@ function linterpEx(xs,ys,x){
 function aDensity(mids,q,w=5e6){let n=0;for(const m of mids)if(Math.abs(m-q)<=w)n++;return n;}
 
 // Collinearity score: fraction of local anchors whose tgt position is close
-// to what the linear trend through ALL local anchors would predict.
-// Returns 0.0–1.0. NaN if no anchors in window.
-// residualThresh=2e6 bp: anchors deviating >2 Mb from local trend are "non-collinear"
+// to what the SPLINE (fitted through all anchors on this chr/tgtChr) predicts.
+// Uses the same linterp already computed for coordinate conversion.
+// residualThresh=2e6 bp: anchors deviating >2 Mb from spline are "non-collinear"
+// This correctly flags introgressions: rye anchors in Lancer Chr2B map to
+// shifted positions and have large spline residuals → low score.
 function aCollinearity(csMids,tgtMids,queryPos,w=5e6,residualThresh=2e6){
   // Gather anchors in window
   const idx=[];
   for(let i=0;i<csMids.length;i++) if(Math.abs(csMids[i]-queryPos)<=w) idx.push(i);
   if(idx.length===0) return NaN;
-  if(idx.length===1) return 1.0; // single anchor, no residual to compute
-  // Fit linear trend through local anchors (least-squares slope + intercept)
-  let sx=0,sy=0,sxx=0,sxy=0,n=idx.length;
-  for(const i of idx){sx+=csMids[i];sy+=tgtMids[i];sxx+=csMids[i]*csMids[i];sxy+=csMids[i]*tgtMids[i];}
-  const denom=n*sxx-sx*sx;
-  let slope=0,intercept=sy/n;
-  if(Math.abs(denom)>0){slope=(n*sxy-sx*sy)/denom;intercept=(sy-slope*sx)/n;}
-  // Fraction of anchors with residual < threshold
+  if(idx.length===1) return 1.0;
+  // For each anchor, predict its tgt position using the GLOBAL spline
+  // (linterp through all csMids/tgtMids — same arrays used for conversion)
   let good=0;
   for(const i of idx){
-    const predicted=slope*csMids[i]+intercept;
+    const predicted=linterp(csMids,tgtMids,csMids[i]);
     if(Math.abs(tgtMids[i]-predicted)<residualThresh) good++;
   }
-  return good/n;
+  return good/idx.length;
 }
 
 function aCollinearityRegion(csMids,tgtMids,s,e,w=5e6,nSamples=10){
@@ -658,7 +655,7 @@ function cvt(data,chr,s,e){
       const rs=linterpEx(sc,st,qs), re=linterpEx(sc,st,qe);
       const ts=Math.round(rs.val), te=Math.round(re.val);
       const localInv=te<ts;
-      const col=aCollinearityRegion(d.csMid,d.tgtMid,qs,qe);
+      const col=aCollinearityRegion(sc,st,qs,qe);
       parts.push({tgtChr,tgtStart:ts,tgtEnd:te,
                   csQueryStart:qs,csQueryEnd:qe,
                   colScore:col.score,density:col.density,
@@ -686,7 +683,7 @@ function cvt(data,chr,s,e){
   const extrapolated=rs.extrapolated||re.extrapolated;
   const csAnchorMin=sc[0], csAnchorMax=sc[sc.length-1];
   const localInv=te<ts;
-  const col=aCollinearityRegion(d.csMid,d.tgtMid,s,e);
+  const col=aCollinearityRegion(sc,st,s,e);
   return{split:false,tgtChr,tgtStart:ts,tgtEnd:te,
          colScore:col.score,density:col.density,
          inverted:localInv,wholeChrInv:false,
