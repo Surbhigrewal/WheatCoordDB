@@ -37,7 +37,7 @@ import pandas as pd
 ALL_TARGETS = [
     "Jagger", "Lancer", "ArinaLrFor", "Stanley", "Spelt",
     "Mace", "SY_Mattis", "Julius", "Landmark", "Norin61",
-    "Aikang58", "Chunmai104", "CS_IAAS", "CS_CAU", "Sumai3",
+    "Aikang58", "Chuanmai104", "CS_IAAS", "CS_CAU", "Sumai3",
     "JIN50", "MOV", "CS_v1", "Fielder", "Kariega",
     "Attraktion", "Renan_v2", "Paragon_v3", "Cadenza_v2",
 ]
