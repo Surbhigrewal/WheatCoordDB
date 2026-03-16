@@ -413,7 +413,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
         <li>CS_v1 <span class="tag tag-hi">ready</span></li>
         <li class="asm-group-hdr">Additional cultivars</li>
         <li>Aikang58 <span class="tag tag-hi">ready</span></li>
-        <li>Chunmai104 <span class="tag tag-hi">ready</span></li>
+        <li>Chuanmai104 <span class="tag tag-hi">ready</span></li>
         <li>Sumai3 <span class="tag tag-hi">ready</span></li>
         <li>JIN50 <span class="tag tag-hi">ready</span></li>
         <li>MOV <span class="tag tag-hi">ready</span></li>
@@ -478,7 +478,7 @@ const GROUPS = [
   { label:'CS versions', id:'cs',
     assemblies:['CS_IAAS','CS_CAU','CS_v1'] },
   { label:'Additional cultivars', id:'add',
-    assemblies:['Aikang58','Chunmai104','Sumai3','JIN50','MOV','Fielder','Kariega','Attraktion','Renan_v2','Paragon_v3','Cadenza_v2'] }
+    assemblies:['Aikang58','Chuanmai104','Sumai3','JIN50','MOV','Fielder','Kariega','Attraktion','Renan_v2','Paragon_v3','Cadenza_v2'] }
 ];
 const DATA_BASE = 'data/anchors/';
 const cache = {};
@@ -866,8 +866,14 @@ function loadFile(file){
   reader.onload=e=>{
     const lines=e.target.result.trim().split('\n').filter(l=>l.trim()&&!l.startsWith('#'));
     parsedFileRows=lines.map(l=>l.trim().split(/\t| +/));
+    const MAX_ROWS=1000;
+    let warnMsg='';
+    if(parsedFileRows.length>MAX_ROWS){
+      warnMsg=` (first ${MAX_ROWS} of ${parsedFileRows.length} loaded)`;
+      parsedFileRows=parsedFileRows.slice(0,MAX_ROWS);
+    }
     const n=parsedFileRows.length;
-    document.getElementById('upload-title').textContent=file.name+' — '+n+' region'+(n!==1?'s':'')+' loaded';
+    document.getElementById('upload-title').textContent=file.name+' — '+n+' region'+(n!==1?'s':'')+' loaded'+warnMsg;
     document.getElementById('b-btn').disabled=n===0||getSelected('b').length===0;
   };
   reader.readAsText(file);
