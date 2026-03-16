@@ -573,6 +573,16 @@ function linterpEx(xs,ys,x){
   return {val:linterp(xs,ys,x), extrapolated: x<xs[0]||x>xs[xs.length-1]};
 }
 function aDensity(mids,q,w=5e6){let n=0;for(const m of mids)if(Math.abs(m-q)<=w)n++;return n;}
+function aDensityRegion(mids,s,e,w=5e6,nSamples=10){
+  // Sample density at nSamples points across the region and return the mean
+  if(s>=e) return aDensity(mids,(s+e)/2,w);
+  let total=0;
+  for(let i=0;i<nSamples;i++){
+    const q=s+(e-s)*i/(nSamples-1);
+    total+=aDensity(mids,q,w);
+  }
+  return Math.round(total/nSamples);
+}
 
 // Detect if a chromosome's anchors run in reverse (whole-chr inversion)
 // Uses Spearman-like check: if majority of consecutive tgtMid diffs are negative, it's inverted
@@ -619,7 +629,7 @@ function cvt(data,chr,s,e){
       const localInv=te<ts;
       parts.push({tgtChr,tgtStart:ts,tgtEnd:te,
                   csQueryStart:qs,csQueryEnd:qe,
-                  density:aDensity(d.csMid,(qs+qe)/2),
+                  density:aDensityRegion(d.csMid,qs,qe),
                   inverted:localInv,wholeChrInv:false,
                   extrapolated:false,csAnchorMin:segCs0,csAnchorMax:segCs1,
                   splitResult:true});
@@ -645,7 +655,7 @@ function cvt(data,chr,s,e){
   const csAnchorMin=sc[0], csAnchorMax=sc[sc.length-1];
   const localInv=te<ts;
   return{split:false,tgtChr,tgtStart:ts,tgtEnd:te,
-         density:aDensity(d.csMid,mid),inverted:localInv,wholeChrInv:false,
+         density:aDensityRegion(d.csMid,s,e),inverted:localInv,wholeChrInv:false,
          extrapolated,csAnchorMin,csAnchorMax};
 }
 function cc(d){return d>=10?'high':d>=5?'mid':'low';}
