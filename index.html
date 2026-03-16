@@ -361,7 +361,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           </div>
           <div class="upload-title" id="upload-title">Drop a BED or TXT file here</div>
-          <div class="upload-sub">Columns: <code>chr</code> <code>start</code> <code>end</code> — tab or space separated<br>Extra columns are preserved in the output</div>
+          <div class="upload-sub">Columns: <code>chr</code> <code>start</code> <code>end</code> or <code>chr</code> <code>position</code> — tab or space separated<br>Extra columns are preserved in the output<br><br><span style="font-size:11px;color:var(--text-2);font-family:monospace;line-height:1.8"># Region query (chr, start, end)<br>Chr1A&nbsp;&nbsp;250000000&nbsp;&nbsp;260000000&nbsp;&nbsp;my_qtl<br># Single position (chr, position)<br>Chr5B&nbsp;&nbsp;157000000<br># Extra columns are preserved<br>Chr7A&nbsp;&nbsp;600000000&nbsp;&nbsp;625000000&nbsp;&nbsp;Lr34_interval</span></div>
         </div>
         <input type="file" id="file-input" accept=".bed,.txt,.tsv,.csv" onchange="loadFile(this.files[0])">
 
@@ -904,7 +904,11 @@ async function doBatchConvert(){
     batchTargets=targets; batchResults=[]; let failed=0;
     for(const cols of parsedFileRows){
       if(cols.length<3) continue;
-      const chr=cols[0],s=parseInt(cols[1]),e=parseInt(cols[2]),extra=cols.slice(3);
+      const chr=cols[0];
+      const isSingle=cols.length<3||cols[2]===undefined||cols[2]==='';
+      const s=parseInt(cols[1]);
+      const e=isSingle?s:parseInt(cols[2]);
+      const extra=isSingle?cols.slice(2):cols.slice(3);
       const perTarget=targets.map((t,i)=>{
         try{
           const r=cvt(allData[i],chr,s,e);
