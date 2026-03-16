@@ -274,11 +274,11 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
 
         <div class="grid2 field">
           <div>
-            <label class="field-label" for="s-start">Start (bp)</label>
+            <label class="field-label" for="s-start">Start (bp) &mdash; or single position</label>
             <input type="number" id="s-start" placeholder="e.g. 490000000" min="0" step="1">
           </div>
           <div>
-            <label class="field-label" for="s-end">End (bp)</label>
+            <label class="field-label" for="s-end">End (bp) &mdash; same as start for single position</label>
             <input type="number" id="s-end" placeholder="e.g. 510000000" min="0" step="1">
           </div>
         </div>
@@ -672,7 +672,7 @@ async function doSingleConvert(){
   if(!targets.length){showError('s-error','Please select at least one assembly.');return;}
   if(!chr){showError('s-error','Please select a chromosome.');return;}
   if(isNaN(start)||isNaN(end)){showError('s-error','Please enter start and end positions.');return;}
-  if(end<=start){showError('s-error','End must be greater than start.');return;}
+  if(end<start){showError('s-error','End must be greater than or equal to start.');return;}
   document.getElementById('s-btn').disabled=true;
   showLoading('s','Loading anchor data for '+targets.length+' assembl'+(targets.length>1?'ies':'y')+'…');
   try {
