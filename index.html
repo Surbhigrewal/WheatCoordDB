@@ -388,7 +388,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
       <div class="panel-title">About</div>
       <div class="info-block">
         <p style="margin-bottom:.75rem"><strong>WheatCoordDB</strong> converts coordinates from <strong>IWGSC CS RefSeq v2.1</strong> to 24 hexaploid wheat assemblies using orthologous gene anchors projected by <a href="https://github.com/agshumate/Liftoff" target="_blank" style="color:var(--green)">Liftoff</a>.</p>
-        <p style="margin-bottom:.75rem">Interpolation uses PCHIP splines fitted through ~95,000 gene anchor midpoints per assembly. Confidence is the <strong>minimum anchor density</strong> sampled at 10 points across the query region (±5 Mb window) — the lowest-density zone in the query determines the score. For large queries (&gt;50 Mb), check the dotplot for regional variation.</p>
+        <p style="margin-bottom:.75rem">Interpolation uses PCHIP splines fitted through ~95,000 gene anchor midpoints per assembly. Confidence is the <strong>anchor recovery fraction</strong> — the proportion of expected CS genes recovered as anchors within a ±5 Mb window, sampled at up to 50 evenly-spaced positions across the query region (1 per 5 Mb). This normalises for gene density variation along chromosomes, so gene-poor pericentromeric regions are not penalised relative to gene-rich telomeric arms.</p>
         <p>Built by the <a href="https://grewallab.com/" target="_blank" style="color:var(--green)">Grewal lab</a>, University of Nottingham.</p>
       </div>
     </div>
@@ -482,7 +482,53 @@ const GROUPS = [
 ];
 const DATA_BASE = 'data/anchors/';
 const cache = {};
+let geneDensity = null;   // {chr -> {pos:Float64Array, density:Float32Array}}
 let parsedFileRows = [];
+
+async function loadGeneDensity() {
+  if (geneDensity) return geneDensity;
+  try {
+    const r = await fetch('data/cs_gene_density.tsv.gz');
+    if (!r.ok) { geneDensity = {}; return geneDensity; }
+    const ds = new DecompressionStream('gzip');
+    const stream = (await r.blob()).stream().pipeThrough(ds);
+    const reader = stream.getReader();
+    const chunks = [];
+    while(true){const{done,value}=await reader.read();if(done)break;chunks.push(value);}
+    const out = new Uint8Array(chunks.reduce((n,c)=>n+c.length,0));
+    let off=0; for(const c of chunks){out.set(c,off);off+=c.length;}
+    const lines = new TextDecoder().decode(out).trim().split('\n');
+    const hdr = lines[0].split('\t');
+    const ci=hdr.indexOf('cs_chr'), pi=hdr.indexOf('cs_pos'), di=hdr.indexOf('cs_gene_density');
+    const byChr = {};
+    for(let i=1;i<lines.length;i++){
+      if(!lines[i].trim()) continue;
+      const cols=lines[i].split('\t');
+      const chr=cols[ci];
+      if(!byChr[chr]) byChr[chr]={pos:[],density:[]};
+      byChr[chr].pos.push(parseInt(cols[pi]));
+      byChr[chr].density.push(parseInt(cols[di]));
+    }
+    geneDensity = {};
+    for(const chr in byChr){
+      geneDensity[chr]={
+        pos: new Float64Array(byChr[chr].pos),
+        density: new Float32Array(byChr[chr].density)
+      };
+    }
+  } catch(e){ console.warn('Gene density load failed:', e); geneDensity = {}; }
+  return geneDensity;
+}
+
+function gDensityAt(chr, pos) {
+  if (!geneDensity || !geneDensity[chr]) return null;
+  const xs=geneDensity[chr].pos, ys=geneDensity[chr].density;
+  if(pos<=xs[0]) return ys[0];
+  if(pos>=xs[xs.length-1]) return ys[xs.length-1];
+  let lo=0,hi=xs.length-1;
+  while(hi-lo>1){const m=(lo+hi)>>1;if(xs[m]<=pos)lo=m;else hi=m;}
+  return ys[lo]+(pos-xs[lo])/(xs[hi]-xs[lo])*(ys[hi]-ys[lo]);
+}
 let batchResults = [];
 let batchTargets = [];
 
@@ -573,16 +619,23 @@ function linterpEx(xs,ys,x){
   return {val:linterp(xs,ys,x), extrapolated: x<xs[0]||x>xs[xs.length-1]};
 }
 function aDensity(mids,q,w=5e6){let n=0;for(const m of mids)if(Math.abs(m-q)<=w)n++;return n;}
-// Use minimum density across N sample points — catches any sparse zone in the query
-function aDensityMin(mids,s,e,w=5e6,nSamples=10){
-  if(s>=e) return aDensity(mids,(s+e)/2,w);
-  let mn=Infinity;
+
+// anchor_fraction = mean(anchors_in_window / cs_genes_in_window) across N evenly-spaced samples.
+// N scales with region size: 1 per 5 Mb, capped at 50, min 1.
+// Falls back gracefully if gene density data not loaded.
+function aFraction(mids, s, e, chr, w=5e6) {
+  const regionSize = Math.max(0, e - s);
+  const nSamples = Math.max(1, Math.min(50, Math.floor(regionSize / 5e6) + 1));
+  let total=0, count=0;
   for(let i=0;i<nSamples;i++){
-    const q=s+(e-s)*i/(nSamples-1);
-    const d=aDensity(mids,q,w);
-    if(d<mn) mn=d;
+    const q = nSamples===1 ? (s+e)/2 : s + regionSize*i/(nSamples-1);
+    const anchors = aDensity(mids, q, w);
+    const gd = gDensityAt(chr, q);
+    if(gd === null){ total += Math.min(1.0, anchors/50); count++; }  // fallback
+    else if(gd > 0){ total += Math.min(1.0, anchors/gd); count++; }
+    // gd===0: no CS genes in window, skip (don't penalise gene-poor regions)
   }
-  return mn===Infinity?0:mn;
+  return count>0 ? total/count : 0;
 }
 
 // Detect if a chromosome's anchors run in reverse (whole-chr inversion)
@@ -631,7 +684,7 @@ function cvt(data,chr,s,e){
       const qMid=(qs+qe)/2;
       parts.push({tgtChr,tgtStart:ts,tgtEnd:te,
                   csQueryStart:qs,csQueryEnd:qe,
-                  density:aDensityMin(sc,qs,qe),
+                  density:aFraction(sc,qs,qe,tgtChr),
                   inverted:localInv,wholeChrInv:false,
                   extrapolated:false,csAnchorMin:segCs0,csAnchorMax:segCs1,
                   splitResult:true});
@@ -656,13 +709,14 @@ function cvt(data,chr,s,e){
   const extrapolated=rs.extrapolated||re.extrapolated;
   const csAnchorMin=sc[0], csAnchorMax=sc[sc.length-1];
   const localInv=te<ts;
-  const density=aDensityMin(sc,s,e);
+  const density=aFraction(sc,s,e,tgtChr);
   return{split:false,tgtChr,tgtStart:ts,tgtEnd:te,
          density,inverted:localInv,wholeChrInv:false,
          extrapolated,csAnchorMin,csAnchorMax};
 }
-function cc(d){return d>=10?'high':d>=5?'mid':'low';}
-function cl(d){return d>=10?'High confidence':d>=5?'Moderate confidence':'Low confidence';}
+function cc(f){return f>=0.8?'high':f>=0.5?'mid':'low';}
+function cl(f){return f>=0.8?'High confidence':f>=0.5?'Moderate confidence':'Low confidence';}
+function fmtConf(f){return cl(f)+' · '+(f*100).toFixed(0)+'% gene recovery';}
 
 async function doSingleConvert(){
   hideError('s-error');
@@ -679,7 +733,7 @@ async function doSingleConvert(){
   document.getElementById('s-btn').disabled=true;
   showLoading('s','Loading anchor data for '+targets.length+' assembl'+(targets.length>1?'ies':'y')+'…');
   try {
-    const allData=await Promise.all(targets.map(loadAnchorData));
+    const [allData] = await Promise.all([Promise.all(targets.map(loadAnchorData)), loadGeneDensity()]);
     hideLoading('s');
     const results=targets.map((t,i)=>{
       try{
@@ -778,7 +832,7 @@ async function doSingleConvert(){
       const fill=document.getElementById('s-conf-fill');
       fill.style.width=pct+'%'; fill.className='conf-fill '+cls;
       const tag=document.getElementById('s-conf-tag');
-      tag.textContent=cl(r.density)+(end-start>50e6?' · see dotplot for regional variation':'')+' · '+r.density+' anchors/5 Mb'; tag.className='conf-tag '+cls;
+      tag.textContent=fmtConf(r.density)+(end-start>50e6?' · see dotplot for regional variation':''); tag.className='conf-tag '+cls;
       // Inversion badge
       const invBadge=document.getElementById('s-inv-badge');
       if(r.inverted){
@@ -830,7 +884,7 @@ async function doSingleConvert(){
               <td class="td-chr">${p.tgtChr}${p.inverted?' <span class="inv-inline" title="Inverted">⚠</span>':''} <span style="font-size:10px;color:var(--text-3)">(CS ${fmtMb(p.csQueryStart)}–${fmtMb(p.csQueryEnd)})</span></td>
               <td>${fmtMb(p.tgtStart)}<span class="td-bp">${fmtBp(p.tgtStart)}</span></td>
               <td>${fmtMb(p.tgtEnd)}<span class="td-bp">${fmtBp(p.tgtEnd)}</span></td>
-              <td><span class="conf-tag ${cls}">${cl(p.density)} · ${p.density}</span></td>
+              <td><span class="conf-tag ${cls}">${fmtConf(p.density)}</span></td>
               <td><button class="copy-btn-sm" data-coords="${pCoords}" onclick="copyText('${pCoords}',this)">Copy</button></td>
             </tr>`;
           }).join('');
@@ -843,7 +897,7 @@ async function doSingleConvert(){
           <td class="td-chr">${r.tgtChr}${r.inverted?` <span class="inv-inline" title="Inverted orientation — coordinates shown high→low">⚠</span>`:''}${r.extrapolated?' <span class="inv-inline" title="Query outside anchor range — extrapolated">~</span>':''}</td>
           <td>${fmtMb(r.tgtStart)}<span class="td-bp">${fmtBp(r.tgtStart)}</span></td>
           <td>${fmtMb(r.tgtEnd)}<span class="td-bp">${fmtBp(r.tgtEnd)}</span></td>
-          <td><span class="conf-tag ${cls}">${cl(r.density)} · ${r.density}</span></td>
+          <td><span class="conf-tag ${cls}">${fmtConf(r.density)}</span></td>
           <td><button class="copy-btn-sm" data-coords="${coords}" onclick="copyText('${coords}',this)" title="Copy coordinates">Copy</button></td>
         </tr>`;
       }).join('');
@@ -901,7 +955,7 @@ async function doBatchConvert(){
   document.getElementById('b-btn').disabled=true;
   showLoading('b','Loading '+targets.length+' assembl'+(targets.length>1?'ies':'y')+'…');
   try{
-    const allData=await Promise.all(targets.map(loadAnchorData));
+    const [allData] = await Promise.all([Promise.all(targets.map(loadAnchorData)), loadGeneDensity()]);
     hideLoading('b');
     showLoading('b','Converting '+parsedFileRows.length+' regions…');
     batchTargets=targets; batchResults=[]; let failed=0;
