@@ -1,505 +1,505 @@
-assembly	cs_chr	Jagger_tgt_chr	n_anchors	mean_anchor_gap_Mb	interp_type	n_synteny_blocks	Lancer_tgt_chr	tgt_chr	n_anchors_collinear	n_anchors_translocation	has_translocation	Stanley_tgt_chr	Spelt_tgt_chr	Mace_tgt_chr	Julius_tgt_chr	Landmark_tgt_chr	Norin61_tgt_chr	Aikang58_tgt_chr	Chuanmai104_tgt_chr	CS_IAAS_tgt_chr	CS_CAU_tgt_chr	Sumai3_tgt_chr	JIN50_tgt_chr	MOV_tgt_chr	CS_v1_tgt_chr	Fielder_tgt_chr	Kariega_tgt_chr	Attraktion_tgt_chr	Renan_v2_tgt_chr	Paragon_v3_tgt_chr	Cadenza_v2_tgt_chr
-Jagger	Chr1A	Chr1A	4021	0.149	linear	9																									
-Jagger	Chr1B	Chr1B	4157	0.168	linear	16																									
-Jagger	Chr1D	Chr1D	4150	0.12	linear	4																									
-Jagger	Chr2A	Chr2A	4924	0.159	linear	24																									
-Jagger	Chr2B	Chr2B	5237	0.155	linear	14																									
-Jagger	Chr2D	Chr2D	5255	0.125	linear	8																									
-Jagger	Chr3A	Chr3A	4894	0.154	linear	11																									
-Jagger	Chr3B	Chr3B	4492	0.189	linear	16																									
-Jagger	Chr3D	Chr3D	4980	0.124	linear	15																									
-Jagger	Chr4A	Chr4A	3948	0.191	linear	27																									
-Jagger	Chr4B	Chr4B	3640	0.185	linear	20																									
-Jagger	Chr4D	Chr4D	3419	0.149	linear	18																									
-Jagger	Chr5A	Chr5A	5071	0.141	linear	12																									
-Jagger	Chr5B	Chr5B	4998	0.143	linear	12																									
-Jagger	Chr5D	Chr5D	5127	0.111	linear	7																									
-Jagger	Chr6A	Chr6A	3566	0.175	linear	22																									
-Jagger	Chr6B	Chr6B	3739	0.195	linear	19																									
-Jagger	Chr6D	Chr6D	3589	0.138	linear	8																									
-Jagger	Chr7A	Chr7A	4661	0.158	linear	9																									
-Jagger	Chr7B	Chr7B	4225	0.179	linear	13																									
-Jagger	Chr7D	Chr7D	5207	0.123	linear	7																									
-Lancer	Chr1A		3905	0.153	linear	12	Chr1A																								
-Lancer	Chr1B		4250	0.165	linear	15	Chr1B																								
-Lancer	Chr1D		4283	0.116	linear	6	Chr1D																								
-Lancer	Chr2A		5226	0.149	linear	18	Chr2A																								
-Lancer	Chr2B		4516	0.18	linear	19	Chr2B																								
-Lancer	Chr2D		5378	0.119	linear	8	Chr2D																								
-Lancer	Chr3A		4905	0.153	linear	14	Chr3A																								
-Lancer	Chr3B		5147	0.164	linear	21	Chr3B																								
-Lancer	Chr3D		4847	0.124	linear	12	Chr3D																								
-Lancer	Chr4A		3607	0.209	linear	27	Chr4A																								
-Lancer	Chr4B		3561	0.189	linear	13	Chr4B																								
-Lancer	Chr4D		3428	0.147	linear	17	Chr4D																								
-Lancer	Chr5A		5112	0.139	linear	14	Chr5A																								
-Lancer	Chr5B		5123	0.14	linear	12	Chr5B																								
-Lancer	Chr5D		5395	0.106	linear	5	Chr5D																								
-Lancer	Chr6A		3809	0.163	linear	16	Chr6A																								
-Lancer	Chr6B		3652	0.199	linear	21	Chr6B																								
-Lancer	Chr6D		3565	0.137	linear	10	Chr6D																								
-Lancer	Chr7A		4724	0.156	linear	11	Chr7A																								
-Lancer	Chr7B		4148	0.183	linear	14	Chr7B																								
-Lancer	Chr7D		5195	0.123	linear	7	Chr7D																								
-ArinaLrFor	Chr1A		3649	0.164	linear	13		Chr1A	3649.0	0.0	False																				
-ArinaLrFor	Chr1B		4176	0.167	linear	18		Chr1B	4176.0	0.0	False																				
-ArinaLrFor	Chr1D		4326	0.115	linear	4		Chr1D	4326.0	0.0	False																				
-ArinaLrFor	Chr2A		5433	0.145	linear	17		Chr2A	5433.0	0.0	False																				
-ArinaLrFor	Chr2B		5187	0.156	linear	11		Chr2B	5187.0	0.0	False																				
-ArinaLrFor	Chr2D		5030	0.128	linear	9		Chr2D	5030.0	0.0	False																				
-ArinaLrFor	Chr3A		4773	0.157	linear	17		Chr3A	4773.0	0.0	False																				
-ArinaLrFor	Chr3B		5164	0.165	linear	20		Chr3B	5164.0	0.0	False																				
-ArinaLrFor	Chr3D		4683	0.127	linear	12		Chr3D	4683.0	0.0	False																				
-ArinaLrFor	Chr4A		4053	0.186	linear	21		Chr4A	4053.0	0.0	False																				
-ArinaLrFor	Chr4B		3529	0.19	linear	9		Chr4B	3529.0	0.0	False																				
-ArinaLrFor	Chr4D		3447	0.147	linear	18		Chr4D	3447.0	0.0	False																				
-ArinaLrFor	Chr5A		5011	0.142	linear	13		Chr5A	5011.0	0.0	False																				
-ArinaLrFor	Chr5B		4801	0.155	linear/linear	10		Chr5B/Chr7B	945.0	3856.0	True																				
-ArinaLrFor	Chr5D		5361	0.106	linear	6		Chr5D	5361.0	0.0	False																				
-ArinaLrFor	Chr6A		3730	0.166	linear	17		Chr6A	3730.0	0.0	False																				
-ArinaLrFor	Chr6B		3700	0.198	linear	16		Chr6B	3700.0	0.0	False																				
-ArinaLrFor	Chr6D		3831	0.129	linear	10		Chr6D	3831.0	0.0	False																				
-ArinaLrFor	Chr7A		4795	0.155	linear	8		Chr7A	4795.0	0.0	False																				
-ArinaLrFor	Chr7B		4351	0.177	linear/linear	18		Chr5B/Chr7B	1753.0	2598.0	True																				
-ArinaLrFor	Chr7D		5244	0.123	linear	7		Chr7D	5244.0	0.0	False																				
-Stanley	Chr1A		3915	0.151	linear	10						Chr1A																			
-Stanley	Chr1B		4193	0.165	linear	14						Chr1B																			
-Stanley	Chr1D		4259	0.117	linear	4						Chr1D																			
-Stanley	Chr2A		4977	0.158	linear	17						Chr2A																			
-Stanley	Chr2B		5392	0.15	linear	16						Chr2B																			
-Stanley	Chr2D		5647	0.116	linear	7						Chr2D																			
-Stanley	Chr3A		4915	0.153	linear	12						Chr3A																			
-Stanley	Chr3B		5063	0.168	linear	23						Chr3B																			
-Stanley	Chr3D		4150	0.147	linear	13						Chr3D																			
-Stanley	Chr4A		3913	0.193	linear	24						Chr4A																			
-Stanley	Chr4B		3503	0.192	linear	10						Chr4B																			
-Stanley	Chr4D		3294	0.151	linear	17						Chr4D																			
-Stanley	Chr5A		5142	0.139	linear	12						Chr5A																			
-Stanley	Chr5B		4942	0.144	linear	11						Chr5B																			
-Stanley	Chr5D		5432	0.105	linear	4						Chr5D																			
-Stanley	Chr6A		3682	0.169	linear	20						Chr6A																			
-Stanley	Chr6B		3754	0.195	linear	19						Chr6B																			
-Stanley	Chr6D		3701	0.133	linear	11						Chr6D																			
-Stanley	Chr7A		4547	0.164	linear	12						Chr7A																			
-Stanley	Chr7B		4112	0.184	linear	14						Chr7B																			
-Stanley	Chr7D		5218	0.123	linear	8						Chr7D																			
-Spelt	Chr1A		4057	0.148	linear	7							Chr1A																		
-Spelt	Chr1B		4141	0.169	linear	17							Chr1B																		
-Spelt	Chr1D		4356	0.114	linear	4							Chr1D																		
-Spelt	Chr2A		5149	0.153	linear	14							Chr2A																		
-Spelt	Chr2B		5306	0.153	linear	12							Chr2B																		
-Spelt	Chr2D		5626	0.116	linear	7							Chr2D																		
-Spelt	Chr3A		4853	0.154	linear	15							Chr3A																		
-Spelt	Chr3B		5289	0.161	linear	19							Chr3B																		
-Spelt	Chr3D		4714	0.13	linear	11							Chr3D																		
-Spelt	Chr4A		3750	0.201	linear	29							Chr4A																		
-Spelt	Chr4B		3517	0.191	linear	8							Chr4B																		
-Spelt	Chr4D		3517	0.146	linear	17							Chr4D																		
-Spelt	Chr5A		5120	0.139	linear	11							Chr5A																		
-Spelt	Chr5B		4966	0.143	linear	11							Chr5B																		
-Spelt	Chr5D		5390	0.105	linear	4							Chr5D																		
-Spelt	Chr6A		2636	0.196	linear	17							Chr6A																		
-Spelt	Chr6B		3668	0.199	linear	17							Chr6B																		
-Spelt	Chr6D		3162	0.14	linear	9							Chr6D																		
-Spelt	Chr7A		4846	0.153	linear	8							Chr7A																		
-Spelt	Chr7B		4136	0.183	linear	14							Chr7B																		
-Spelt	Chr7D		5206	0.123	linear	8							Chr7D																		
-Mace	Chr1A		3756	0.159	linear	11								Chr1A																	
-Mace	Chr1B		3801	0.184	linear	19								Chr1B																	
-Mace	Chr1D		4303	0.116	linear	4								Chr1D																	
-Mace	Chr2A		5003	0.157	linear	18								Chr2A																	
-Mace	Chr2B		5238	0.154	linear	14								Chr2B																	
-Mace	Chr2D		5684	0.115	linear	8								Chr2D																	
-Mace	Chr3A		4725	0.158	linear	16								Chr3A																	
-Mace	Chr3B		5221	0.163	linear	21								Chr3B																	
-Mace	Chr3D		4997	0.123	linear	13								Chr3D																	
-Mace	Chr4A		3992	0.189	linear	23								Chr4A																	
-Mace	Chr4B		3503	0.192	linear	9								Chr4B																	
-Mace	Chr4D		3438	0.147	linear	17								Chr4D																	
-Mace	Chr5A		5209	0.137	linear	12								Chr5A																	
-Mace	Chr5B		4881	0.146	linear	13								Chr5B																	
-Mace	Chr5D		5433	0.105	linear	4								Chr5D																	
-Mace	Chr6A		3662	0.17	linear	20								Chr6A																	
-Mace	Chr6B		3769	0.194	linear	18								Chr6B																	
-Mace	Chr6D		3760	0.132	linear	10								Chr6D																	
-Mace	Chr7A		4879	0.152	linear	9								Chr7A																	
-Mace	Chr7B		4129	0.183	linear	15								Chr7B																	
-Mace	Chr7D		5236	0.123	linear	7								Chr7D																	
-SY_Mattis	Chr1A		3735	0.16	linear	11		Chr1A	3735.0	0.0	False																				
-SY_Mattis	Chr1B		4184	0.167	linear	16		Chr1B	4184.0	0.0	False																				
-SY_Mattis	Chr1D		4318	0.115	linear	4		Chr1D	4318.0	0.0	False																				
-SY_Mattis	Chr2A		5018	0.157	linear	16		Chr2A	5018.0	0.0	False																				
-SY_Mattis	Chr2B		5258	0.154	linear	11		Chr2B	5258.0	0.0	False																				
-SY_Mattis	Chr2D		5444	0.121	linear	8		Chr2D	5444.0	0.0	False																				
-SY_Mattis	Chr3A		4920	0.153	linear	13		Chr3A	4920.0	0.0	False																				
-SY_Mattis	Chr3B		5341	0.16	linear	22		Chr3B	5341.0	0.0	False																				
-SY_Mattis	Chr3D		4758	0.13	linear	13		Chr3D	4758.0	0.0	False																				
-SY_Mattis	Chr4A		3987	0.189	linear	23		Chr4A	3987.0	0.0	False																				
-SY_Mattis	Chr4B		3599	0.186	linear	23		Chr4B	3599.0	0.0	False																				
-SY_Mattis	Chr4D		3437	0.147	linear	18		Chr4D	3437.0	0.0	False																				
-SY_Mattis	Chr5A		5120	0.139	linear	14		Chr5A	5120.0	0.0	False																				
-SY_Mattis	Chr5B		4650	0.157	linear/linear	10		Chr5B/Chr7B	929.0	3721.0	True																				
-SY_Mattis	Chr5D		5382	0.106	linear	4		Chr5D	5382.0	0.0	False																				
-SY_Mattis	Chr6A		3792	0.164	linear	17		Chr6A	3792.0	0.0	False																				
-SY_Mattis	Chr6B		3410	0.214	linear	27		Chr6B	3410.0	0.0	False																				
-SY_Mattis	Chr6D		3731	0.132	linear	11		Chr6D	3731.0	0.0	False																				
-SY_Mattis	Chr7A		4920	0.151	linear	7		Chr7A	4920.0	0.0	False																				
-SY_Mattis	Chr7B		4353	0.177	linear/linear	15		Chr5B/Chr7B	1768.0	2585.0	True																				
-SY_Mattis	Chr7D		5185	0.124	linear	7		Chr7D	5185.0	0.0	False																				
-Julius	Chr1A		3759	0.157	linear	13									Chr1A																
-Julius	Chr1B		4266	0.164	linear	14									Chr1B																
-Julius	Chr1D		4340	0.115	linear	4									Chr1D																
-Julius	Chr2A		5342	0.147	linear	14									Chr2A																
-Julius	Chr2B		5191	0.157	linear	12									Chr2B																
-Julius	Chr2D		5293	0.123	linear	8									Chr2D																
-Julius	Chr3A		4945	0.152	linear	13									Chr3A																
-Julius	Chr3B		5318	0.159	linear	22									Chr3B																
-Julius	Chr3D		5036	0.123	linear	11									Chr3D																
-Julius	Chr4A		3895	0.194	linear	24									Chr4A																
-Julius	Chr4B		3405	0.196	linear	7									Chr4B																
-Julius	Chr4D		3424	0.148	linear	17									Chr4D																
-Julius	Chr5A		5103	0.14	linear	13									Chr5A																
-Julius	Chr5B		4915	0.145	linear	10									Chr5B																
-Julius	Chr5D		5384	0.106	linear	5									Chr5D																
-Julius	Chr6A		3479	0.175	linear	20									Chr6A																
-Julius	Chr6B		3525	0.207	linear	25									Chr6B																
-Julius	Chr6D		3689	0.132	linear	12									Chr6D																
-Julius	Chr7A		4753	0.155	linear	8									Chr7A																
-Julius	Chr7B		4232	0.179	linear	11									Chr7B																
-Julius	Chr7D		5263	0.122	linear	7									Chr7D																
-Landmark	Chr1A		3908	0.153	linear	11										Chr1A															
-Landmark	Chr1B		4215	0.165	linear	14										Chr1B															
-Landmark	Chr1D		4244	0.118	linear	4										Chr1D															
-Landmark	Chr2A		5380	0.146	linear	15										Chr2A															
-Landmark	Chr2B		5322	0.151	linear	11										Chr2B															
-Landmark	Chr2D		5665	0.116	linear	7										Chr2D															
-Landmark	Chr3A		4823	0.156	linear	17										Chr3A															
-Landmark	Chr3B		5242	0.162	linear	21										Chr3B															
-Landmark	Chr3D		4433	0.14	linear	12										Chr3D															
-Landmark	Chr4A		3893	0.194	linear	25										Chr4A															
-Landmark	Chr4B		3552	0.19	linear	10										Chr4B															
-Landmark	Chr4D		3409	0.148	linear	17										Chr4D															
-Landmark	Chr5A		5011	0.142	linear	14										Chr5A															
-Landmark	Chr5B		5068	0.141	linear	11										Chr5B															
-Landmark	Chr5D		5309	0.107	linear	5										Chr5D															
-Landmark	Chr6A		3627	0.172	linear	19										Chr6A															
-Landmark	Chr6B		3675	0.199	linear	20										Chr6B															
-Landmark	Chr6D		3810	0.13	linear	12										Chr6D															
-Landmark	Chr7A		5071	0.147	linear	5										Chr7A															
-Landmark	Chr7B		4316	0.176	linear	12										Chr7B															
-Landmark	Chr7D		5162	0.124	linear	8										Chr7D															
-Norin61	Chr1A		4042	0.148	linear	8											Chr1A														
-Norin61	Chr1B		4287	0.162	linear	15											Chr1B														
-Norin61	Chr1D		4341	0.115	linear	4											Chr1D														
-Norin61	Chr2A		5485	0.143	linear	20											Chr2A														
-Norin61	Chr2B		5706	0.142	linear	10											Chr2B														
-Norin61	Chr2D		5552	0.117	linear	8											Chr2D														
-Norin61	Chr3A		5065	0.149	linear	13											Chr3A														
-Norin61	Chr3B		5041	0.168	linear	15											Chr3B														
-Norin61	Chr3D		5200	0.119	linear	12											Chr3D														
-Norin61	Chr4A		4151	0.182	linear	23											Chr4A														
-Norin61	Chr4B		3698	0.182	linear	22											Chr4B														
-Norin61	Chr4D		3457	0.147	linear	18											Chr4D														
-Norin61	Chr5A		5343	0.133	linear	9											Chr5A														
-Norin61	Chr5B		5182	0.138	linear	15											Chr5B														
-Norin61	Chr5D		5253	0.107	linear	5											Chr5D														
-Norin61	Chr6A		3931	0.158	linear	16											Chr6A														
-Norin61	Chr6B		3943	0.185	linear	20											Chr6B														
-Norin61	Chr6D		3703	0.134	linear	14											Chr6D														
-Norin61	Chr7A		5163	0.143	linear	6											Chr7A														
-Norin61	Chr7B		4229	0.179	linear	13											Chr7B														
-Norin61	Chr7D		5205	0.123	linear	6											Chr7D														
-Aikang58	Chr1A		3767	0.159	linear	12												Chr1A													
-Aikang58	Chr1B		3337	0.21	linear	22												Chr1B													
-Aikang58	Chr1D		4337	0.115	linear	4												Chr1D													
-Aikang58	Chr2A		5056	0.155	linear	26												Chr2A													
-Aikang58	Chr2B		5163	0.157	linear	13												Chr2B													
-Aikang58	Chr2D		5421	0.119	linear	8												Chr2D													
-Aikang58	Chr3A		4853	0.155	linear	14												Chr3A													
-Aikang58	Chr3B		5376	0.158	linear	20												Chr3B													
-Aikang58	Chr3D		5077	0.122	linear	15												Chr3D													
-Aikang58	Chr4A		4112	0.181	linear	21												Chr4A													
-Aikang58	Chr4B		3662	0.184	linear	16												Chr4B													
-Aikang58	Chr4D		3510	0.146	linear	17												Chr4D													
-Aikang58	Chr5A		4962	0.144	linear	15												Chr5A													
-Aikang58	Chr5B		4925	0.145	linear	10												Chr5B													
-Aikang58	Chr5D		5340	0.107	linear	5												Chr5D													
-Aikang58	Chr6A		3726	0.167	linear	16												Chr6A													
-Aikang58	Chr6B		3907	0.187	linear	15												Chr6B													
-Aikang58	Chr6D		3826	0.129	linear	11												Chr6D													
-Aikang58	Chr7A		4767	0.156	linear	8												Chr7A													
-Aikang58	Chr7B		3745	0.203	linear	9												Chr7B													
-Aikang58	Chr7D		5139	0.124	linear	7												Chr7D													
-Chuanmai104	Chr1A		3712	0.16	linear	11													Chr1A												
-Chuanmai104	Chr1B		4223	0.166	linear	17													Chr1B												
-Chuanmai104	Chr1D		4331	0.115	linear	4													Chr1D												
-Chuanmai104	Chr2A		5370	0.146	linear	15													Chr2A												
-Chuanmai104	Chr2B		5540	0.146	linear	11													Chr2B												
-Chuanmai104	Chr2D		5723	0.115	linear	7													Chr2D												
-Chuanmai104	Chr3A		5019	0.15	linear	12													Chr3A												
-Chuanmai104	Chr3B		5173	0.165	linear	18													Chr3B												
-Chuanmai104	Chr3D		4862	0.127	linear	13													Chr3D												
-Chuanmai104	Chr4A		3293	0.228	linear	22													Chr4A												
-Chuanmai104	Chr4B		3591	0.188	linear	8													Chr4B												
-Chuanmai104	Chr4D		3540	0.145	linear	17													Chr4D												
-Chuanmai104	Chr5A		5201	0.137	linear	10													Chr5A												
-Chuanmai104	Chr5B		5151	0.139	linear	12													Chr5B												
-Chuanmai104	Chr5D		5422	0.105	linear	4													Chr5D												
-Chuanmai104	Chr6A		3780	0.164	linear	18													Chr6A												
-Chuanmai104	Chr6B		3866	0.189	linear	18													Chr6B												
-Chuanmai104	Chr6D		3908	0.127	linear	11													Chr6D												
-Chuanmai104	Chr7A		4990	0.149	linear	8													Chr7A												
-Chuanmai104	Chr7B		4315	0.177	linear	9													Chr7B												
-Chuanmai104	Chr7D		5067	0.124	linear	7													Chr7D												
-CS_IAAS	Chr1A		4333	0.138	linear	8														Chr1A											
-CS_IAAS	Chr1B		4636	0.149	linear	11														Chr1B											
-CS_IAAS	Chr1D		4417	0.113	linear	4														Chr1D											
-CS_IAAS	Chr2A		5723	0.137	linear	18														Chr2A											
-CS_IAAS	Chr2B		6103	0.133	linear	9														Chr2B											
-CS_IAAS	Chr2D		5854	0.112	pchip	7														Chr2D											
-CS_IAAS	Chr3A		5209	0.145	linear	12														Chr3A											
-CS_IAAS	Chr3B		5854	0.146	linear	18														Chr3B											
-CS_IAAS	Chr3D		4791	0.125	linear	11														Chr3D											
-CS_IAAS	Chr4A		4713	0.16	linear	18														Chr4A											
-CS_IAAS	Chr4B		3852	0.175	linear	21														Chr4B											
-CS_IAAS	Chr4D		3564	0.144	pchip	17														Chr4D											
-CS_IAAS	Chr5A		5425	0.132	linear	9														Chr5A											
-CS_IAAS	Chr5B		5520	0.129	linear	9														Chr5B											
-CS_IAAS	Chr5D		5501	0.104	linear	4														Chr5D											
-CS_IAAS	Chr6A		4124	0.151	pchip	16														Chr6A											
-CS_IAAS	Chr6B		4595	0.159	linear	21														Chr6B											
-CS_IAAS	Chr6D		3998	0.124	linear	11														Chr6D											
-CS_IAAS	Chr7A		5518	0.135	linear	5														Chr7A											
-CS_IAAS	Chr7B		4772	0.16	linear	10														Chr7B											
-CS_IAAS	Chr7D		5177	0.122	linear	6														Chr7D											
-CS_CAU	Chr1A		4326	0.138	pchip	8															Chr1A										
-CS_CAU	Chr1B		4606	0.152	linear	10															Chr1B										
-CS_CAU	Chr1D		4426	0.113	linear	4															Chr1D										
-CS_CAU	Chr2A		5785	0.136	linear	18															Chr2A										
-CS_CAU	Chr2B		6087	0.134	linear	9															Chr2B										
-CS_CAU	Chr2D		5847	0.112	linear	7															Chr2D										
-CS_CAU	Chr3A		5200	0.145	linear	12															Chr3A										
-CS_CAU	Chr3B		5876	0.145	linear	20															Chr3B										
-CS_CAU	Chr3D		4786	0.125	linear	11															Chr3D										
-CS_CAU	Chr4A		4284	0.176	linear	20															Chr4A										
-CS_CAU	Chr4B		3846	0.175	linear	21															Chr4B										
-CS_CAU	Chr4D		3559	0.145	pchip	17															Chr4D										
-CS_CAU	Chr5A		5415	0.131	linear	9															Chr5A										
-CS_CAU	Chr5B		5468	0.131	linear	9															Chr5B										
-CS_CAU	Chr5D		5526	0.103	linear	4															Chr5D										
-CS_CAU	Chr6A		4118	0.151	pchip	16															Chr6A										
-CS_CAU	Chr6B		4468	0.164	linear	19															Chr6B										
-CS_CAU	Chr6D		3962	0.125	linear	11															Chr6D										
-CS_CAU	Chr7A		5521	0.135	linear	5															Chr7A										
-CS_CAU	Chr7B		4773	0.16	linear	10															Chr7B										
-CS_CAU	Chr7D		5372	0.12	linear	6															Chr7D										
-Sumai3	Chr1A		3880	0.154	linear	11																Chr1A									
-Sumai3	Chr1B		4343	0.161	linear	18																Chr1B									
-Sumai3	Chr1D		4390	0.114	linear	4																Chr1D									
-Sumai3	Chr2A		5446	0.144	linear	15																Chr2A									
-Sumai3	Chr2B		5663	0.143	linear	8																Chr2B									
-Sumai3	Chr2D		5667	0.115	linear	8																Chr2D									
-Sumai3	Chr3A		5001	0.151	linear	13																Chr3A									
-Sumai3	Chr3B		4738	0.179	linear	20																Chr3B									
-Sumai3	Chr3D		4729	0.13	linear	11																Chr3D									
-Sumai3	Chr4A		3748	0.2	linear	24																Chr4A									
-Sumai3	Chr4B		3571	0.189	linear	10																Chr4B									
-Sumai3	Chr4D		3491	0.147	linear	19																Chr4D									
-Sumai3	Chr5A		5286	0.135	linear	9																Chr5A									
-Sumai3	Chr5B		5189	0.138	linear	10																Chr5B									
-Sumai3	Chr5D		5464	0.104	linear	4																Chr5D									
-Sumai3	Chr6A		3925	0.159	linear	16																Chr6A									
-Sumai3	Chr6B		3925	0.186	linear	21																Chr6B									
-Sumai3	Chr6D		3860	0.128	linear	12																Chr6D									
-Sumai3	Chr7A		4933	0.151	linear	7																Chr7A									
-Sumai3	Chr7B		4361	0.175	linear	12																Chr7B									
-Sumai3	Chr7D		5067	0.126	linear	8																Chr7D									
-JIN50	Chr1A		4018	0.148	linear	10																	Chr1A								
-JIN50	Chr1B		4157	0.168	linear	14																	Chr1B								
-JIN50	Chr1D		4356	0.114	linear	4																	Chr1D								
-JIN50	Chr2A		4918	0.156	linear	17																	Chr2A								
-JIN50	Chr2B		5602	0.145	linear	10																	Chr2B								
-JIN50	Chr2D		5743	0.114	linear	7																	Chr2D								
-JIN50	Chr3A		4990	0.15	linear	12																	Chr3A								
-JIN50	Chr3B		4506	0.189	linear	18																	Chr3B								
-JIN50	Chr3D		4724	0.13	linear	12																	Chr3D								
-JIN50	Chr4A		3388	0.219	linear	26																	Chr4A								
-JIN50	Chr4B		3587	0.188	linear	9																	Chr4B								
-JIN50	Chr4D		3547	0.145	linear	17																	Chr4D								
-JIN50	Chr5A		5219	0.137	linear	11																	Chr5A								
-JIN50	Chr5B		4982	0.143	linear	12																	Chr5B								
-JIN50	Chr5D		4367	0.098	linear	4																	Chr5D								
-JIN50	Chr6A		3728	0.166	linear	17																	Chr6A								
-JIN50	Chr6B		3553	0.205	linear	17																	Chr6B								
-JIN50	Chr6D		3732	0.132	linear	11																	Chr6D								
-JIN50	Chr7A		5118	0.145	linear	8																	Chr7A								
-JIN50	Chr7B		4395	0.174	linear	14																	Chr7B								
-JIN50	Chr7D		5144	0.123	linear	7																	Chr7D								
-MOV	Chr1A		3849	0.155	linear	11																		Chr1A							
-MOV	Chr1B		3609	0.193	linear	27																		Chr1B							
-MOV	Chr1D		2980	0.163	linear	9																		Chr1D							
-MOV	Chr2A		5047	0.156	linear	17																		Chr2A							
-MOV	Chr2B		4646	0.173	linear	25																		Chr2B							
-MOV	Chr2D		5078	0.128	linear	8																		Chr2D							
-MOV	Chr3A		4698	0.161	linear	17																		Chr3A							
-MOV	Chr3B		4558	0.187	linear	38																		Chr3B							
-MOV	Chr3D		4253	0.143	linear	14																		Chr3D							
-MOV	Chr4A		3759	0.199	linear	27																		Chr4A							
-MOV	Chr4B		3103	0.217	linear	22																		Chr4B							
-MOV	Chr4D		3159	0.163	linear	10																		Chr4D							
-MOV	Chr5A		4957	0.143	linear	18																		Chr5A							
-MOV	Chr5B		3886	0.184	linear	27																		Chr5B							
-MOV	Chr5D		4719	0.12	linear	11																		Chr5D							
-MOV	Chr6A		3308	0.188	linear	21																		Chr6A							
-MOV	Chr6B		3099	0.236	linear	35																		Chr6B							
-MOV	Chr6D		3309	0.149	linear	14																		Chr6D							
-MOV	Chr7A		4516	0.165	linear	13																		Chr7A							
-MOV	Chr7B		3934	0.194	linear	28																		Chr7B							
-MOV	Chr7D		4732	0.136	pchip	9																		Chr7D							
-CS_v1	Chr1A		4307	0.139	linear	8																			Chr1A						
-CS_v1	Chr1B		4685	0.149	linear	11																			Chr1B						
-CS_v1	Chr1D		4444	0.112	linear	4																			Chr1D						
-CS_v1	Chr2A		5286	0.147	linear	23																			Chr2A						
-CS_v1	Chr2B		5727	0.141	linear	7																			Chr2B						
-CS_v1	Chr2D		5615	0.116	linear	8																			Chr2D						
-CS_v1	Chr3A		5124	0.147	linear	13																			Chr3A						
-CS_v1	Chr3B		5664	0.148	linear	18																			Chr3B						
-CS_v1	Chr3D		5175	0.12	linear	13																			Chr3D						
-CS_v1	Chr4A		4691	0.161	linear	17																			Chr4A						
-CS_v1	Chr4B		3848	0.175	linear	20																			Chr4B						
-CS_v1	Chr4D		3528	0.144	linear	17																			Chr4D						
-CS_v1	Chr5A		5312	0.134	linear	12																			Chr5A						
-CS_v1	Chr5B		5451	0.131	linear	10																			Chr5B						
-CS_v1	Chr5D		5499	0.104	linear	4																			Chr5D						
-CS_v1	Chr6A		4092	0.152	linear	16																			Chr6A						
-CS_v1	Chr6B		4531	0.161	linear	21																			Chr6B						
-CS_v1	Chr6D		3953	0.125	linear	13																			Chr6D						
-CS_v1	Chr7A		5486	0.136	linear	5																			Chr7A						
-CS_v1	Chr7B		4138	0.184	linear	8																			Chr7B						
-CS_v1	Chr7D		5315	0.121	linear	6																			Chr7D						
-Fielder	Chr1A		4084	0.147	linear	10																				Chr1A					
-Fielder	Chr1B		4276	0.164	linear	13																				Chr1B					
-Fielder	Chr1D		4074	0.12	linear	5																				Chr1D					
-Fielder	Chr2A		5247	0.148	linear	16																				Chr2A					
-Fielder	Chr2B		5393	0.15	linear	12																				Chr2B					
-Fielder	Chr2D		5181	0.123	linear	8																				Chr2D					
-Fielder	Chr3A		4552	0.164	linear	14																				Chr3A					
-Fielder	Chr3B		5091	0.167	linear	21																				Chr3B					
-Fielder	Chr3D		4199	0.147	linear	14																				Chr3D					
-Fielder	Chr4A		3480	0.216	linear	25																				Chr4A					
-Fielder	Chr4B		3684	0.183	linear	22																				Chr4B					
-Fielder	Chr4D		3540	0.145	linear	18																				Chr4D					
-Fielder	Chr5A		5230	0.136	linear	11																				Chr5A					
-Fielder	Chr5B		5083	0.141	linear	10																				Chr5B					
-Fielder	Chr5D		5257	0.108	linear	6																				Chr5D					
-Fielder	Chr6A		3665	0.169	linear	17																				Chr6A					
-Fielder	Chr6B		3630	0.201	linear	23																				Chr6B					
-Fielder	Chr6D		3528	0.139	linear	12																				Chr6D					
-Fielder	Chr7A		4931	0.151	linear	8																				Chr7A					
-Fielder	Chr7B		4113	0.185	linear	9																				Chr7B					
-Fielder	Chr7D		5240	0.123	linear	7																				Chr7D					
-Kariega	Chr1A		3747	0.159	linear	12																					Chr1A				
-Kariega	Chr1B		3962	0.177	linear	15																					Chr1B				
-Kariega	Chr1D		4378	0.114	linear	4																					Chr1D				
-Kariega	Chr2A		5400	0.146	linear	16																					Chr2A				
-Kariega	Chr2B		5609	0.145	linear	10																					Chr2B				
-Kariega	Chr2D		5727	0.115	linear	7																					Chr2D				
-Kariega	Chr3A		4783	0.158	linear	17																					Chr3A				
-Kariega	Chr3B		5396	0.158	linear	21																					Chr3B				
-Kariega	Chr3D		4832	0.128	linear	14																					Chr3D				
-Kariega	Chr4A		3309	0.213	linear	24																					Chr4A				
-Kariega	Chr4B		3765	0.179	linear	20																					Chr4B				
-Kariega	Chr4D		3549	0.145	linear	17																					Chr4D				
-Kariega	Chr5A		5237	0.136	linear	11																					Chr5A				
-Kariega	Chr5B		5062	0.141	linear	12																					Chr5B				
-Kariega	Chr5D		5193	0.11	linear	5																					Chr5D				
-Kariega	Chr6A		3799	0.164	linear	16																					Chr6A				
-Kariega	Chr6B		3464	0.211	linear	16																					Chr6B				
-Kariega	Chr6D		3848	0.129	linear	12																					Chr6D				
-Kariega	Chr7A		4672	0.159	linear	9																					Chr7A				
-Kariega	Chr7B		4356	0.175	linear	13																					Chr7B				
-Kariega	Chr7D		5302	0.121	linear	7																					Chr7D				
-Attraktion	Chr1A		3414	0.168	linear	11																						Chr1A			
-Attraktion	Chr1B		3965	0.175	linear	16																						Chr1B			
-Attraktion	Chr1D		4314	0.116	linear	4																						Chr1D			
-Attraktion	Chr2A		5316	0.148	linear	15																						Chr2A			
-Attraktion	Chr2B		5170	0.157	linear	10																						Chr2B			
-Attraktion	Chr2D		5425	0.121	linear	9																						Chr2D			
-Attraktion	Chr3A		4993	0.151	linear	13																						Chr3A			
-Attraktion	Chr3B		5249	0.162	linear	24																						Chr3B			
-Attraktion	Chr3D		5106	0.121	linear	11																						Chr3D			
-Attraktion	Chr4A		3936	0.19	linear	22																						Chr4A			
-Attraktion	Chr4B		3341	0.199	linear	13																						Chr4B			
-Attraktion	Chr4D		3461	0.147	linear	18																						Chr4D			
-Attraktion	Chr5A		5175	0.137	linear	11																						Chr5A			
-Attraktion	Chr5B		4803	0.149	linear	13																						Chr5B			
-Attraktion	Chr5D		5323	0.107	linear	5																						Chr5D			
-Attraktion	Chr6A		3655	0.169	linear	17																						Chr6A			
-Attraktion	Chr6B		3471	0.211	linear	29																						Chr6B			
-Attraktion	Chr6D		3783	0.131	linear	11																						Chr6D			
-Attraktion	Chr7A		4908	0.152	linear	6																						Chr7A			
-Attraktion	Chr7B		4242	0.18	linear	9																						Chr7B			
-Attraktion	Chr7D		5191	0.124	linear	7																						Chr7D			
-Renan_v2	Chr1A		3735	0.16	linear	8																							Chr1A		
-Renan_v2	Chr1B		3888	0.18	linear	18																							Chr1B		
-Renan_v2	Chr1D		3947	0.126	linear	6																							Chr1D		
-Renan_v2	Chr2A		4729	0.166	linear	17																							Chr2A		
-Renan_v2	Chr2B		5101	0.159	linear	13																							Chr2B		
-Renan_v2	Chr2D		4472	0.143	linear	11																							Chr2D		
-Renan_v2	Chr3A		4374	0.172	linear	17																							Chr3A		
-Renan_v2	Chr3B		5068	0.168	linear	20																							Chr3B		
-Renan_v2	Chr3D		4862	0.127	linear	10																							Chr3D		
-Renan_v2	Chr4A		3668	0.206	linear	25																							Chr4A		
-Renan_v2	Chr4B		3315	0.203	linear	11																							Chr4B		
-Renan_v2	Chr4D		3262	0.158	linear	18																							Chr4D		
-Renan_v2	Chr5A		4892	0.146	linear	13																							Chr5A		
-Renan_v2	Chr5B		4786	0.149	linear	12																							Chr5B		
-Renan_v2	Chr5D		5054	0.113	linear	7																							Chr5D		
-Renan_v2	Chr6A		3498	0.178	linear	18																							Chr6A		
-Renan_v2	Chr6B		3548	0.206	linear	20																							Chr6B		
-Renan_v2	Chr6D		3526	0.14	linear	11																							Chr6D		
-Renan_v2	Chr7A		4556	0.163	linear	10																							Chr7A		
-Renan_v2	Chr7B		3951	0.193	linear	15																							Chr7B		
-Renan_v2	Chr7D		4668	0.137	linear	10																							Chr7D		
-Paragon_v3	Chr1A		3813	0.157	linear	11																								Chr1A	
-Paragon_v3	Chr1B		4197	0.165	linear	17																								Chr1B	
-Paragon_v3	Chr1D		4321	0.115	linear	4																								Chr1D	
-Paragon_v3	Chr2A		5416	0.145	linear	14																								Chr2A	
-Paragon_v3	Chr2B		5477	0.148	linear	12																								Chr2B	
-Paragon_v3	Chr2D		5588	0.117	linear	7																								Chr2D	
-Paragon_v3	Chr3A		4982	0.151	linear	12																								Chr3A	
-Paragon_v3	Chr3B		5455	0.156	linear	19																								Chr3B	
-Paragon_v3	Chr3D		4737	0.126	linear	11																								Chr3D	
-Paragon_v3	Chr4A		3465	0.218	linear	29																								Chr4A	
-Paragon_v3	Chr4B		3533	0.191	linear	8																								Chr4B	
-Paragon_v3	Chr4D		3530	0.146	linear	17																								Chr4D	
-Paragon_v3	Chr5A		5228	0.136	linear	11																								Chr5A	
-Paragon_v3	Chr5B		4998	0.141	linear	12																								Chr5B	
-Paragon_v3	Chr5D		5421	0.105	linear	4																								Chr5D	
-Paragon_v3	Chr6A		3897	0.16	linear	16																								Chr6A	
-Paragon_v3	Chr6B		3733	0.196	linear	16																								Chr6B	
-Paragon_v3	Chr6D		3882	0.128	linear	11																								Chr6D	
-Paragon_v3	Chr7A		4971	0.15	linear	9																								Chr7A	
-Paragon_v3	Chr7B		4434	0.172	linear	12																								Chr7B	
-Paragon_v3	Chr7D		5312	0.121	linear	7																								Chr7D	
-Cadenza_v2	Chr1A		3821	0.157	linear	11																									Chr1A
-Cadenza_v2	Chr1B		4198	0.166	linear	20																									Chr1B
-Cadenza_v2	Chr1D		4194	0.119	linear	4																									Chr1D
-Cadenza_v2	Chr2A		5507	0.143	linear	15																									Chr2A
-Cadenza_v2	Chr2B		5414	0.15	linear	12																									Chr2B
-Cadenza_v2	Chr2D		5444	0.12	linear	8																									Chr2D
-Cadenza_v2	Chr3A		5008	0.151	linear	12																									Chr3A
-Cadenza_v2	Chr3B		5410	0.157	linear	19																									Chr3B
-Cadenza_v2	Chr3D		4740	0.126	linear	11																									Chr3D
-Cadenza_v2	Chr4A		3336	0.226	linear	24																									Chr4A
-Cadenza_v2	Chr4B		3628	0.186	linear	9																									Chr4B
-Cadenza_v2	Chr4D		3554	0.145	linear	17																									Chr4D
-Cadenza_v2	Chr5A		5229	0.136	linear	11																									Chr5A
-Cadenza_v2	Chr5B		5035	0.142	linear	11																									Chr5B
-Cadenza_v2	Chr5D		5423	0.105	linear	4																									Chr5D
-Cadenza_v2	Chr6A		3924	0.159	linear	16																									Chr6A
-Cadenza_v2	Chr6B		3777	0.194	linear	18																									Chr6B
-Cadenza_v2	Chr6D		3868	0.128	linear	11																									Chr6D
-Cadenza_v2	Chr7A		4948	0.15	linear	7																									Chr7A
-Cadenza_v2	Chr7B		4413	0.173	linear	12																									Chr7B
-Cadenza_v2	Chr7D		5224	0.123	linear	9																									Chr7D
+cs_chr	tgt_chr	n_anchors	mean_anchor_gap_Mb	interp_type	n_segments	mean_anchor_fraction
+Aikang58	Chr1A	Chr1A	3767	0.159	linear	1	0.918
+Aikang58	Chr1B	Chr1B	3337	0.21	linear	1	0.691
+Aikang58	Chr1D	Chr1D	4337	0.115	linear	1	0.971
+Aikang58	Chr2A	Chr2A	5056	0.155	linear	1	0.896
+Aikang58	Chr2B	Chr2B	5163	0.157	linear	1	0.854
+Aikang58	Chr2D	Chr2D	5421	0.119	linear	1	0.951
+Aikang58	Chr3A	Chr3A	4853	0.155	linear	1	0.947
+Aikang58	Chr3B	Chr3B	5376	0.158	linear	1	0.914
+Aikang58	Chr3D	Chr3D	5077	0.122	linear	1	0.952
+Aikang58	Chr4A	Chr4A	4112	0.181	linear	1	0.825
+Aikang58	Chr4B	Chr4B	3662	0.184	linear	1	0.901
+Aikang58	Chr4D	Chr4D	3510	0.146	linear	1	0.976
+Aikang58	Chr5A	Chr5A	4962	0.144	linear	1	0.909
+Aikang58	Chr5B	Chr5B	4925	0.145	linear	1	0.891
+Aikang58	Chr5D	Chr5D	5340	0.107	linear	1	0.966
+Aikang58	Chr6A	Chr6A	3726	0.167	linear	1	0.953
+Aikang58	Chr6B	Chr6B	3907	0.187	linear	1	0.802
+Aikang58	Chr6D	Chr6D	3826	0.129	linear	1	0.975
+Aikang58	Chr7A	Chr7A	4767	0.156	linear	1	0.898
+Aikang58	Chr7B	Chr7B	3745	0.203	linear	1	0.692
+Aikang58	Chr7D	Chr7D	5139	0.124	linear	1	0.966
+ArinaLrFor	Chr1A	Chr1A	3649	0.164	linear	1	0.906
+ArinaLrFor	Chr1B	Chr1B	4176	0.167	linear	1	0.914
+ArinaLrFor	Chr1D	Chr1D	4326	0.115	linear	1	0.968
+ArinaLrFor	Chr2A	Chr2A	5433	0.145	linear	1	0.895
+ArinaLrFor	Chr2B	Chr2B	5187	0.156	linear	1	0.836
+ArinaLrFor	Chr2D	Chr2D	5030	0.128	linear	1	0.914
+ArinaLrFor	Chr3A	Chr3A	4773	0.157	linear	1	0.938
+ArinaLrFor	Chr3B	Chr3B	5164	0.165	linear	1	0.876
+ArinaLrFor	Chr3D	Chr3D	4683	0.127	linear	1	0.95
+ArinaLrFor	Chr4A	Chr4A	4053	0.186	linear	1	0.806
+ArinaLrFor	Chr4B	Chr4B	3529	0.19	linear	1	0.796
+ArinaLrFor	Chr4D	Chr4D	3447	0.147	linear	1	0.964
+ArinaLrFor	Chr5A	Chr5A	5011	0.142	linear	1	0.879
+ArinaLrFor	Chr5B	Chr5B+Chr7B	4801	0.155	linear+linear	2	0.843
+ArinaLrFor	Chr5D	Chr5D	5361	0.106	linear	1	0.973
+ArinaLrFor	Chr6A	Chr6A	3730	0.166	linear	1	0.952
+ArinaLrFor	Chr6B	Chr6B	3700	0.198	linear	1	0.714
+ArinaLrFor	Chr6D	Chr6D	3831	0.129	linear	1	0.959
+ArinaLrFor	Chr7A	Chr7A	4795	0.155	linear	1	0.908
+ArinaLrFor	Chr7B	Chr5B+Chr7B	4351	0.177	linear+linear	2	0.893
+ArinaLrFor	Chr7D	Chr7D	5244	0.123	linear	1	0.974
+Attraktion	Chr1A	Chr1A	3414	0.168	linear	1	0.887
+Attraktion	Chr1B	Chr1B	3965	0.175	linear	1	0.878
+Attraktion	Chr1D	Chr1D	4314	0.116	linear	1	0.965
+Attraktion	Chr2A	Chr2A	5316	0.148	linear	1	0.891
+Attraktion	Chr2B	Chr2B	5170	0.157	linear	1	0.885
+Attraktion	Chr2D	Chr2D	5425	0.121	linear	1	0.943
+Attraktion	Chr3A	Chr3A	4993	0.151	linear	1	0.966
+Attraktion	Chr3B	Chr3B	5249	0.162	linear	1	0.894
+Attraktion	Chr3D	Chr3D	5106	0.121	linear	1	0.974
+Attraktion	Chr4A	Chr4A	3936	0.19	linear	1	0.805
+Attraktion	Chr4B	Chr4B	3341	0.199	linear	1	0.775
+Attraktion	Chr4D	Chr4D	3461	0.147	linear	1	0.967
+Attraktion	Chr5A	Chr5A	5175	0.137	linear	1	0.948
+Attraktion	Chr5B	Chr5B	4803	0.149	linear	1	0.839
+Attraktion	Chr5D	Chr5D	5323	0.107	linear	1	0.968
+Attraktion	Chr6A	Chr6A	3655	0.169	linear	1	0.945
+Attraktion	Chr6B	Chr6B	3471	0.211	linear	1	0.728
+Attraktion	Chr6D	Chr6D	3783	0.131	linear	1	0.958
+Attraktion	Chr7A	Chr7A	4908	0.152	linear	1	0.929
+Attraktion	Chr7B	Chr7B	4242	0.18	linear	1	0.82
+Attraktion	Chr7D	Chr7D	5191	0.124	linear	1	0.966
+CS_CAU	Chr1A	Chr1A	4326	0.138	pchip	1	0.99
+CS_CAU	Chr1B	Chr1B	4606	0.152	linear	1	0.96
+CS_CAU	Chr1D	Chr1D	4426	0.113	linear	1	0.984
+CS_CAU	Chr2A	Chr2A	5785	0.136	linear	1	0.983
+CS_CAU	Chr2B	Chr2B	6087	0.134	linear	1	0.98
+CS_CAU	Chr2D	Chr2D	5847	0.112	linear	1	0.991
+CS_CAU	Chr3A	Chr3A	5200	0.145	linear	1	0.994
+CS_CAU	Chr3B	Chr3B	5876	0.145	linear	1	0.987
+CS_CAU	Chr3D	Chr3D	4786	0.125	linear	1	0.962
+CS_CAU	Chr4A	Chr4A	4284	0.176	linear	1	0.826
+CS_CAU	Chr4B	Chr4B	3846	0.175	linear	1	0.992
+CS_CAU	Chr4D	Chr4D	3559	0.145	pchip	1	0.992
+CS_CAU	Chr5A	Chr5A	5415	0.131	linear	1	0.994
+CS_CAU	Chr5B	Chr5B	5468	0.131	linear	1	0.956
+CS_CAU	Chr5D	Chr5D	5526	0.103	linear	1	0.991
+CS_CAU	Chr6A	Chr6A	4118	0.151	pchip	1	0.992
+CS_CAU	Chr6B	Chr6B	4468	0.164	linear	1	0.889
+CS_CAU	Chr6D	Chr6D	3962	0.125	linear	1	0.992
+CS_CAU	Chr7A	Chr7A	5521	0.135	linear	1	0.992
+CS_CAU	Chr7B	Chr7B	4773	0.16	linear	1	0.942
+CS_CAU	Chr7D	Chr7D	5372	0.12	linear	1	0.991
+CS_IAAS	Chr1A	Chr1A	4333	0.138	linear	1	0.993
+CS_IAAS	Chr1B	Chr1B	4636	0.149	linear	1	0.984
+CS_IAAS	Chr1D	Chr1D	4417	0.113	linear	1	0.985
+CS_IAAS	Chr2A	Chr2A	5723	0.137	linear	1	0.979
+CS_IAAS	Chr2B	Chr2B	6103	0.133	linear	1	0.977
+CS_IAAS	Chr2D	Chr2D	5854	0.112	pchip	1	0.991
+CS_IAAS	Chr3A	Chr3A	5209	0.145	linear	1	0.996
+CS_IAAS	Chr3B	Chr3B	5854	0.146	linear	1	0.977
+CS_IAAS	Chr3D	Chr3D	4791	0.125	linear	1	0.963
+CS_IAAS	Chr4A	Chr4A	4713	0.16	linear	1	0.888
+CS_IAAS	Chr4B	Chr4B	3852	0.175	linear	1	0.993
+CS_IAAS	Chr4D	Chr4D	3564	0.144	pchip	1	0.993
+CS_IAAS	Chr5A	Chr5A	5425	0.132	linear	1	0.996
+CS_IAAS	Chr5B	Chr5B	5520	0.129	linear	1	0.988
+CS_IAAS	Chr5D	Chr5D	5501	0.104	linear	1	0.99
+CS_IAAS	Chr6A	Chr6A	4124	0.151	pchip	1	0.995
+CS_IAAS	Chr6B	Chr6B	4595	0.159	linear	1	0.988
+CS_IAAS	Chr6D	Chr6D	3998	0.124	linear	1	0.998
+CS_IAAS	Chr7A	Chr7A	5518	0.135	linear	1	0.993
+CS_IAAS	Chr7B	Chr7B	4772	0.16	linear	1	0.943
+CS_IAAS	Chr7D	Chr7D	5177	0.122	linear	1	0.977
+CS_v1	Chr1A	Chr1A	4307	0.139	linear	1	0.989
+CS_v1	Chr1B	Chr1B	4685	0.149	linear	1	0.993
+CS_v1	Chr1D	Chr1D	4444	0.112	linear	1	0.987
+CS_v1	Chr2A	Chr2A	5286	0.147	linear	1	0.915
+CS_v1	Chr2B	Chr2B	5727	0.141	linear	1	0.847
+CS_v1	Chr2D	Chr2D	5615	0.116	linear	1	0.973
+CS_v1	Chr3A	Chr3A	5124	0.147	linear	1	0.981
+CS_v1	Chr3B	Chr3B	5664	0.148	linear	1	0.963
+CS_v1	Chr3D	Chr3D	5175	0.12	linear	1	0.965
+CS_v1	Chr4A	Chr4A	4691	0.161	linear	1	0.887
+CS_v1	Chr4B	Chr4B	3848	0.175	linear	1	0.992
+CS_v1	Chr4D	Chr4D	3528	0.144	linear	1	0.977
+CS_v1	Chr5A	Chr5A	5312	0.134	linear	1	0.974
+CS_v1	Chr5B	Chr5B	5451	0.131	linear	1	0.986
+CS_v1	Chr5D	Chr5D	5499	0.104	linear	1	0.99
+CS_v1	Chr6A	Chr6A	4092	0.152	linear	1	0.989
+CS_v1	Chr6B	Chr6B	4531	0.161	linear	1	0.976
+CS_v1	Chr6D	Chr6D	3953	0.125	linear	1	0.987
+CS_v1	Chr7A	Chr7A	5486	0.136	linear	1	0.987
+CS_v1	Chr7B	Chr7B	4138	0.184	linear	1	0.749
+CS_v1	Chr7D	Chr7D	5315	0.121	linear	1	0.987
+Cadenza_v2	Chr1A	Chr1A	3821	0.157	linear	1	0.928
+Cadenza_v2	Chr1B	Chr1B	4198	0.166	linear	1	0.903
+Cadenza_v2	Chr1D	Chr1D	4194	0.119	linear	1	0.953
+Cadenza_v2	Chr2A	Chr2A	5507	0.143	linear	1	0.916
+Cadenza_v2	Chr2B	Chr2B	5414	0.15	linear	1	0.908
+Cadenza_v2	Chr2D	Chr2D	5444	0.12	linear	1	0.948
+Cadenza_v2	Chr3A	Chr3A	5008	0.151	linear	1	0.973
+Cadenza_v2	Chr3B	Chr3B	5410	0.157	linear	1	0.928
+Cadenza_v2	Chr3D	Chr3D	4740	0.126	linear	1	0.956
+Cadenza_v2	Chr4A	Chr4A	3336	0.226	linear	1	0.719
+Cadenza_v2	Chr4B	Chr4B	3628	0.186	linear	1	0.811
+Cadenza_v2	Chr4D	Chr4D	3554	0.145	linear	1	0.99
+Cadenza_v2	Chr5A	Chr5A	5229	0.136	linear	1	0.953
+Cadenza_v2	Chr5B	Chr5B	5035	0.142	linear	1	0.874
+Cadenza_v2	Chr5D	Chr5D	5423	0.105	linear	1	0.978
+Cadenza_v2	Chr6A	Chr6A	3924	0.159	linear	1	0.973
+Cadenza_v2	Chr6B	Chr6B	3777	0.194	linear	1	0.728
+Cadenza_v2	Chr6D	Chr6D	3868	0.128	linear	1	0.983
+Cadenza_v2	Chr7A	Chr7A	4948	0.15	linear	1	0.925
+Cadenza_v2	Chr7B	Chr7B	4413	0.173	linear	1	0.895
+Cadenza_v2	Chr7D	Chr7D	5224	0.123	linear	1	0.973
+Chuanmai104	Chr1A	Chr1A	3712	0.16	linear	1	0.916
+Chuanmai104	Chr1B	Chr1B	4223	0.166	linear	1	0.917
+Chuanmai104	Chr1D	Chr1D	4331	0.115	linear	1	0.972
+Chuanmai104	Chr2A	Chr2A	5370	0.146	linear	1	0.89
+Chuanmai104	Chr2B	Chr2B	5540	0.146	linear	1	0.912
+Chuanmai104	Chr2D	Chr2D	5723	0.115	linear	1	0.977
+Chuanmai104	Chr3A	Chr3A	5019	0.15	linear	1	0.973
+Chuanmai104	Chr3B	Chr3B	5173	0.165	linear	1	0.86
+Chuanmai104	Chr3D	Chr3D	4862	0.127	linear	1	0.953
+Chuanmai104	Chr4A	Chr4A	3293	0.228	linear	1	0.717
+Chuanmai104	Chr4B	Chr4B	3591	0.188	linear	1	0.798
+Chuanmai104	Chr4D	Chr4D	3540	0.145	linear	1	0.988
+Chuanmai104	Chr5A	Chr5A	5201	0.137	linear	1	0.948
+Chuanmai104	Chr5B	Chr5B	5151	0.139	linear	1	0.94
+Chuanmai104	Chr5D	Chr5D	5422	0.105	linear	1	0.982
+Chuanmai104	Chr6A	Chr6A	3780	0.164	linear	1	0.925
+Chuanmai104	Chr6B	Chr6B	3866	0.189	linear	1	0.751
+Chuanmai104	Chr6D	Chr6D	3908	0.127	linear	1	0.982
+Chuanmai104	Chr7A	Chr7A	4990	0.149	linear	1	0.927
+Chuanmai104	Chr7B	Chr7B	4315	0.177	linear	1	0.821
+Chuanmai104	Chr7D	Chr7D	5067	0.124	linear	1	0.962
+Fielder	Chr1A	Chr1A	4084	0.147	linear	1	0.957
+Fielder	Chr1B	Chr1B	4276	0.164	linear	1	0.932
+Fielder	Chr1D	Chr1D	4074	0.12	linear	1	0.942
+Fielder	Chr2A	Chr2A	5247	0.148	linear	1	0.881
+Fielder	Chr2B	Chr2B	5393	0.15	linear	1	0.909
+Fielder	Chr2D	Chr2D	5181	0.123	linear	1	0.929
+Fielder	Chr3A	Chr3A	4552	0.164	linear	1	0.927
+Fielder	Chr3B	Chr3B	5091	0.167	linear	1	0.849
+Fielder	Chr3D	Chr3D	4199	0.147	linear	1	0.862
+Fielder	Chr4A	Chr4A	3480	0.216	linear	1	0.746
+Fielder	Chr4B	Chr4B	3684	0.183	linear	1	0.959
+Fielder	Chr4D	Chr4D	3540	0.145	linear	1	0.99
+Fielder	Chr5A	Chr5A	5230	0.136	linear	1	0.951
+Fielder	Chr5B	Chr5B	5083	0.141	linear	1	0.906
+Fielder	Chr5D	Chr5D	5257	0.108	linear	1	0.952
+Fielder	Chr6A	Chr6A	3665	0.169	linear	1	0.95
+Fielder	Chr6B	Chr6B	3630	0.201	linear	1	0.722
+Fielder	Chr6D	Chr6D	3528	0.139	linear	1	0.948
+Fielder	Chr7A	Chr7A	4931	0.151	linear	1	0.923
+Fielder	Chr7B	Chr7B	4113	0.185	linear	1	0.788
+Fielder	Chr7D	Chr7D	5240	0.123	linear	1	0.972
+JIN50	Chr1A	Chr1A	4018	0.148	linear	1	0.952
+JIN50	Chr1B	Chr1B	4157	0.168	linear	1	0.855
+JIN50	Chr1D	Chr1D	4356	0.114	linear	1	0.973
+JIN50	Chr2A	Chr2A	4918	0.156	linear	1	0.876
+JIN50	Chr2B	Chr2B	5602	0.145	linear	1	0.923
+JIN50	Chr2D	Chr2D	5743	0.114	linear	1	0.978
+JIN50	Chr3A	Chr3A	4990	0.15	linear	1	0.971
+JIN50	Chr3B	Chr3B	4506	0.189	linear	1	0.727
+JIN50	Chr3D	Chr3D	4724	0.13	linear	1	0.954
+JIN50	Chr4A	Chr4A	3388	0.219	linear	1	0.725
+JIN50	Chr4B	Chr4B	3587	0.188	linear	1	0.787
+JIN50	Chr4D	Chr4D	3547	0.145	linear	1	0.989
+JIN50	Chr5A	Chr5A	5219	0.137	linear	1	0.952
+JIN50	Chr5B	Chr5B	4982	0.143	linear	1	0.895
+JIN50	Chr5D	Chr5D	4367	0.098	linear	1	0.74
+JIN50	Chr6A	Chr6A	3728	0.166	linear	1	0.955
+JIN50	Chr6B	Chr6B	3553	0.205	linear	1	0.713
+JIN50	Chr6D	Chr6D	3732	0.132	linear	1	0.967
+JIN50	Chr7A	Chr7A	5118	0.145	linear	1	0.944
+JIN50	Chr7B	Chr7B	4395	0.174	linear	1	0.881
+JIN50	Chr7D	Chr7D	5144	0.123	linear	1	0.969
+Jagger	Chr1A	Chr1A	4021	0.149	linear	1	0.931
+Jagger	Chr1B	Chr1B	4157	0.168	linear	1	0.907
+Jagger	Chr1D	Chr1D	4150	0.12	linear	1	0.943
+Jagger	Chr2A	Chr2A	4924	0.159	linear	1	0.908
+Jagger	Chr2B	Chr2B	5237	0.155	linear	1	0.883
+Jagger	Chr2D	Chr2D	5255	0.125	linear	1	0.927
+Jagger	Chr3A	Chr3A	4894	0.154	linear	1	0.924
+Jagger	Chr3B	Chr3B	4492	0.189	linear	1	0.718
+Jagger	Chr3D	Chr3D	4980	0.124	linear	1	0.937
+Jagger	Chr4A	Chr4A	3948	0.191	linear	1	0.776
+Jagger	Chr4B	Chr4B	3640	0.185	linear	1	0.94
+Jagger	Chr4D	Chr4D	3419	0.149	linear	1	0.957
+Jagger	Chr5A	Chr5A	5071	0.141	linear	1	0.925
+Jagger	Chr5B	Chr5B	4998	0.143	linear	1	0.874
+Jagger	Chr5D	Chr5D	5127	0.111	linear	1	0.915
+Jagger	Chr6A	Chr6A	3566	0.175	linear	1	0.913
+Jagger	Chr6B	Chr6B	3739	0.195	linear	1	0.769
+Jagger	Chr6D	Chr6D	3589	0.138	linear	1	0.909
+Jagger	Chr7A	Chr7A	4661	0.158	linear	1	0.894
+Jagger	Chr7B	Chr7B	4225	0.179	linear	1	0.844
+Jagger	Chr7D	Chr7D	5207	0.123	linear	1	0.966
+Julius	Chr1A	Chr1A	3759	0.157	linear	1	0.907
+Julius	Chr1B	Chr1B	4266	0.164	linear	1	0.926
+Julius	Chr1D	Chr1D	4340	0.115	linear	1	0.97
+Julius	Chr2A	Chr2A	5342	0.147	linear	1	0.877
+Julius	Chr2B	Chr2B	5191	0.157	linear	1	0.889
+Julius	Chr2D	Chr2D	5293	0.123	linear	1	0.934
+Julius	Chr3A	Chr3A	4945	0.152	linear	1	0.962
+Julius	Chr3B	Chr3B	5318	0.159	linear	1	0.902
+Julius	Chr3D	Chr3D	5036	0.123	linear	1	0.973
+Julius	Chr4A	Chr4A	3895	0.194	linear	1	0.78
+Julius	Chr4B	Chr4B	3405	0.196	linear	1	0.747
+Julius	Chr4D	Chr4D	3424	0.148	linear	1	0.959
+Julius	Chr5A	Chr5A	5103	0.14	linear	1	0.933
+Julius	Chr5B	Chr5B	4915	0.145	linear	1	0.858
+Julius	Chr5D	Chr5D	5384	0.106	linear	1	0.972
+Julius	Chr6A	Chr6A	3479	0.175	linear	1	0.893
+Julius	Chr6B	Chr6B	3525	0.207	linear	1	0.725
+Julius	Chr6D	Chr6D	3689	0.132	linear	1	0.944
+Julius	Chr7A	Chr7A	4753	0.155	linear	1	0.905
+Julius	Chr7B	Chr7B	4232	0.179	linear	1	0.873
+Julius	Chr7D	Chr7D	5263	0.122	linear	1	0.975
+Kariega	Chr1A	Chr1A	3747	0.159	linear	1	0.923
+Kariega	Chr1B	Chr1B	3962	0.177	linear	1	0.81
+Kariega	Chr1D	Chr1D	4378	0.114	linear	1	0.977
+Kariega	Chr2A	Chr2A	5400	0.146	linear	1	0.889
+Kariega	Chr2B	Chr2B	5609	0.145	linear	1	0.935
+Kariega	Chr2D	Chr2D	5727	0.115	linear	1	0.977
+Kariega	Chr3A	Chr3A	4783	0.158	linear	1	0.945
+Kariega	Chr3B	Chr3B	5396	0.158	linear	1	0.922
+Kariega	Chr3D	Chr3D	4832	0.128	linear	1	0.952
+Kariega	Chr4A	Chr4A	3309	0.213	linear	1	0.72
+Kariega	Chr4B	Chr4B	3765	0.179	linear	1	0.97
+Kariega	Chr4D	Chr4D	3549	0.145	linear	1	0.99
+Kariega	Chr5A	Chr5A	5237	0.136	linear	1	0.951
+Kariega	Chr5B	Chr5B	5062	0.141	linear	1	0.9
+Kariega	Chr5D	Chr5D	5193	0.11	linear	1	0.947
+Kariega	Chr6A	Chr6A	3799	0.164	linear	1	0.962
+Kariega	Chr6B	Chr6B	3464	0.211	linear	1	0.662
+Kariega	Chr6D	Chr6D	3848	0.129	linear	1	0.979
+Kariega	Chr7A	Chr7A	4672	0.159	linear	1	0.875
+Kariega	Chr7B	Chr7B	4356	0.175	linear	1	0.897
+Kariega	Chr7D	Chr7D	5302	0.121	linear	1	0.98
+Lancer	Chr1A	Chr1A	3905	0.153	linear	1	0.934
+Lancer	Chr1B	Chr1B	4250	0.165	linear	1	0.915
+Lancer	Chr1D	Chr1D	4283	0.116	linear	1	0.962
+Lancer	Chr2A	Chr2A	5226	0.149	linear	1	0.872
+Lancer	Chr2B	Chr2B	4516	0.18	linear	1	0.732
+Lancer	Chr2D	Chr2D	5378	0.119	linear	1	0.949
+Lancer	Chr3A	Chr3A	4905	0.153	linear	1	0.959
+Lancer	Chr3B	Chr3B	5147	0.164	linear	1	0.899
+Lancer	Chr3D	Chr3D	4847	0.124	linear	1	0.951
+Lancer	Chr4A	Chr4A	3607	0.209	linear	1	0.751
+Lancer	Chr4B	Chr4B	3561	0.189	linear	1	0.798
+Lancer	Chr4D	Chr4D	3428	0.147	linear	1	0.964
+Lancer	Chr5A	Chr5A	5112	0.139	linear	1	0.937
+Lancer	Chr5B	Chr5B	5123	0.14	linear	1	0.897
+Lancer	Chr5D	Chr5D	5395	0.106	linear	1	0.974
+Lancer	Chr6A	Chr6A	3809	0.163	linear	1	0.961
+Lancer	Chr6B	Chr6B	3652	0.199	linear	1	0.748
+Lancer	Chr6D	Chr6D	3565	0.137	linear	1	0.919
+Lancer	Chr7A	Chr7A	4724	0.156	linear	1	0.906
+Lancer	Chr7B	Chr7B	4148	0.183	linear	1	0.83
+Lancer	Chr7D	Chr7D	5195	0.123	linear	1	0.97
+Landmark	Chr1A	Chr1A	3908	0.153	linear	1	0.923
+Landmark	Chr1B	Chr1B	4215	0.165	linear	1	0.889
+Landmark	Chr1D	Chr1D	4244	0.118	linear	1	0.955
+Landmark	Chr2A	Chr2A	5380	0.146	linear	1	0.882
+Landmark	Chr2B	Chr2B	5322	0.151	linear	1	0.897
+Landmark	Chr2D	Chr2D	5665	0.116	linear	1	0.968
+Landmark	Chr3A	Chr3A	4823	0.156	linear	1	0.938
+Landmark	Chr3B	Chr3B	5242	0.162	linear	1	0.9
+Landmark	Chr3D	Chr3D	4433	0.14	linear	1	0.867
+Landmark	Chr4A	Chr4A	3893	0.194	linear	1	0.778
+Landmark	Chr4B	Chr4B	3552	0.19	linear	1	0.793
+Landmark	Chr4D	Chr4D	3409	0.148	linear	1	0.958
+Landmark	Chr5A	Chr5A	5011	0.142	linear	1	0.92
+Landmark	Chr5B	Chr5B	5068	0.141	linear	1	0.873
+Landmark	Chr5D	Chr5D	5309	0.107	linear	1	0.964
+Landmark	Chr6A	Chr6A	3627	0.172	linear	1	0.899
+Landmark	Chr6B	Chr6B	3675	0.199	linear	1	0.738
+Landmark	Chr6D	Chr6D	3810	0.13	linear	1	0.957
+Landmark	Chr7A	Chr7A	5071	0.147	linear	1	0.94
+Landmark	Chr7B	Chr7B	4316	0.176	linear	1	0.889
+Landmark	Chr7D	Chr7D	5162	0.124	linear	1	0.964
+MOV	Chr1A	Chr1A	3849	0.155	linear	1	0.92
+MOV	Chr1B	Chr1B	3609	0.193	linear	1	0.773
+MOV	Chr1D	Chr1D	2980	0.163	linear	1	0.688
+MOV	Chr2A	Chr2A	5047	0.156	linear	1	0.782
+MOV	Chr2B	Chr2B	4646	0.173	linear	1	0.765
+MOV	Chr2D	Chr2D	5078	0.128	linear	1	0.762
+MOV	Chr3A	Chr3A	4698	0.161	linear	1	0.879
+MOV	Chr3B	Chr3B	4558	0.187	linear	1	0.752
+MOV	Chr3D	Chr3D	4253	0.143	linear	1	0.785
+MOV	Chr4A	Chr4A	3759	0.199	linear	1	0.753
+MOV	Chr4B	Chr4B	3103	0.217	linear	1	0.739
+MOV	Chr4D	Chr4D	3159	0.163	linear	1	0.713
+MOV	Chr5A	Chr5A	4957	0.143	linear	1	0.904
+MOV	Chr5B	Chr5B	3886	0.184	linear	1	0.708
+MOV	Chr5D	Chr5D	4719	0.12	linear	1	0.83
+MOV	Chr6A	Chr6A	3308	0.188	linear	1	0.814
+MOV	Chr6B	Chr6B	3099	0.236	linear	1	0.606
+MOV	Chr6D	Chr6D	3309	0.149	linear	1	0.83
+MOV	Chr7A	Chr7A	4516	0.165	linear	1	0.858
+MOV	Chr7B	Chr7B	3934	0.194	linear	1	0.843
+MOV	Chr7D	Chr7D	4732	0.136	pchip	1	0.765
+Mace	Chr1A	Chr1A	3756	0.159	linear	1	0.915
+Mace	Chr1B	Chr1B	3801	0.184	linear	1	0.823
+Mace	Chr1D	Chr1D	4303	0.116	linear	1	0.967
+Mace	Chr2A	Chr2A	5003	0.157	linear	1	0.858
+Mace	Chr2B	Chr2B	5238	0.154	linear	1	0.883
+Mace	Chr2D	Chr2D	5684	0.115	linear	1	0.972
+Mace	Chr3A	Chr3A	4725	0.158	linear	1	0.942
+Mace	Chr3B	Chr3B	5221	0.163	linear	1	0.911
+Mace	Chr3D	Chr3D	4997	0.123	linear	1	0.969
+Mace	Chr4A	Chr4A	3992	0.189	linear	1	0.799
+Mace	Chr4B	Chr4B	3503	0.192	linear	1	0.77
+Mace	Chr4D	Chr4D	3438	0.147	linear	1	0.962
+Mace	Chr5A	Chr5A	5209	0.137	linear	1	0.949
+Mace	Chr5B	Chr5B	4881	0.146	linear	1	0.875
+Mace	Chr5D	Chr5D	5433	0.105	linear	1	0.981
+Mace	Chr6A	Chr6A	3662	0.17	linear	1	0.913
+Mace	Chr6B	Chr6B	3769	0.194	linear	1	0.769
+Mace	Chr6D	Chr6D	3760	0.132	linear	1	0.951
+Mace	Chr7A	Chr7A	4879	0.152	linear	1	0.901
+Mace	Chr7B	Chr7B	4129	0.183	linear	1	0.849
+Mace	Chr7D	Chr7D	5236	0.123	linear	1	0.971
+Norin61	Chr1A	Chr1A	4042	0.148	linear	1	0.954
+Norin61	Chr1B	Chr1B	4287	0.162	linear	1	0.907
+Norin61	Chr1D	Chr1D	4341	0.115	linear	1	0.97
+Norin61	Chr2A	Chr2A	5485	0.143	linear	1	0.956
+Norin61	Chr2B	Chr2B	5706	0.142	linear	1	0.938
+Norin61	Chr2D	Chr2D	5552	0.117	linear	1	0.967
+Norin61	Chr3A	Chr3A	5065	0.149	linear	1	0.978
+Norin61	Chr3B	Chr3B	5041	0.168	linear	1	0.81
+Norin61	Chr3D	Chr3D	5200	0.119	linear	1	0.983
+Norin61	Chr4A	Chr4A	4151	0.182	linear	1	0.826
+Norin61	Chr4B	Chr4B	3698	0.182	linear	1	0.963
+Norin61	Chr4D	Chr4D	3457	0.147	linear	1	0.966
+Norin61	Chr5A	Chr5A	5343	0.133	linear	1	0.985
+Norin61	Chr5B	Chr5B	5182	0.138	linear	1	0.934
+Norin61	Chr5D	Chr5D	5253	0.107	linear	1	0.957
+Norin61	Chr6A	Chr6A	3931	0.158	linear	1	0.969
+Norin61	Chr6B	Chr6B	3943	0.185	linear	1	0.833
+Norin61	Chr6D	Chr6D	3703	0.134	linear	1	0.957
+Norin61	Chr7A	Chr7A	5163	0.143	linear	1	0.962
+Norin61	Chr7B	Chr7B	4229	0.179	linear	1	0.877
+Norin61	Chr7D	Chr7D	5205	0.123	linear	1	0.975
+Paragon_v3	Chr1A	Chr1A	3813	0.157	linear	1	0.925
+Paragon_v3	Chr1B	Chr1B	4197	0.165	linear	1	0.908
+Paragon_v3	Chr1D	Chr1D	4321	0.115	linear	1	0.971
+Paragon_v3	Chr2A	Chr2A	5416	0.145	linear	1	0.907
+Paragon_v3	Chr2B	Chr2B	5477	0.148	linear	1	0.915
+Paragon_v3	Chr2D	Chr2D	5588	0.117	linear	1	0.967
+Paragon_v3	Chr3A	Chr3A	4982	0.151	linear	1	0.972
+Paragon_v3	Chr3B	Chr3B	5455	0.156	linear	1	0.932
+Paragon_v3	Chr3D	Chr3D	4737	0.126	linear	1	0.955
+Paragon_v3	Chr4A	Chr4A	3465	0.218	linear	1	0.736
+Paragon_v3	Chr4B	Chr4B	3533	0.191	linear	1	0.769
+Paragon_v3	Chr4D	Chr4D	3530	0.146	linear	1	0.988
+Paragon_v3	Chr5A	Chr5A	5228	0.136	linear	1	0.951
+Paragon_v3	Chr5B	Chr5B	4998	0.141	linear	1	0.89
+Paragon_v3	Chr5D	Chr5D	5421	0.105	linear	1	0.979
+Paragon_v3	Chr6A	Chr6A	3897	0.16	linear	1	0.971
+Paragon_v3	Chr6B	Chr6B	3733	0.196	linear	1	0.716
+Paragon_v3	Chr6D	Chr6D	3882	0.128	linear	1	0.983
+Paragon_v3	Chr7A	Chr7A	4971	0.15	linear	1	0.924
+Paragon_v3	Chr7B	Chr7B	4434	0.172	linear	1	0.897
+Paragon_v3	Chr7D	Chr7D	5312	0.121	linear	1	0.982
+Renan_v2	Chr1A	Chr1A	3735	0.16	linear	1	0.842
+Renan_v2	Chr1B	Chr1B	3888	0.18	linear	1	0.848
+Renan_v2	Chr1D	Chr1D	3947	0.126	linear	1	0.88
+Renan_v2	Chr2A	Chr2A	4729	0.166	linear	1	0.814
+Renan_v2	Chr2B	Chr2B	5101	0.159	linear	1	0.854
+Renan_v2	Chr2D	Chr2D	4472	0.143	linear	1	0.832
+Renan_v2	Chr3A	Chr3A	4374	0.172	linear	1	0.868
+Renan_v2	Chr3B	Chr3B	5068	0.168	linear	1	0.861
+Renan_v2	Chr3D	Chr3D	4862	0.127	linear	1	0.911
+Renan_v2	Chr4A	Chr4A	3668	0.206	linear	1	0.722
+Renan_v2	Chr4B	Chr4B	3315	0.203	linear	1	0.728
+Renan_v2	Chr4D	Chr4D	3262	0.158	linear	1	0.909
+Renan_v2	Chr5A	Chr5A	4892	0.146	linear	1	0.883
+Renan_v2	Chr5B	Chr5B	4786	0.149	linear	1	0.846
+Renan_v2	Chr5D	Chr5D	5054	0.113	linear	1	0.906
+Renan_v2	Chr6A	Chr6A	3498	0.178	linear	1	0.872
+Renan_v2	Chr6B	Chr6B	3548	0.206	linear	1	0.706
+Renan_v2	Chr6D	Chr6D	3526	0.14	linear	1	0.89
+Renan_v2	Chr7A	Chr7A	4556	0.163	linear	1	0.851
+Renan_v2	Chr7B	Chr7B	3951	0.193	linear	1	0.804
+Renan_v2	Chr7D	Chr7D	4668	0.137	linear	1	0.871
+SY_Mattis	Chr1A	Chr1A	3735	0.16	linear	1	0.917
+SY_Mattis	Chr1B	Chr1B	4184	0.167	linear	1	0.912
+SY_Mattis	Chr1D	Chr1D	4318	0.115	linear	1	0.967
+SY_Mattis	Chr2A	Chr2A	5018	0.157	linear	1	0.871
+SY_Mattis	Chr2B	Chr2B	5258	0.154	linear	1	0.889
+SY_Mattis	Chr2D	Chr2D	5444	0.121	linear	1	0.948
+SY_Mattis	Chr3A	Chr3A	4920	0.153	linear	1	0.96
+SY_Mattis	Chr3B	Chr3B	5341	0.16	linear	1	0.906
+SY_Mattis	Chr3D	Chr3D	4758	0.13	linear	1	0.95
+SY_Mattis	Chr4A	Chr4A	3987	0.189	linear	1	0.799
+SY_Mattis	Chr4B	Chr4B	3599	0.186	linear	1	0.937
+SY_Mattis	Chr4D	Chr4D	3437	0.147	linear	1	0.964
+SY_Mattis	Chr5A	Chr5A	5120	0.139	linear	1	0.939
+SY_Mattis	Chr5B	Chr5B+Chr7B	4650	0.157	linear+linear	2	0.82
+SY_Mattis	Chr5D	Chr5D	5382	0.106	linear	1	0.976
+SY_Mattis	Chr6A	Chr6A	3792	0.164	linear	1	0.956
+SY_Mattis	Chr6B	Chr6B	3410	0.214	linear	1	0.691
+SY_Mattis	Chr6D	Chr6D	3731	0.132	linear	1	0.952
+SY_Mattis	Chr7A	Chr7A	4920	0.151	linear	1	0.921
+SY_Mattis	Chr7B	Chr5B+Chr7B	4353	0.177	linear+linear	2	0.894
+SY_Mattis	Chr7D	Chr7D	5185	0.124	linear	1	0.968
+Spelt	Chr1A	Chr1A	4057	0.148	linear	1	0.922
+Spelt	Chr1B	Chr1B	4141	0.169	linear	1	0.873
+Spelt	Chr1D	Chr1D	4356	0.114	linear	1	0.972
+Spelt	Chr2A	Chr2A	5149	0.153	linear	1	0.892
+Spelt	Chr2B	Chr2B	5306	0.153	linear	1	0.902
+Spelt	Chr2D	Chr2D	5626	0.116	linear	1	0.968
+Spelt	Chr3A	Chr3A	4853	0.154	linear	1	0.94
+Spelt	Chr3B	Chr3B	5289	0.161	linear	1	0.911
+Spelt	Chr3D	Chr3D	4714	0.13	linear	1	0.95
+Spelt	Chr4A	Chr4A	3750	0.201	linear	1	0.737
+Spelt	Chr4B	Chr4B	3517	0.191	linear	1	0.785
+Spelt	Chr4D	Chr4D	3517	0.146	linear	1	0.984
+Spelt	Chr5A	Chr5A	5120	0.139	linear	1	0.923
+Spelt	Chr5B	Chr5B	4966	0.143	linear	1	0.871
+Spelt	Chr5D	Chr5D	5390	0.105	linear	1	0.977
+Spelt	Chr6A	Chr6A	2636	0.196	linear	1	0.799
+Spelt	Chr6B	Chr6B	3668	0.199	linear	1	0.726
+Spelt	Chr6D	Chr6D	3162	0.14	linear	1	0.87
+Spelt	Chr7A	Chr7A	4846	0.153	linear	1	0.911
+Spelt	Chr7B	Chr7B	4136	0.183	linear	1	0.848
+Spelt	Chr7D	Chr7D	5206	0.123	linear	1	0.971
+Stanley	Chr1A	Chr1A	3915	0.151	linear	1	0.927
+Stanley	Chr1B	Chr1B	4193	0.165	linear	1	0.91
+Stanley	Chr1D	Chr1D	4259	0.117	linear	1	0.954
+Stanley	Chr2A	Chr2A	4977	0.158	linear	1	0.854
+Stanley	Chr2B	Chr2B	5392	0.15	linear	1	0.889
+Stanley	Chr2D	Chr2D	5647	0.116	linear	1	0.969
+Stanley	Chr3A	Chr3A	4915	0.153	linear	1	0.962
+Stanley	Chr3B	Chr3B	5063	0.168	linear	1	0.839
+Stanley	Chr3D	Chr3D	4150	0.147	linear	1	0.849
+Stanley	Chr4A	Chr4A	3913	0.193	linear	1	0.789
+Stanley	Chr4B	Chr4B	3503	0.192	linear	1	0.789
+Stanley	Chr4D	Chr4D	3294	0.151	linear	1	0.945
+Stanley	Chr5A	Chr5A	5142	0.139	linear	1	0.938
+Stanley	Chr5B	Chr5B	4942	0.144	linear	1	0.865
+Stanley	Chr5D	Chr5D	5432	0.105	linear	1	0.979
+Stanley	Chr6A	Chr6A	3682	0.169	linear	1	0.912
+Stanley	Chr6B	Chr6B	3754	0.195	linear	1	0.753
+Stanley	Chr6D	Chr6D	3701	0.133	linear	1	0.929
+Stanley	Chr7A	Chr7A	4547	0.164	linear	1	0.863
+Stanley	Chr7B	Chr7B	4112	0.184	linear	1	0.871
+Stanley	Chr7D	Chr7D	5218	0.123	linear	1	0.968
+Sumai3	Chr1A	Chr1A	3880	0.154	linear	1	0.934
+Sumai3	Chr1B	Chr1B	4343	0.161	linear	1	0.911
+Sumai3	Chr1D	Chr1D	4390	0.114	linear	1	0.98
+Sumai3	Chr2A	Chr2A	5446	0.144	linear	1	0.9
+Sumai3	Chr2B	Chr2B	5663	0.143	linear	1	0.894
+Sumai3	Chr2D	Chr2D	5667	0.115	linear	1	0.976
+Sumai3	Chr3A	Chr3A	5001	0.151	linear	1	0.968
+Sumai3	Chr3B	Chr3B	4738	0.179	linear	1	0.772
+Sumai3	Chr3D	Chr3D	4729	0.13	linear	1	0.955
+Sumai3	Chr4A	Chr4A	3748	0.2	linear	1	0.771
+Sumai3	Chr4B	Chr4B	3571	0.189	linear	1	0.796
+Sumai3	Chr4D	Chr4D	3491	0.147	linear	1	0.979
+Sumai3	Chr5A	Chr5A	5286	0.135	linear	1	0.979
+Sumai3	Chr5B	Chr5B	5189	0.138	linear	1	0.894
+Sumai3	Chr5D	Chr5D	5464	0.104	linear	1	0.986
+Sumai3	Chr6A	Chr6A	3925	0.159	linear	1	0.971
+Sumai3	Chr6B	Chr6B	3925	0.186	linear	1	0.83
+Sumai3	Chr6D	Chr6D	3860	0.128	linear	1	0.982
+Sumai3	Chr7A	Chr7A	4933	0.151	linear	1	0.923
+Sumai3	Chr7B	Chr7B	4361	0.175	linear	1	0.903
+Sumai3	Chr7D	Chr7D	5067	0.126	linear	1	0.965

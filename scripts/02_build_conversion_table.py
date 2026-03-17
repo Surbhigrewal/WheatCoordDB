@@ -8,23 +8,33 @@ For each CS chromosome, creates a dense lookup table mapping
 CS positions → target assembly positions using monotone cubic
 spline interpolation between gene anchors.
 
-If the anchor file contains a 'segment' column (produced by
-01_extract_anchors.py with --translocation-map), each CS chromosome
-is processed as one or more segments, each mapping to its own
-target chromosome. The segments are stitched into a single
-conversion table with a heterogeneous tgt_chr column.
-
 Outputs (per chromosome):
   <outdir>/<chr>_conversion.tsv.gz
-      cs_pos | tgt_chr | tgt_pos | anchor_density_5Mb | interp_type
+      cs_pos | tgt_chr | tgt_pos | anchor_density_5Mb |
+      anchor_fraction | interp_type
 
   <outdir>/<chr>_anchors.tsv
-      The clean anchor pairs used (all segments)
+      Clean anchor pairs used for this chromosome
 
   <outdir>/<chr>_synteny_blocks.tsv + <chr>_synteny.bed
-      For visualisation in genome browsers
+      Merged synteny blocks for genome browser visualisation
 
-Also generates QC plots if matplotlib is available.
+  <outdir>/conversion_summary.tsv
+      Per-chromosome summary statistics
+
+Confidence metric — anchor_fraction (0.0–1.0):
+  For each query position, within ±5 Mb:
+    anchor_fraction = anchors_in_window / cs_genes_in_window
+
+  Where cs_genes_in_window is precomputed from the CS v2.1 GFF by
+  00_compute_cs_gene_density.py. This normalises anchor density by
+  the expected gene content, so pericentromeric regions (low gene
+  density) are not penalised relative to telomeric regions (high
+  gene density). Values are capped at 1.0.
+
+  Thresholds: >=0.8 High, 0.5-0.8 Moderate, <0.5 Low confidence.
+
+  anchor_density_5Mb is retained as the raw count (secondary metric).
 """
 
 import argparse
@@ -39,12 +49,7 @@ from scipy.interpolate import PchipInterpolator
 WHEAT_CHROMOSOMES = [f"{g}{s}" for g in range(1, 8) for s in ["A", "B", "D"]]
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Utilities
-# ─────────────────────────────────────────────────────────────────────────────
-
 def load_chrom_sizes(chrom_sizes_file):
-    """Load chromosome sizes into a dict. Accepts 2-col TSV or FASTA .fai."""
     sizes = {}
     with open(chrom_sizes_file) as fh:
         for line in fh:
@@ -54,195 +59,197 @@ def load_chrom_sizes(chrom_sizes_file):
     return sizes
 
 
-def get_chr_len(cs_chr, cs_sizes):
-    """Look up CS chromosome length, trying Chr/chr prefix variants."""
-    for key in [cs_chr, f"Chr{cs_chr}", f"chr{cs_chr}",
-                cs_chr.replace("Chr", ""), cs_chr.replace("chr", "")]:
-        if key in cs_sizes:
-            return cs_sizes[key]
-    return 0
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Spline building
-# ─────────────────────────────────────────────────────────────────────────────
-
-def build_spline_converter(cs_anchors, tgt_anchors, cs_start, cs_end, tgt_chr_len):
+def load_cs_gene_density(density_file, cs_chr):
     """
-    Build a PCHIP spline interpolator cs_pos -> tgt_pos for one syntenic segment.
+    Load precomputed CS gene density for a single chromosome.
+    Returns a numpy array indexed by position // resolution.
+    """
+    df = pd.read_csv(density_file, sep="\t",
+                     compression="gzip" if str(density_file).endswith(".gz") else "infer")
+    df = df[df["cs_chr"] == cs_chr].reset_index(drop=True)
+    if len(df) == 0:
+        return None
+    # Return as array sorted by cs_pos
+    df = df.sort_values("cs_pos").reset_index(drop=True)
+    return df["cs_pos"].values, df["cs_gene_density"].values
 
-    Handles both forward (tgt increases with cs) and inverted (tgt decreases
-    with cs) orientations natively — PCHIP works on monotone sequences in
-    either direction.
 
-    Parameters
-    ----------
-    cs_anchors  : array of CS midpoint positions (unsorted ok)
-    tgt_anchors : array of corresponding target midpoint positions
-    cs_start    : CS coordinate where this segment begins (for boundary anchor)
-    cs_end      : CS coordinate where this segment ends   (for boundary anchor)
-    tgt_chr_len : length of target chromosome (for clipping)
+def compute_anchor_fraction(cs_pos_query, cs_anchors, cs_gene_density_pos,
+                             cs_gene_density_vals, window=5_000_000):
+    """
+    Compute anchor_fraction for each query position:
+      anchor_fraction = anchors_in_window / cs_genes_in_window
+
+    Values capped at 1.0 (can't have more anchors than genes).
+    Returns NaN where cs_gene_density == 0 (no genes in window).
+
+    This normalises anchor density by the expected gene content,
+    so pericentromeric regions (low gene density) are not penalised
+    relative to telomeric regions (high gene density).
+    """
+    # Anchor counts in window (reuse same logic as compute_local_anchor_density)
+    anchor_counts = np.zeros(len(cs_pos_query), dtype=float)
+    for i, pos in enumerate(cs_pos_query):
+        anchor_counts[i] = np.sum(
+            (cs_anchors >= pos - window) & (cs_anchors <= pos + window)
+        )
+
+    # CS gene counts in window — interpolate from precomputed density array
+    # The density array is at 1kb resolution; use nearest-neighbour lookup
+    gene_counts = np.interp(cs_pos_query, cs_gene_density_pos,
+                            cs_gene_density_vals.astype(float))
+    gene_counts = np.round(gene_counts).astype(float)
+
+    # Compute fraction
+    fractions = np.full(len(cs_pos_query), np.nan)
+    has_genes = gene_counts > 0
+    fractions[has_genes] = np.clip(
+        anchor_counts[has_genes] / gene_counts[has_genes], 0.0, 1.0
+    )
+    return fractions
+
+
+def build_spline_converter(cs_anchors, tgt_anchors, cs_chr_len, tgt_chr_len):
+    """
+    Build a PCHIP spline interpolator CS_pos -> tgt_pos from anchor arrays.
 
     Returns
     -------
-    interpolator : callable — f(cs_pos_array) -> tgt_pos_array
-    mean_gap     : float — mean inter-anchor distance in CS bp
-    interp_type  : str
+    interpolator : callable
+    mean_anchor_gap : float  (mean inter-anchor distance, bp)
+    interp_type : str
     """
-    sort_idx   = np.argsort(cs_anchors)
-    cs_sorted  = cs_anchors[sort_idx]
+    sort_idx  = np.argsort(cs_anchors)
+    cs_sorted = cs_anchors[sort_idx]
     tgt_sorted = tgt_anchors[sort_idx]
 
-    # Determine orientation from majority of consecutive differences
-    diffs    = np.diff(tgt_sorted)
-    inverted = np.sum(diffs < 0) > np.sum(diffs >= 0)
-
-    # Extrapolate boundary anchors linearly from the first/last two real anchors
     if len(cs_sorted) >= 2:
-        slope_l   = (tgt_sorted[1]  - tgt_sorted[0])  / max(cs_sorted[1]  - cs_sorted[0],  1)
-        slope_r   = (tgt_sorted[-1] - tgt_sorted[-2]) / max(cs_sorted[-1] - cs_sorted[-2], 1)
-        tgt_left  = tgt_sorted[0]  - slope_l * (cs_sorted[0]  - cs_start)
-        tgt_right = tgt_sorted[-1] + slope_r * (cs_end         - cs_sorted[-1])
+        slope_left  = (tgt_sorted[1]  - tgt_sorted[0])  / max(cs_sorted[1]  - cs_sorted[0],  1)
+        slope_right = (tgt_sorted[-1] - tgt_sorted[-2]) / max(cs_sorted[-1] - cs_sorted[-2], 1)
+        tgt_left  = max(0,           tgt_sorted[0]  - slope_left  * cs_sorted[0])
+        tgt_right = min(tgt_chr_len, tgt_sorted[-1] + slope_right * (cs_chr_len - cs_sorted[-1]))
     else:
-        tgt_left  = float(tgt_sorted[0])
-        tgt_right = float(tgt_sorted[0])
+        tgt_left  = 0
+        tgt_right = tgt_chr_len
 
-    tgt_left  = float(np.clip(tgt_left,  0, tgt_chr_len))
-    tgt_right = float(np.clip(tgt_right, 0, tgt_chr_len))
-
-    cs_all  = np.concatenate([[cs_start], cs_sorted, [cs_end]])
+    cs_all  = np.concatenate([[0], cs_sorted, [cs_chr_len]])
     tgt_all = np.concatenate([[tgt_left], tgt_sorted, [tgt_right]])
-
-    # Remove duplicate x values (can occur for near-identical assemblies)
-    cs_all, unique_idx = np.unique(cs_all, return_index=True)
-    tgt_all = tgt_all[unique_idx]
     tgt_all = np.clip(tgt_all, 0, tgt_chr_len)
 
-    # Check final monotonicity for PCHIP
-    inc = bool(np.all(np.diff(tgt_all) >= 0))
-    dec = bool(np.all(np.diff(tgt_all) <= 0))
+    # Remove duplicate x values (PCHIP requires strictly increasing x)
+    cs_all, unique_idx = np.unique(cs_all, return_index=True)
+    tgt_all = tgt_all[unique_idx]
 
-    if inc:
+    if np.all(np.diff(tgt_all) >= 0):
         interpolator = PchipInterpolator(cs_all, tgt_all, extrapolate=True)
         interp_type  = "pchip"
-    elif dec:
-        # PCHIP handles monotone decreasing sequences directly
-        interpolator = PchipInterpolator(cs_all, tgt_all, extrapolate=True)
+    elif np.all(np.diff(tgt_all) <= 0):
+        interpolator = PchipInterpolator(cs_all, tgt_all[::-1], extrapolate=True)
         interp_type  = "pchip_inverted"
     else:
-        # Non-monotone (fragmented/noisy) — safe linear fallback
-        _cs, _tgt = cs_all.copy(), tgt_all.copy()
-        interpolator = lambda x, c=_cs, t=_tgt: np.interp(x, c, t)
+        interpolator = lambda x: np.interp(x, cs_all, tgt_all)
         interp_type  = "linear"
 
-    mean_gap = float(np.mean(np.diff(cs_sorted))) if len(cs_sorted) > 1 else float(cs_end - cs_start)
-    return interpolator, mean_gap, interp_type
+    mean_anchor_gap = np.mean(np.diff(cs_sorted)) if len(cs_sorted) > 1 else cs_chr_len
+    return interpolator, mean_anchor_gap, interp_type
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Anchor density
-# ─────────────────────────────────────────────────────────────────────────────
 
 def compute_local_anchor_density(cs_pos_query, cs_anchors, window=5_000_000):
-    """Number of anchors within ±window bp of each query position."""
+    """
+    Count anchors within ±window bp of each query position.
+    Retained as secondary metric.
+    """
     densities = np.zeros(len(cs_pos_query), dtype=int)
     for i, pos in enumerate(cs_pos_query):
-        densities[i] = int(np.sum(
+        densities[i] = np.sum(
             (cs_anchors >= pos - window) & (cs_anchors <= pos + window)
-        ))
+        )
     return densities
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Synteny blocks
-# ─────────────────────────────────────────────────────────────────────────────
+def compute_collinearity_score(cs_pos_query, cs_anchors, tgt_anchors,
+                                interpolator, window=5_000_000,
+                                residual_threshold=2_000_000):
+    """
+    Compute local collinearity score for each query position.
+
+    For each query position, within ±window bp:
+      1. Find all anchors in that window
+      2. Compute each anchor's residual: |true_tgt_pos - spline_predicted_tgt_pos|
+      3. Score = fraction of anchors with residual < residual_threshold
+
+    Returns
+    -------
+    scores : np.ndarray of float (0.0–1.0), same length as cs_pos_query
+
+    Why this works for introgressions:
+      In a normal collinear region, local anchors follow the spline closely
+      → small residuals → score near 1.0
+      In an introgressed region (e.g. Lancer 2B rye segment), anchors that
+      mapped to the wrong chromosome were already filtered in step 01, but
+      anchors within the introgression that mapped to the correct chromosome
+      but at shifted positions will have large residuals from the spline
+      fitted to the flanking collinear anchors → score near 0.0
+      In sparse pericentromeric regions, few or no anchors exist → score
+      is np.nan, flagged separately as low-density.
+    """
+    predicted_tgt = np.array(interpolator(cs_anchors), dtype=float)
+    residuals     = np.abs(tgt_anchors - predicted_tgt)
+
+    scores = np.full(len(cs_pos_query), np.nan)
+    for i, pos in enumerate(cs_pos_query):
+        in_window = (cs_anchors >= pos - window) & (cs_anchors <= pos + window)
+        n = int(np.sum(in_window))
+        if n == 0:
+            scores[i] = np.nan   # no anchors nearby — sparse region
+        else:
+            scores[i] = float(np.sum(residuals[in_window] < residual_threshold)) / n
+    return scores
+
 
 def build_synteny_blocks(anchors_df, min_block_genes=3, max_gap=2_000_000):
-    """Merge adjacent anchors into synteny blocks; respects tgt_chr boundaries."""
     if len(anchors_df) == 0:
         return pd.DataFrame()
 
     df = anchors_df.sort_values("cs_midpoint").reset_index(drop=True)
-    blocks      = []
+    blocks = []
     block_start = 0
 
     for i in range(1, len(df)):
-        gap         = df.loc[i, "cs_midpoint"] - df.loc[i-1, "cs_midpoint"]
-        chr_changed = df.loc[i, "tgt_chr"] != df.loc[i-1, "tgt_chr"]
-        last_row    = (i == len(df) - 1)
-
-        if gap > max_gap or chr_changed or last_row:
-            block_end  = i if (last_row and gap <= max_gap and not chr_changed) else i - 1
-            block_rows = df.loc[block_start:block_end]
-
-            if len(block_rows) >= min_block_genes:
+        gap = df.loc[i, "cs_midpoint"] - df.loc[i-1, "cs_midpoint"]
+        if gap > max_gap or i == len(df) - 1:
+            block_end  = i if gap <= max_gap else i - 1
+            block_genes = df.loc[block_start:block_end]
+            if len(block_genes) >= min_block_genes:
                 blocks.append({
-                    "cs_chr":        block_rows["cs_chr"].iloc[0],
-                    "cs_start":      int(block_rows["cs_midpoint"].min()),
-                    "cs_end":        int(block_rows["cs_midpoint"].max()),
-                    "tgt_chr":       block_rows["tgt_chr"].mode()[0],
-                    "tgt_start":     int(block_rows["tgt_midpoint"].min()),
-                    "tgt_end":       int(block_rows["tgt_midpoint"].max()),
-                    "n_anchors":     len(block_rows),
-                    "mean_identity": float(block_rows["identity"].mean()),
+                    "cs_chr":        block_genes["cs_chr"].iloc[0],
+                    "cs_start":      int(block_genes["cs_midpoint"].min()),
+                    "cs_end":        int(block_genes["cs_midpoint"].max()),
+                    "tgt_chr":       block_genes["tgt_chr"].mode()[0],
+                    "tgt_start":     int(block_genes["tgt_midpoint"].min()),
+                    "tgt_end":       int(block_genes["tgt_midpoint"].max()),
+                    "n_anchors":     len(block_genes),
+                    "mean_identity": block_genes["identity"].mean(),
                 })
-
             block_start = i
 
     return pd.DataFrame(blocks)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# QC dotplot
-# ─────────────────────────────────────────────────────────────────────────────
-
 def plot_synteny_dots(anchors_df, cs_chr, target_name, output_path):
-    """Dot-plot QC figure; each tgt_chr plotted in a distinct colour."""
     try:
         import matplotlib
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
-        import matplotlib.colors as mcolors
-
-        cmap    = plt.cm.plasma_r
-        id_col  = next((c for c in anchors_df.columns if c.endswith("identity")), None)
-        tgt_chrs = sorted(anchors_df["tgt_chr"].unique())
-        colours  = plt.cm.tab10(np.linspace(0, 0.9, max(len(tgt_chrs), 1)))
 
         fig, ax = plt.subplots(figsize=(8, 6))
-
-        for colour, tgt_chr in zip(colours, tgt_chrs):
-            grp = anchors_df[anchors_df["tgt_chr"] == tgt_chr]
-            if id_col:
-                ax.scatter(
-                    grp["cs_midpoint"] / 1e6,
-                    grp["tgt_midpoint"] / 1e6,
-                    c=grp[id_col].clip(0.9, 1.0),
-                    cmap=cmap, vmin=0.9, vmax=1.0,
-                    s=2, alpha=0.6, linewidths=0, rasterized=True,
-                    label=tgt_chr,
-                )
-            else:
-                ax.scatter(
-                    grp["cs_midpoint"] / 1e6,
-                    grp["tgt_midpoint"] / 1e6,
-                    color=colour,
-                    s=2, alpha=0.6, linewidths=0, rasterized=True,
-                    label=tgt_chr,
-                )
-
-        ax.set_xlabel(f"CS {cs_chr} position (Mb)", fontsize=11)
-        ax.set_ylabel(f"{target_name} position (Mb)", fontsize=11)
-        ax.set_title(f"Synteny: CS {cs_chr} → {target_name}", fontsize=12)
-        ax.legend(loc="upper left", fontsize=8, markerscale=4)
-
-        if id_col:
-            sm = plt.cm.ScalarMappable(cmap=cmap,
-                                       norm=mcolors.Normalize(vmin=0.9, vmax=1.0))
-            sm.set_array([])
-            cbar = fig.colorbar(sm, ax=ax, fraction=0.03, pad=0.02)
-            cbar.set_label("Sequence identity", fontsize=9)
-
+        for tgt_chr, grp in anchors_df.groupby("tgt_chr"):
+            ax.scatter(grp["cs_midpoint"] / 1e6, grp["tgt_midpoint"] / 1e6,
+                       s=2, alpha=0.5, label=tgt_chr)
+        ax.set_xlabel(f"CS {cs_chr} position (Mb)")
+        ax.set_ylabel(f"{target_name} position (Mb)")
+        ax.set_title(f"Synteny: CS {cs_chr} → {target_name}")
+        ax.legend(loc="upper left", fontsize=7, markerscale=3)
         plt.tight_layout()
         plt.savefig(output_path, dpi=150)
         plt.close()
@@ -250,207 +257,21 @@ def plot_synteny_dots(anchors_df, cs_chr, target_name, output_path):
         pass
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Segment definition
-# ─────────────────────────────────────────────────────────────────────────────
-
-def _define_segments(grp, cs_chr_len):
-    """
-    From a group with a 'segment' column, define ordered segment dicts with
-    cs_start, cs_end, tgt_chr, tgt_chr_len.
-
-    Segments are ordered by median CS position. CS coordinate space is
-    partitioned at the midpoint between adjacent segment anchor clouds so
-    the stitched conversion table has no gaps or overlaps.
-    """
-    seg_info = []
-    for seg_label, seg_grp in grp.groupby("segment"):
-        tgt_chr = seg_grp["tgt_chr"].mode()[0]
-        seg_info.append({
-            "label":       seg_label,
-            "tgt_chr":     tgt_chr,
-            "tgt_chr_len": int(seg_grp["tgt_end"].max() * 1.1),
-            "cs_median":   float(seg_grp["cs_midpoint"].median()),
-            "cs_min":      float(seg_grp["cs_midpoint"].min()),
-            "cs_max":      float(seg_grp["cs_midpoint"].max()),
-            "anchors":     seg_grp.copy(),
-        })
-
-    seg_info.sort(key=lambda s: s["cs_median"])
-
-    for i, seg in enumerate(seg_info):
-        if i == 0:
-            seg["cs_start"] = 0
-        else:
-            gap_mid = int((seg_info[i-1]["cs_max"] + seg["cs_min"]) / 2)
-            seg["cs_start"]         = gap_mid
-            seg_info[i-1]["cs_end"] = gap_mid
-
-        if i == len(seg_info) - 1:
-            seg["cs_end"] = cs_chr_len
-
-    return seg_info
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Per-chromosome processing
-# ─────────────────────────────────────────────────────────────────────────────
-
-def process_chromosome(cs_chr, grp, cs_sizes, resolution, min_anchors,
-                       target_name, outdir, plot_dir):
-    """
-    Build conversion table for one CS chromosome.
-
-    If 'segment' column is present AND more than one unique segment exists,
-    each segment is interpolated independently then stitched into one table.
-    """
-    cs_chr_len = get_chr_len(cs_chr, cs_sizes)
-    if cs_chr_len == 0:
-        print(f"  WARN: no size found for {cs_chr}, estimating from anchors",
-              file=sys.stderr)
-        cs_chr_len = int(grp["cs_end"].max() * 1.05)
-
-    has_segments = ("segment" in grp.columns and grp["segment"].nunique() > 1)
-
-    if has_segments:
-        segments = _define_segments(grp, cs_chr_len)
-    else:
-        tgt_chr     = grp["tgt_chr"].mode()[0]
-        seg_grp     = grp[grp["tgt_chr"] == tgt_chr].copy()
-        tgt_chr_len = int(seg_grp["tgt_end"].max() * 1.1)
-        segments    = [{"label":       "collinear",
-                        "cs_start":    0,
-                        "cs_end":      cs_chr_len,
-                        "tgt_chr":     tgt_chr,
-                        "tgt_chr_len": tgt_chr_len,
-                        "anchors":     seg_grp}]
-
-    total_anchors = sum(len(s["anchors"]) for s in segments)
-    if total_anchors < min_anchors:
-        print(f"  SKIP {cs_chr}: {total_anchors} anchors < min {min_anchors}",
-              file=sys.stderr)
-        return None
-
-    conv_parts   = []
-    all_anchors  = []
-    summary_segs = []
-
-    for seg in segments:
-        seg_anchors = seg["anchors"].sort_values("cs_midpoint").reset_index(drop=True)
-        n = len(seg_anchors)
-
-        if n < 3:
-            print(f"  SKIP segment '{seg['label']}' ({cs_chr}): only {n} anchors",
-                  file=sys.stderr)
-            continue
-
-        interp, mean_gap, interp_type = build_spline_converter(
-            cs_anchors  = seg_anchors["cs_midpoint"].values,
-            tgt_anchors = seg_anchors["tgt_midpoint"].values,
-            cs_start    = seg["cs_start"],
-            cs_end      = seg["cs_end"],
-            tgt_chr_len = seg["tgt_chr_len"],
-        )
-
-        print(f"  {cs_chr} [{seg['label']}] -> {seg['tgt_chr']}: "
-              f"{n} anchors, gap {mean_gap/1e6:.2f} Mb, {interp_type}",
-              file=sys.stderr)
-
-        cs_pos = np.arange(seg["cs_start"], seg["cs_end"] + resolution, resolution)
-        cs_pos = cs_pos[cs_pos <= seg["cs_end"]]
-
-        tgt_pos = np.clip(
-            np.round(interp(cs_pos)).astype(int), 0, seg["tgt_chr_len"]
-        )
-        density = compute_local_anchor_density(cs_pos, seg_anchors["cs_midpoint"].values)
-
-        conv_parts.append(pd.DataFrame({
-            "cs_chr":             cs_chr,
-            "cs_pos":             cs_pos,
-            "tgt_chr":            seg["tgt_chr"],
-            "tgt_pos":            tgt_pos,
-            "anchor_density_5Mb": density,
-            "interp_type":        interp_type,
-        }))
-        all_anchors.append(seg_anchors)
-        summary_segs.append({
-            "segment":    seg["label"],
-            "tgt_chr":    seg["tgt_chr"],
-            "n_anchors":  n,
-            "mean_gap_Mb": round(mean_gap / 1e6, 3),
-            "interp_type": interp_type,
-        })
-
-    if not conv_parts:
-        return None
-
-    conv_df     = pd.concat(conv_parts, ignore_index=True).sort_values("cs_pos")
-    all_anch_df = pd.concat(all_anchors, ignore_index=True)
-
-    # Save conversion table
-    conv_file = outdir / f"{cs_chr}_conversion.tsv.gz"
-    conv_df.to_csv(conv_file, sep="\t", index=False, compression="gzip")
-    print(f"  Saved: {conv_file}", file=sys.stderr)
-
-    # Save anchors (all segments)
-    all_anch_df.to_csv(outdir / f"{cs_chr}_anchors.tsv", sep="\t", index=False)
-
-    # Synteny blocks
-    blocks = build_synteny_blocks(all_anch_df)
-    if len(blocks) > 0:
-        blocks.to_csv(outdir / f"{cs_chr}_synteny_blocks.tsv", sep="\t", index=False)
-        bed_file = outdir / f"{cs_chr}_synteny.bed"
-        with open(bed_file, "w") as bf:
-            bf.write("# CS_chr\tCS_start\tCS_end\ttgt_chr\ttgt_start\ttgt_end"
-                     "\tn_anchors\tmean_identity\n")
-            for _, b in blocks.iterrows():
-                bf.write(f"{b['cs_chr']}\t{b['cs_start']}\t{b['cs_end']}\t"
-                         f"{b['tgt_chr']}\t{b['tgt_start']}\t{b['tgt_end']}\t"
-                         f"{b['n_anchors']}\t{b['mean_identity']:.4f}\n")
-
-    # Dotplot
-    if plot_dir:
-        plot_synteny_dots(all_anch_df, cs_chr, target_name,
-                         Path(plot_dir) / f"{cs_chr}_dotplot.png")
-
-    n_trans = sum(s["n_anchors"] for s in summary_segs if s["segment"] != "collinear")
-    return {
-        "cs_chr":                  cs_chr,
-        "tgt_chr":                 "/".join(s["tgt_chr"] for s in summary_segs),
-        "n_anchors":               sum(s["n_anchors"] for s in summary_segs),
-        "n_anchors_collinear":     sum(s["n_anchors"] for s in summary_segs
-                                       if s["segment"] == "collinear"),
-        "n_anchors_translocation": n_trans,
-        "has_translocation":       n_trans > 0,
-        "mean_anchor_gap_Mb":      round(
-            float(np.mean([s["mean_gap_Mb"] for s in summary_segs])), 3),
-        "interp_type":             "/".join(s["interp_type"] for s in summary_segs),
-        "n_synteny_blocks":        len(blocks) if len(blocks) > 0 else 0,
-    }
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Main
-# ─────────────────────────────────────────────────────────────────────────────
-
 def main():
     parser = argparse.ArgumentParser(
         description="Build coordinate conversion tables from anchor pairs"
     )
-    parser.add_argument("--anchors",             required=True,
-                        help="Anchor TSV from 01_extract_anchors.py")
-    parser.add_argument("--cs-chrom-sizes",      required=True,
-                        help="CS chromosome sizes (2-col TSV or .fai)")
-    parser.add_argument("--output-dir",          required=True,
-                        help="Output directory")
-    parser.add_argument("--target-name",         required=True,
-                        help="Target assembly name (used in plot titles)")
-    parser.add_argument("--resolution",          type=int, default=1000,
-                        help="Output table resolution in bp (default: 1000)")
-    parser.add_argument("--min-anchors-per-chr", type=int, default=20,
-                        help="Min total anchors to build table (default: 20)")
-    parser.add_argument("--plot-dir",            default=None,
-                        help="Output directory for QC dotplots")
+    parser.add_argument("--anchors",          required=True)
+    parser.add_argument("--cs-chrom-sizes",   required=True)
+    parser.add_argument("--output-dir",       required=True)
+    parser.add_argument("--target-name",      required=True)
+    parser.add_argument("--resolution",       type=int,   default=1000)
+    parser.add_argument("--min-anchors-per-chr", type=int, default=20)
+    parser.add_argument("--cs-gene-density", default=None,
+                        help="Precomputed CS gene density TSV.gz from 00_compute_cs_gene_density.py")
+    parser.add_argument("--density-window", type=int, default=5_000_000,
+                        help="Window (bp) for anchor_density and anchor_fraction (default: 5000000)")
+    parser.add_argument("--plot-dir", default=None)
     args = parser.parse_args()
 
     outdir = Path(args.output_dir)
@@ -462,28 +283,250 @@ def main():
     anchors = pd.read_csv(args.anchors, sep="\t")
     print(f"  Total anchors: {len(anchors)}", file=sys.stderr)
 
-    has_seg = "segment" in anchors.columns
-    print(f"  Segment column present: {has_seg}", file=sys.stderr)
-    if has_seg:
-        print(anchors["segment"].value_counts().to_string(), file=sys.stderr)
-
+    print(f"Loading CS chrom sizes: {args.cs_chrom_sizes}", file=sys.stderr)
     cs_sizes = load_chrom_sizes(args.cs_chrom_sizes)
 
+    # Detect assembly-prefixed column names (e.g. Lancer_tgt_chr -> tgt_chr)
+    col_tgt_chr   = next((c for c in anchors.columns if c.endswith("tgt_chr")),      None)
+    col_tgt_start = next((c for c in anchors.columns if c.endswith("tgt_start")),    None)
+    col_tgt_end   = next((c for c in anchors.columns if c.endswith("tgt_end")),      None)
+    col_tgt_mid   = next((c for c in anchors.columns if c.endswith("tgt_midpoint")), None)
+    col_tgt_strand= next((c for c in anchors.columns if c.endswith("tgt_strand")),   None)
+    col_coverage  = next((c for c in anchors.columns if c.endswith("coverage")),     None)
+    col_identity  = next((c for c in anchors.columns if c.endswith("identity")),     None)
+    if not col_tgt_chr:
+        print(f"ERROR: cannot find tgt_chr column. Columns: {list(anchors.columns)}", file=sys.stderr)
+        sys.exit(1)
+    print(f"  Using target columns: {col_tgt_chr}, {col_tgt_mid}", file=sys.stderr)
+    rename_map = {}
+    for src, dst in [
+        (col_tgt_chr,    "tgt_chr"),
+        (col_tgt_start,  "tgt_start"),
+        (col_tgt_end,    "tgt_end"),
+        (col_tgt_mid,    "tgt_midpoint"),
+        (col_tgt_strand, "tgt_strand"),
+        (col_coverage,   "coverage"),
+        (col_identity,   "identity"),
+    ]:
+        if src and src != dst:
+            rename_map[src] = dst
+    if rename_map:
+        anchors = anchors.rename(columns=rename_map)
+
+    if args.cs_gene_density:
+        print(f"Loading CS gene density: {args.cs_gene_density}", file=sys.stderr)
+        gene_density_df = pd.read_csv(
+            args.cs_gene_density, sep="\t",
+            compression="gzip" if args.cs_gene_density.endswith(".gz") else "infer"
+        )
+        print(f"  Gene density loaded: {len(gene_density_df):,} rows, "
+              f"{gene_density_df['cs_chr'].nunique()} chromosomes", file=sys.stderr)
+    else:
+        gene_density_df = None
+        print("  WARNING: --cs-gene-density not provided; anchor_fraction will be NaN",
+              file=sys.stderr)
+
     chr_summary = []
+
+    # Preload gene density for this run if available
+    if gene_density_df is not None:
+        gd_by_chr = {
+            cs_chr: (sub["cs_pos"].values, sub["cs_gene_density"].values)
+            for cs_chr, sub in gene_density_df.groupby("cs_chr")
+        }
+    else:
+        gd_by_chr = {}
+
     for cs_chr, grp in anchors.groupby("cs_chr"):
         print(f"\nProcessing {cs_chr}...", file=sys.stderr)
-        result = process_chromosome(
-            cs_chr      = cs_chr,
-            grp         = grp,
-            cs_sizes    = cs_sizes,
-            resolution  = args.resolution,
-            min_anchors = args.min_anchors_per_chr,
-            target_name = args.target_name,
-            outdir      = outdir,
-            plot_dir    = args.plot_dir,
+
+        if len(grp) < args.min_anchors_per_chr:
+            print(f"  SKIP: only {len(grp)} anchors (min={args.min_anchors_per_chr})",
+                  file=sys.stderr)
+            continue
+
+        cs_chr_len = cs_sizes.get(
+            cs_chr,
+            cs_sizes.get(f"Chr{cs_chr}", cs_sizes.get(f"chr{cs_chr}", 0))
         )
-        if result:
-            chr_summary.append(result)
+        if cs_chr_len == 0:
+            print(f"  WARN: could not find size for {cs_chr}", file=sys.stderr)
+            cs_chr_len = int(grp["cs_end"].max() * 1.05)
+
+        # Gene density arrays for this cs_chr
+        gd_pos, gd_vals = gd_by_chr.get(cs_chr, (None, None))
+
+        # Dense query positions for the full chromosome
+        cs_positions = np.arange(0, cs_chr_len + args.resolution, args.resolution)
+
+        # ── Detect segments ───────────────────────────────────────────────────
+        # For standard chromosomes: one segment (collinear, one tgt_chr).
+        # For translocated chromosomes: multiple segments, each covering a
+        # different CS coordinate range and mapping to a different tgt_chr.
+        # Add segment column if absent (assemblies run without --translocation-map)
+        if "segment" not in grp.columns:
+            grp = grp.copy()
+            grp["segment"] = "collinear"
+        segments = grp.groupby(["tgt_chr", "segment"], sort=False)
+        seg_list = [(key, sub.sort_values("cs_midpoint").reset_index(drop=True))
+                    for key, sub in segments
+                    if len(sub) >= args.min_anchors_per_chr]
+
+        if len(seg_list) == 0:
+            print(f"  SKIP: no segments with >= {args.min_anchors_per_chr} anchors",
+                  file=sys.stderr)
+            continue
+
+        # Sort segments by median cs_midpoint so boundaries are ordered
+        seg_list.sort(key=lambda x: x[1]["cs_midpoint"].median())
+
+        # Compute assignment boundary between adjacent segments:
+        # midpoint between max cs_pos of seg[i] and min cs_pos of seg[i+1]
+        seg_boundaries = []
+        for i, (_, seg_df) in enumerate(seg_list):
+            seg_start = 0 if i == 0 else seg_boundaries[-1][1] + 1
+            if i < len(seg_list) - 1:
+                next_df  = seg_list[i + 1][1]
+                boundary = int((seg_df["cs_midpoint"].max() +
+                                next_df["cs_midpoint"].min()) // 2)
+                seg_end  = boundary
+            else:
+                seg_end  = cs_chr_len
+            seg_boundaries.append((seg_start, seg_end))
+
+        # All anchors on this cs_chr pooled (for density — avoids boundary artefacts)
+        all_seg_anchors = np.concatenate(
+            [seg_df["cs_midpoint"].values for _, seg_df in seg_list]
+        )
+
+        # Arrays to fill across all query positions
+        tgt_chr_arr     = np.full(len(cs_positions), "", dtype=object)
+        tgt_pos_arr     = np.zeros(len(cs_positions), dtype=np.int64)
+        density_arr     = np.zeros(len(cs_positions), dtype=np.int32)
+        fraction_arr    = np.full(len(cs_positions), np.nan)
+        interp_type_arr = np.full(len(cs_positions), "", dtype=object)
+
+        summary_segs = []
+        for i, ((tgt_chr, seg_label), seg_df) in enumerate(seg_list):
+            seg_start, seg_end = seg_boundaries[i]
+            mask = (cs_positions >= seg_start) & (cs_positions <= seg_end)
+            seg_positions = cs_positions[mask]
+
+            tgt_chr_len = int(seg_df["tgt_end"].max() * 1.1)
+
+            interpolator, mean_gap, interp_type = build_spline_converter(
+                cs_anchors=seg_df["cs_midpoint"].values,
+                tgt_anchors=seg_df["tgt_midpoint"].values,
+                cs_chr_len=seg_end - seg_start,
+                tgt_chr_len=tgt_chr_len,
+            )
+            print(f"  {cs_chr} [{seg_label}] -> {tgt_chr}: {len(seg_df)} anchors, "
+                  f"mean gap {mean_gap/1e6:.2f} Mb, interp: {interp_type}",
+                  file=sys.stderr)
+
+            tgt_positions = np.clip(
+                np.round(interpolator(seg_positions)).astype(np.int64),
+                0, tgt_chr_len
+            )
+
+            # Use all_seg_anchors for density so transitions don't cause drops
+            seg_density = compute_local_anchor_density(
+                seg_positions, all_seg_anchors,
+                window=args.density_window,
+            )
+
+            if gd_pos is not None:
+                seg_fraction = compute_anchor_fraction(
+                    seg_positions, all_seg_anchors,
+                    gd_pos, gd_vals,
+                    window=args.density_window,
+                )
+            else:
+                seg_fraction = np.full(len(seg_positions), np.nan)
+
+            tgt_chr_arr[mask]     = tgt_chr
+            tgt_pos_arr[mask]     = tgt_positions
+            density_arr[mask]     = seg_density
+            fraction_arr[mask]    = seg_fraction
+            interp_type_arr[mask] = interp_type
+
+            summary_segs.append({
+                "tgt_chr":    tgt_chr,
+                "segment":    seg_label,
+                "n_anchors":  len(seg_df),
+                "mean_gap":   mean_gap,
+                "interp_type": interp_type,
+            })
+
+        # Log anchor_fraction QC
+        valid_af = fraction_arr[~np.isnan(fraction_arr)]
+        if len(valid_af) > 0:
+            print(f"  Anchor fraction: min={valid_af.min():.2f}, "
+                  f"mean={valid_af.mean():.2f}, max={valid_af.max():.2f}",
+                  file=sys.stderr)
+            n_low = int(np.sum(valid_af < 0.5))
+            if n_low > 0:
+                frac_low = n_low / len(valid_af)
+                print(f"  WARNING: {n_low} positions ({frac_low:.1%}) have "
+                      f"anchor_fraction < 0.5", file=sys.stderr)
+
+        # Build output DataFrame
+        conv_df = pd.DataFrame({
+            "cs_chr":             cs_chr,
+            "cs_pos":             cs_positions,
+            "tgt_chr":            tgt_chr_arr,
+            "tgt_pos":            tgt_pos_arr,
+            "anchor_density_5Mb": density_arr,
+            "anchor_fraction":    np.round(fraction_arr, 3),
+            "interp_type":        interp_type_arr,
+        })
+
+        # Save conversion table
+        conv_file = outdir / f"{cs_chr}_conversion.tsv.gz"
+        conv_df.to_csv(conv_file, sep="\t", index=False, compression="gzip")
+        print(f"  Saved: {conv_file}", file=sys.stderr)
+
+        # Save clean anchors (all segments)
+        grp_all_segs = pd.concat([seg_df for _, seg_df in seg_list], ignore_index=True)
+        anchor_file = outdir / f"{cs_chr}_anchors.tsv"
+        grp_all_segs.to_csv(anchor_file, sep="\t", index=False)
+
+        # Synteny blocks (per segment, combined)
+        all_blocks = []
+        for _, seg_df in seg_list:
+            blocks = build_synteny_blocks(seg_df)
+            if len(blocks) > 0:
+                all_blocks.append(blocks)
+        if all_blocks:
+            blocks_df = pd.concat(all_blocks, ignore_index=True)
+            blocks_df.to_csv(outdir / f"{cs_chr}_synteny_blocks.tsv", sep="\t", index=False)
+            bed_file = outdir / f"{cs_chr}_synteny.bed"
+            with open(bed_file, "w") as bf:
+                bf.write("# CS_chr\tCS_start\tCS_end\ttgt_chr\ttgt_start\ttgt_end\tn_anchors\tmean_identity\n")
+                for _, b in blocks_df.iterrows():
+                    bf.write(f"{b['cs_chr']}\t{b['cs_start']}\t{b['cs_end']}\t"
+                             f"{b['tgt_chr']}\t{b['tgt_start']}\t{b['tgt_end']}\t"
+                             f"{b['n_anchors']}\t{b['mean_identity']:.4f}\n")
+
+        # QC plot
+        if args.plot_dir:
+            plot_synteny_dots(grp, cs_chr, args.target_name,
+                              Path(args.plot_dir) / f"{cs_chr}_dotplot.png")
+
+        # Summary: one row per cs_chr; join segment info if multiple
+        tgt_chr_summary = "+".join(s["tgt_chr"] for s in summary_segs)
+        total_anchors   = sum(s["n_anchors"] for s in summary_segs)
+        mean_gap_all    = float(np.mean([s["mean_gap"] for s in summary_segs]))
+        chr_summary.append({
+            "cs_chr":               cs_chr,
+            "tgt_chr":              tgt_chr_summary,
+            "n_anchors":            total_anchors,
+            "mean_anchor_gap_Mb":   round(mean_gap_all / 1e6, 3),
+            "interp_type":          "+".join(s["interp_type"] for s in summary_segs),
+            "n_segments":           len(summary_segs),
+            "mean_anchor_fraction": round(float(np.nanmean(fraction_arr)), 3)
+                                    if len(fraction_arr) > 0 else None,
+        })
 
     summary_df = pd.DataFrame(chr_summary)
     summary_df.to_csv(outdir / "conversion_summary.tsv", sep="\t", index=False)

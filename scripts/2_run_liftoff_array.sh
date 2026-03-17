@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --time=12:00:00
 #SBATCH --job-name=liftoff_array
-#SBATCH --partition=your_partition
+#SBATCH --partition=shortq
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=48
 #SBATCH --mem=160g
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=your@email.com
+#SBATCH --mail-user=sbzsm11@exmail.nottingham.ac.uk
 #SBATCH --output=outputs/logs/liftoff_%A_%a.out
 #SBATCH --error=outputs/logs/liftoff_%A_%a.err
 #
@@ -17,7 +17,9 @@
 #   4. Rename tgt_* columns to <assembly>_tgt_* in all output files
 #   5. Generate 21-chr dotplot for this assembly
 #
-
+# After ALL array jobs finish, run once manually:
+#   python3 04_postprocess.py --skip-rename --skip-plots
+# to generate master_anchors.xlsx and master_conversion_summary.xlsx
 #
 # Run from CS_synteny/ directory:
 #   sbatch --array=0-9 2_run_liftoff_array.sh      # 10+ panel
@@ -116,6 +118,8 @@ python3 02_build_conversion_table.py \
     --target-name         "$NAME" \
     --resolution          "$CONV_RESOLUTION" \
     --min-anchors-per-chr "$MIN_ANCHORS" \
+    --cs-gene-density     "outputs/cs_gene_density.tsv.gz" \
+    --density-window      5000000 \
     --plot-dir            "$OUTDIR/plots/$NAME"
 
 echo "[3/5] Conversion tables done: $NAME — $(date)"
