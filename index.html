@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WheatCoordDB — CS RefSeq v2.1 coordinate converter</title>
+<title>WheatCoordDB: CS RefSeq v2.1 coordinate converter</title>
 <meta name="description" content="Convert genomic coordinates from IWGSC wheat CS RefSeq v2.1 to 24 target assemblies using gene-anchored spline interpolation.">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,19 +31,19 @@
 
 body { font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 18px; line-height: 1.6; }
 
-nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 54px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-.logo { font-size: 16px; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
+nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 62px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.logo { font-size: 20px; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
 .logo span { color: var(--green); font-weight: 400; }
-.nav-links { display: flex; gap: 1.75rem; font-family: -apple-system, system-ui, sans-serif; font-size: 13px; }
+.nav-links { display: flex; gap: 1.75rem; font-family: -apple-system, system-ui, sans-serif; font-size: 15px; }
 .nav-links a { color: var(--text-2); text-decoration: none; transition: color .15s; }
 .nav-links a:hover { color: var(--text); }
 
 .hero { background: var(--white); border-bottom: 1px solid var(--border); padding: 2.5rem 2rem 2rem; }
 .hero-inner { max-width: 960px; margin: 0 auto; }
-.hero h1 { font-size: 28px; font-weight: 500; letter-spacing: -.025em; line-height: 1.25; margin-bottom: .5rem; }
-.hero p { font-family: -apple-system, system-ui, sans-serif; font-size: 16px; color: var(--text-2); line-height: 1.7; max-width: 580px; margin-bottom: 1rem; }
+.hero h1 { font-size: 32px; font-weight: 500; letter-spacing: -.025em; line-height: 1.25; margin-bottom: .5rem; }
+.hero p { font-family: -apple-system, system-ui, sans-serif; font-size: 17px; color: var(--text-2); line-height: 1.7; max-width: 580px; margin-bottom: 1rem; }
 .badges { display: flex; gap: 8px; flex-wrap: wrap; }
-.badge { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+.badge { font-family: -apple-system, system-ui, sans-serif; font-size: 14px; font-weight: 500; padding: 4px 12px; border-radius: 20px; }
 .b-green { background: var(--green-light); color: var(--green-dark); }
 .b-blue  { background: #e6f1fb; color: #185fa5; }
 .b-gray  { background: var(--bg-2); color: #5f5e5a; }
@@ -52,17 +52,17 @@ nav { background: var(--white); border-bottom: 1px solid var(--border); padding:
 @media (max-width: 760px) { .main { grid-template-columns: 1fr; } .sidebar { order: -1; } }
 
 .panel { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; }
-.panel-title { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); margin-bottom: 1.25rem; }
+.panel-title { font-family: -apple-system, system-ui, sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); margin-bottom: 1.25rem; }
 
 .tabs { display: flex; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; font-family: -apple-system, system-ui, sans-serif; }
-.tab-btn { flex: 1; padding: 9px 12px; font-size: 14px; font-family: inherit; background: transparent; border: none; color: var(--text-2); cursor: pointer; transition: background .15s, color .15s; }
+.tab-btn { flex: 1; padding: 10px 12px; font-size: 15px; font-family: inherit; background: transparent; border: none; color: var(--text-2); cursor: pointer; transition: background .15s, color .15s; }
 .tab-btn:not(:last-child) { border-right: 1px solid var(--border); }
 .tab-btn.active { background: var(--text); color: var(--white); }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
 .field { margin-bottom: 1rem; }
-.field-label { display: block; font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-2); margin-bottom: 6px; }
+.field-label { display: block; font-family: -apple-system, system-ui, sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-2); margin-bottom: 6px; }
 input[type="number"] { width: 100%; padding: 9px 12px; font-size: 16px; font-family: -apple-system, system-ui, sans-serif; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); appearance: none; -webkit-appearance: none; transition: border-color .15s, box-shadow .15s; }
 select.single-select { width: 100%; padding: 9px 32px 9px 12px; font-size: 16px; font-family: -apple-system, system-ui, sans-serif; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); appearance: none; -webkit-appearance: none; transition: border-color .15s, box-shadow .15s; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b64'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
 select.single-select:focus, input[type="number"]:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(45,106,79,.1); }
@@ -71,44 +71,44 @@ select.single-select:focus, input[type="number"]:focus { outline: none; border-c
 /* Assembly picker */
 .asm-picker { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 .asm-picker-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border-bottom: 1px solid var(--border); background: var(--bg-2); }
-.asm-picker-toolbar > span { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: var(--text-2); }
+.asm-picker-toolbar > span { font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: var(--text-2); }
 .asm-picker-actions { display: flex; gap: 6px; }
-.asm-picker-actions button { font-size: 11px; padding: 3px 8px; border: 1px solid var(--border-2); border-radius: 4px; background: var(--white); color: var(--text-2); cursor: pointer; font-family: -apple-system, system-ui, sans-serif; transition: background .1s; }
+.asm-picker-actions button { font-size: 12px; padding: 3px 8px; border: 1px solid var(--border-2); border-radius: 4px; background: var(--white); color: var(--text-2); cursor: pointer; font-family: -apple-system, system-ui, sans-serif; transition: background .1s; }
 .asm-picker-actions button:hover { background: var(--green-light); color: var(--green-dark); }
 .asm-picker-groups { max-height: 210px; overflow-y: auto; }
-.asm-group-label { font-family: -apple-system, system-ui, sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); padding: 7px 10px 4px; background: var(--bg-2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1; }
-.asm-option { display: flex; align-items: center; gap: 8px; padding: 6px 10px; cursor: pointer; border-bottom: 1px solid var(--bg-2); font-family: -apple-system, system-ui, sans-serif; font-size: 14px; color: var(--text); user-select: none; transition: background .1s; }
+.asm-group-label { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); padding: 7px 10px 4px; background: var(--bg-2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1; }
+.asm-option { display: flex; align-items: center; gap: 8px; padding: 7px 10px; cursor: pointer; border-bottom: 1px solid var(--bg-2); font-family: -apple-system, system-ui, sans-serif; font-size: 15px; color: var(--text); user-select: none; transition: background .1s; }
 .asm-option:hover { background: var(--green-light); }
 .asm-option input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--green); cursor: pointer; flex-shrink: 0; }
-.asm-selected-count { font-size: 11px; color: var(--green-dark); font-weight: 500; font-family: -apple-system, system-ui, sans-serif; }
+.asm-selected-count { font-size: 13px; color: var(--green-dark); font-weight: 500; font-family: -apple-system, system-ui, sans-serif; }
 
 /* Buttons */
 .btn-primary { width: 100%; padding: 11px; font-size: 15px; font-weight: 500; font-family: -apple-system, system-ui, sans-serif; background: var(--text); color: var(--white); border: none; border-radius: var(--radius); cursor: pointer; transition: opacity .15s; margin-top: 4px; }
 .btn-primary:hover { opacity: .85; }
 .btn-primary:active { transform: scale(.99); }
 .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
-.btn-sm { font-size: 12px; padding: 5px 12px; border: 1px solid var(--border-2); border-radius: 6px; background: var(--white); color: var(--text); cursor: pointer; font-family: -apple-system, system-ui, sans-serif; transition: background .15s; }
+.btn-sm { font-size: 13px; padding: 5px 12px; border: 1px solid var(--border-2); border-radius: 6px; background: var(--white); color: var(--text); cursor: pointer; font-family: -apple-system, system-ui, sans-serif; transition: background .15s; }
 .btn-sm:hover { background: var(--bg-2); }
 
 /* Loading */
 .spinner { display: none; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loading-row { display: none; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); font-family: -apple-system, system-ui, sans-serif; margin-top: 1rem; justify-content: center; }
+.loading-row { display: none; align-items: center; gap: 8px; font-size: 14px; color: var(--text-2); font-family: -apple-system, system-ui, sans-serif; margin-top: 1rem; justify-content: center; }
 
 /* Result cards */
 .result-card { display: none; margin-top: 1.25rem; border: 1px solid var(--green-mid); border-radius: var(--radius-lg); overflow: hidden; }
 .result-card.visible { display: block; }
 .result-header { background: var(--green-light); padding: .7rem 1rem; display: flex; align-items: center; justify-content: space-between; font-family: -apple-system, system-ui, sans-serif; }
-.result-header-title { font-size: 13px; font-weight: 500; color: var(--green-dark); }
-.result-header-sub   { font-size: 11px; color: var(--green); }
+.result-header-title { font-size: 15px; font-weight: 500; color: var(--green-dark); }
+.result-header-sub   { font-size: 13px; color: var(--green); }
 .result-metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 1rem; }
 .metric { background: var(--bg); border-radius: var(--radius); padding: .7rem .85rem; }
-.metric-lbl { font-family: -apple-system, system-ui, sans-serif; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); margin-bottom: 4px; }
-.metric-val { font-size: 17px; font-weight: 500; letter-spacing: -.02em; color: var(--text); line-height: 1.2; }
-.metric-sub { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.metric-lbl { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); margin-bottom: 4px; }
+.metric-val { font-size: 20px; font-weight: 500; letter-spacing: -.02em; color: var(--text); line-height: 1.2; }
+.metric-sub { font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: var(--text-3); margin-top: 2px; }
 
 /* Multi-target comparison table */
-.cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: -apple-system, system-ui, sans-serif; }
+.cmp-table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: -apple-system, system-ui, sans-serif; }
 .cmp-table th { text-align: left; padding: 7px 12px; background: var(--bg); color: var(--text-2); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
 .cmp-table td { padding: 8px 12px; border-bottom: 1px solid var(--bg-2); }
 .cmp-table tr:last-child td { border-bottom: none; }
@@ -117,37 +117,37 @@ select.single-select:focus, input[type="number"]:focus { outline: none; border-c
 .td-bp  { font-size: 11px; color: var(--text-3); display: block; }
 
 /* Confidence */
-.confidence-row { padding: .75rem 1rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-family: -apple-system, system-ui, sans-serif; font-size: 12px; color: var(--text-2); }
+.confidence-row { padding: .75rem 1rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-family: -apple-system, system-ui, sans-serif; font-size: 14px; color: var(--text-2); }
 .conf-bar { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
 .conf-fill { height: 100%; border-radius: 3px; transition: width .4s; }
 .conf-fill.high { background: var(--green); }
 .conf-fill.mid  { background: #EF9F27; }
 .conf-fill.low  { background: #E24B4A; }
-.conf-tag { font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+.conf-tag { font-size: 14px; padding: 3px 11px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
 .conf-tag.high { background: var(--green-light); color: var(--green-dark); }
 .conf-tag.mid  { background: var(--amber-light); color: var(--amber-dark); }
 .conf-tag.low  { background: var(--red-light);   color: var(--red-dark); }
 
 /* Error */
-.error-msg { display: none; margin-top: .75rem; font-size: 13px; color: var(--red-dark); font-family: -apple-system, system-ui, sans-serif; background: var(--red-light); padding: .6rem .85rem; border-radius: var(--radius); }
+.error-msg { display: none; margin-top: .75rem; font-size: 15px; color: var(--red-dark); font-family: -apple-system, system-ui, sans-serif; background: var(--red-light); padding: .6rem .85rem; border-radius: var(--radius); }
 
 /* Upload */
 .upload-zone { border: 1.5px dashed var(--border-2); border-radius: var(--radius-lg); padding: 2rem 1.5rem; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; background: var(--bg); margin-bottom: 1rem; }
 .upload-zone:hover, .upload-zone.drag-over { border-color: var(--green); background: var(--green-light); }
 .upload-icon { width: 40px; height: 40px; background: var(--green-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
 .upload-icon svg { width: 20px; height: 20px; stroke: var(--green); fill: none; stroke-width: 1.5; }
-.upload-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 5px; font-family: -apple-system, system-ui, sans-serif; }
-.upload-sub { font-size: 12px; color: var(--text-2); font-family: -apple-system, system-ui, sans-serif; line-height: 1.7; }
-code { font-family: 'Courier New', monospace; font-size: 11px; background: var(--bg-2); padding: 1px 5px; border-radius: 3px; color: #5f5e5a; }
+.upload-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 5px; font-family: -apple-system, system-ui, sans-serif; }
+.upload-sub { font-size: 13px; color: var(--text-2); font-family: -apple-system, system-ui, sans-serif; line-height: 1.7; }
+code { font-family: 'Courier New', monospace; font-size: 13px; background: var(--bg-2); padding: 1px 5px; border-radius: 3px; color: #5f5e5a; }
 #file-input { display: none; }
 
 /* Batch results table */
 .table-wrap { display: none; margin-top: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
 .table-wrap.visible { display: block; }
 .table-header { background: var(--bg-2); padding: .6rem 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
-.table-header span { font-size: 12px; font-weight: 500; color: var(--text-2); font-family: -apple-system, system-ui, sans-serif; }
+.table-header span { font-size: 13px; font-weight: 500; color: var(--text-2); font-family: -apple-system, system-ui, sans-serif; }
 .table-scroll { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: -apple-system, system-ui, sans-serif; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: -apple-system, system-ui, sans-serif; }
 th { text-align: left; padding: 7px 10px; background: var(--bg); color: var(--text-2); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
 th.th-group { background: var(--green-light); color: var(--green-dark); border-bottom: 1px solid var(--green-mid); }
 td { padding: 7px 10px; border-bottom: 1px solid var(--bg-2); color: var(--text); white-space: nowrap; }
@@ -160,14 +160,14 @@ tr:last-child td { border-bottom: none; }
 
 /* Sidebar */
 .sidebar { display: flex; flex-direction: column; gap: 1rem; }
-.info-block { font-family: -apple-system, system-ui, sans-serif; font-size: 15px; color: var(--text-2); line-height: 1.7; }
+.info-block { font-family: -apple-system, system-ui, sans-serif; font-size: 16px; color: var(--text-2); line-height: 1.7; }
 .info-block strong { color: var(--text); font-weight: 500; }
 .assembly-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
 .assembly-list li { font-family: -apple-system, system-ui, sans-serif; font-size: 12px; color: var(--text-2); padding: 5px 0; border-bottom: 1px solid var(--bg-2); display: flex; justify-content: space-between; align-items: center; }
 .assembly-list li:last-child { border-bottom: none; }
 .asm-group-hdr { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); padding: 10px 0 4px; border: none !important; }
 
-footer { border-top: 1px solid var(--border); margin-top: 3rem; padding: 1.5rem 2rem; text-align: center; font-family: -apple-system, system-ui, sans-serif; font-size: 12px; color: var(--text-3); }
+footer { border-top: 1px solid var(--border); margin-top: 3rem; padding: 1.5rem 2rem; text-align: center; font-family: -apple-system, system-ui, sans-serif; font-size: 14px; color: var(--text-3); }
 footer a { color: var(--text-2); text-decoration: none; }
 footer a:hover { color: var(--text); }
 footer .sep { margin: 0 .5rem; }
@@ -175,34 +175,34 @@ footer .sep { margin: 0 .5rem; }
 /* Dotplot */
 .dotplot-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: .75rem; }
 .dotplot-header { display: flex; align-items: center; justify-content: space-between; padding: .6rem 1rem; background: var(--bg-2); border-bottom: 1px solid var(--border); font-family: -apple-system, system-ui, sans-serif; }
-.dotplot-header-title { font-size: 12px; font-weight: 500; color: var(--text); }
-.dotplot-header-sub { font-size: 11px; color: var(--text-3); }
-.dotplot-toggle { font-size: 11px; padding: 3px 10px; border: 1px solid var(--border-2); border-radius: 5px; background: var(--white); color: var(--text-2); cursor: pointer; font-family: -apple-system, system-ui, sans-serif; transition: background .1s; }
+.dotplot-header-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.dotplot-header-sub { font-size: 13px; color: var(--text-3); }
+.dotplot-toggle { font-size: 13px; padding: 3px 10px; border: 1px solid var(--border-2); border-radius: 5px; background: var(--white); color: var(--text-2); cursor: pointer; font-family: -apple-system, system-ui, sans-serif; transition: background .1s; }
 .dotplot-toggle:hover { background: var(--green-light); color: var(--green-dark); border-color: var(--green-mid); }
 .dotplot-toggle.active { background: var(--green-light); color: var(--green-dark); border-color: var(--green-mid); }
 .dotplot-canvas-wrap { padding: .75rem 1rem 1rem; display: none; }
 .dotplot-canvas-wrap.visible { display: block; }
 canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; }
-.dotplot-legend { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: var(--text-2); }
+.dotplot-legend { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: var(--text-2); }
 .legend-box { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
 
 /* Result actions row */
 .result-actions { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-.inversion-badge { display: inline-flex; align-items: center; gap: 5px; font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 600; color: var(--amber-dark); background: var(--amber-light); border: 1px solid #e8c87a; padding: 4px 10px; border-radius: 20px; }
-.copy-btn { display: inline-flex; align-items: center; gap: 6px; font-family: -apple-system, system-ui, sans-serif; font-size: 12px; font-weight: 500; color: var(--text-2); background: var(--bg-2); border: 1px solid var(--border-2); padding: 5px 12px; border-radius: 6px; cursor: pointer; transition: background .15s, color .15s, border-color .15s; margin-left: auto; }
+.inversion-badge { display: inline-flex; align-items: center; gap: 5px; font-family: -apple-system, system-ui, sans-serif; font-size: 14px; font-weight: 600; color: var(--amber-dark); background: var(--amber-light); border: 1px solid #e8c87a; padding: 4px 10px; border-radius: 20px; }
+.copy-btn { display: inline-flex; align-items: center; gap: 6px; font-family: -apple-system, system-ui, sans-serif; font-size: 14px; font-weight: 500; color: var(--text-2); background: var(--bg-2); border: 1px solid var(--border-2); padding: 5px 12px; border-radius: 6px; cursor: pointer; transition: background .15s, color .15s, border-color .15s; margin-left: auto; }
 .copy-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
 .copy-btn:hover { background: var(--green-light); color: var(--green-dark); border-color: var(--green-mid); }
 .copy-btn.copied { background: var(--green-light); color: var(--green-dark); border-color: var(--green-mid); }
-.copy-btn-sm { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: var(--text-3); background: transparent; border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px; cursor: pointer; white-space: nowrap; transition: background .1s, color .1s; }
+.copy-btn-sm { font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: var(--text-3); background: transparent; border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px; cursor: pointer; white-space: nowrap; transition: background .1s, color .1s; }
 .copy-btn-sm:hover, .copy-btn-sm.copied { background: var(--green-light); color: var(--green-dark); border-color: var(--green-mid); }
-.inv-inline { color: #c47a00; font-size: 11px; cursor: help; }
+.inv-inline { color: #c47a00; font-size: 14px; cursor: help; }
 
 /* Coming soon panel */
 .coming-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
 .coming-list li { display: flex; gap: 10px; align-items: flex-start; }
-.coming-icon { font-size: 16px; line-height: 1.3; flex-shrink: 0; }
-.coming-title { font-family: -apple-system, system-ui, sans-serif; font-size: 13px; font-weight: 600; color: var(--text); }
-.coming-desc { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; color: var(--text-2); line-height: 1.5; margin-top: 1px; }
+.coming-icon { font-size: 18px; line-height: 1.3; flex-shrink: 0; }
+.coming-title { font-family: -apple-system, system-ui, sans-serif; font-size: 15px; font-weight: 600; color: var(--text); }
+.coming-desc { font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: var(--text-2); line-height: 1.5; margin-top: 1px; }
 </style>
 </head>
 <body>
@@ -220,7 +220,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
 <div class="hero">
   <div class="hero-inner">
     <h1>Wheat genome coordinate converter</h1>
-    <p>Map any genomic position from IWGSC CS RefSeq v2.1 to equivalent positions across 24 wheat assemblies using gene-anchored PCHIP spline interpolation. Runs entirely in your browser — no data leaves your machine.</p>
+    <p>Map any genomic position from IWGSC CS RefSeq v2.1 to equivalent positions across 24 wheat assemblies using gene-anchored PCHIP spline interpolation. Runs entirely in your browser. No data leaves your machine.</p>
     <div class="badges">
       <span class="badge b-green">24 assemblies</span>
       <span class="badge b-green">~95k gene anchors</span>
@@ -317,7 +317,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
           <div class="result-header">
             <span class="result-header-title" id="s-multi-title">—</span>
             <span class="result-header-sub">PCHIP spline interpolation</span>
-            <button class="btn-sm" id="s-multi-copy-all" onclick="copyAllCoords()" style="font-size:11px;padding:3px 10px">Copy all</button>
+            <button class="btn-sm" id="s-multi-copy-all" onclick="copyAllCoords()" style="font-size:13px;padding:4px 11px">Copy all</button>
           </div>
           <div class="table-scroll">
             <table class="cmp-table">
@@ -361,7 +361,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           </div>
           <div class="upload-title" id="upload-title">Drop a BED or TXT file here</div>
-          <div class="upload-sub">Columns: <code>chr</code> <code>start</code> <code>end</code> or <code>chr</code> <code>position</code> — tab or space separated<br>Extra columns are preserved in the output<br><br><span style="font-size:11px;color:var(--text-2);font-family:monospace;line-height:1.8"># Region query (chr, start, end)<br>Chr1A&nbsp;&nbsp;250000000&nbsp;&nbsp;260000000&nbsp;&nbsp;my_qtl<br>Chr3B&nbsp;&nbsp;400000000&nbsp;&nbsp;420000000&nbsp;&nbsp;my_region<br># Single position (chr, position)<br>Chr5B&nbsp;&nbsp;157000000&nbsp;&nbsp;my_marker<br># Extra columns are preserved in output</span></div>
+          <div class="upload-sub">Columns: <code>chr</code> <code>start</code> <code>end</code> or <code>chr</code> <code>position</code> (tab or space separated)<br>Extra columns are preserved in the output<br><br><span style="font-size:11px;color:var(--text-2);font-family:monospace;line-height:1.8"># Region query (chr, start, end)<br>Chr1A&nbsp;&nbsp;250000000&nbsp;&nbsp;260000000&nbsp;&nbsp;my_qtl<br>Chr3B&nbsp;&nbsp;400000000&nbsp;&nbsp;420000000&nbsp;&nbsp;my_region<br># Single position (chr, position)<br>Chr5B&nbsp;&nbsp;157000000&nbsp;&nbsp;my_marker<br># Extra columns are preserved in output</span></div>
         </div>
         <input type="file" id="file-input" accept=".bed,.txt,.tsv,.csv" onchange="loadFile(this.files[0])">
 
@@ -732,7 +732,7 @@ async function doSingleConvert(){
       const r=results[0];
       // Handle breakpoint-spanning split result
       if(r.split){
-        document.getElementById('s-res-title').textContent=chr+' → '+r.tgtChr+' ('+r.assembly+') — spans translocation breakpoint';
+        document.getElementById('s-res-title').textContent=chr+' → '+r.tgtChr+' ('+r.assembly+') - spans translocation breakpoint';
         const firstPart=r.parts[0];
         if(r.inBreakpointGap){
         document.getElementById('s-res-title').textContent=chr+' → breakpoint gap ('+r.assembly+')';
@@ -828,11 +828,11 @@ async function doSingleConvert(){
       if(!extWarn){
         extWarn=document.createElement('div');
         extWarn.id='s-extrap-warn';
-        extWarn.style.cssText='display:none;margin-top:.6rem;font-size:12px;font-family:-apple-system,system-ui,sans-serif;color:#854f0b;background:#faeeda;padding:.5rem .85rem;border-radius:6px;border:1px solid #e8c87a;';
+        extWarn.style.cssText='display:none;margin-top:.6rem;font-size:14px;font-family:-apple-system,system-ui,sans-serif;color:#854f0b;background:#faeeda;padding:.5rem .85rem;border-radius:6px;border:1px solid #e8c87a;';
         document.getElementById('s-result-single').appendChild(extWarn);
       }
       if(r.extrapolated){
-        extWarn.innerHTML=`<strong>⚠ Extrapolated coordinates</strong> — query extends beyond anchor range on ${chr} (anchors cover ${(r.csAnchorMin/1e6).toFixed(1)}–${(r.csAnchorMax/1e6).toFixed(1)} Mb). Returned coordinates are linearly extrapolated and may be unreliable.`;
+        extWarn.innerHTML=`<strong>⚠ Extrapolated coordinates</strong>: query extends beyond anchor range on ${chr} (anchors cover ${(r.csAnchorMin/1e6).toFixed(1)}–${(r.csAnchorMax/1e6).toFixed(1)} Mb). Returned coordinates are linearly extrapolated and may be unreliable.`;
         extWarn.style.display='block';
       } else { extWarn.style.display='none'; }
       // Copy button
@@ -853,7 +853,7 @@ async function doSingleConvert(){
         chr+':'+start.toLocaleString()+'–'+end.toLocaleString()+' → '+targets.length+' assemblies';
       document.getElementById('s-multi-tbody').innerHTML=results.map((r,i)=>{
         if(r.error) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--red-dark);font-size:12px">${r.error}</td><td><span class="tag tag-low">error</span></td><td></td></tr>`;
-        if(r.inBreakpointGap) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--amber-dark);font-size:12px">Query falls within translocation breakpoint gap — no anchor coverage</td><td><span class="tag tag-mid">breakpoint</span></td><td></td></tr>`;
+        if(r.inBreakpointGap) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--amber-dark);font-size:12px">Query falls within translocation breakpoint gap: no anchor coverage</td><td><span class="tag tag-mid">breakpoint</span></td><td></td></tr>`;
         if(r.split){
           // Render one row per part, with assembly name only on first
           return r.parts.map((p,pi)=>{
@@ -863,7 +863,7 @@ async function doSingleConvert(){
             const pCoords=p.tgtChr+':'+Math.round(pLo).toLocaleString()+'-'+Math.round(pHi).toLocaleString()+(p.inverted?' (inverted)':'');
             return `<tr>
               <td class="td-asm">${pi===0?r.assembly:''}</td>
-              <td class="td-chr">${p.tgtChr}${p.inverted?' <span class="inv-inline" title="Inverted">⚠</span>':''} <span style="font-size:10px;color:var(--text-3)">(CS ${fmtMb(p.csQueryStart)}–${fmtMb(p.csQueryEnd)})</span></td>
+              <td class="td-chr">${p.tgtChr}${p.inverted?' <span class="inv-inline" title="Inverted">⚠</span>':''} <span style="font-size:12px;color:var(--text-3)">(CS ${fmtMb(p.csQueryStart)}–${fmtMb(p.csQueryEnd)})</span></td>
               <td>${fmtMb(p.tgtStart)}<span class="td-bp">${fmtBp(p.tgtStart)}</span></td>
               <td>${fmtMb(p.tgtEnd)}<span class="td-bp">${fmtBp(p.tgtEnd)}</span></td>
               <td><span class="conf-tag ${cls}">${fmtConf(p.density)}</span></td>
@@ -876,7 +876,7 @@ async function doSingleConvert(){
         const coords=r.tgtChr+':'+Math.round(tgtLo).toLocaleString()+'-'+Math.round(tgtHi).toLocaleString()+(r.inverted?' (inverted)':'');
         return `<tr>
           <td class="td-asm">${r.assembly}</td>
-          <td class="td-chr">${r.tgtChr}${r.inverted?` <span class="inv-inline" title="Inverted orientation — coordinates shown high→low">⚠</span>`:''}${r.extrapolated?' <span class="inv-inline" title="Query outside anchor range — extrapolated">~</span>':''}</td>
+          <td class="td-chr">${r.tgtChr}${r.inverted?` <span class="inv-inline" title="Inverted orientation: coordinates shown high to low">⚠</span>`:''}${r.extrapolated?' <span class="inv-inline" title="Query outside anchor range: extrapolated">~</span>':''}</td>
           <td>${fmtMb(r.tgtStart)}<span class="td-bp">${fmtBp(r.tgtStart)}</span></td>
           <td>${fmtMb(r.tgtEnd)}<span class="td-bp">${fmtBp(r.tgtEnd)}</span></td>
           <td><span class="conf-tag ${cls}">${fmtConf(r.density)}</span></td>
@@ -922,7 +922,7 @@ function loadFile(file){
       parsedFileRows=parsedFileRows.slice(0,MAX_ROWS);
     }
     const n=parsedFileRows.length;
-    document.getElementById('upload-title').textContent=file.name+' — '+n+' region'+(n!==1?'s':'')+' loaded'+warnMsg;
+    document.getElementById('upload-title').textContent=file.name+': '+n+' region'+(n!==1?'s':'')+' loaded'+warnMsg;
     document.getElementById('b-btn').disabled=n===0||getSelected('b').length===0;
   };
   reader.readAsText(file);
@@ -1000,7 +1000,7 @@ function renderBatchTable(failed){
     return '<tr>'+row+'</tr>';
   }).join('');
 
-  const note=batchResults.length>200?' (showing first 200 — download for all)':'';
+  const note=batchResults.length>200?' (showing first 200; download for all)':'';
   const warn=failed>0?` · ${failed} failed`:'';
   document.getElementById('b-table-title').textContent=
     `${batchResults.length} regions × ${batchTargets.length} assembl${batchTargets.length>1?'ies':'y'}${note}${warn}`;
