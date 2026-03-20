@@ -38,8 +38,8 @@ nav { background: var(--white); border-bottom: 1px solid var(--border); padding:
 .nav-links a { color: var(--text-2); text-decoration: none; transition: color .15s; }
 .nav-links a:hover { color: var(--text); }
 
-.hero { background: var(--white); border-bottom: 1px solid var(--border); padding: 2.5rem 2rem 2rem; }
-.hero-inner { max-width: 960px; margin: 0 auto; }
+.hero { background: var(--white); border-bottom: 1px solid var(--border); }
+.hero-inner { max-width: 960px; margin: 0 auto; padding: 2.5rem 2rem 2rem; }
 .hero h1 { font-size: 32px; font-weight: 500; letter-spacing: -.025em; line-height: 1.25; margin-bottom: .5rem; }
 .hero p { font-family: -apple-system, system-ui, sans-serif; font-size: 17px; color: var(--text-2); line-height: 1.7; max-width: 580px; margin-bottom: 1rem; }
 .badges { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -396,7 +396,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
 
     <div class="panel" id="cite">
       <div class="panel-title">Cite</div>
-      <div class="info-block" style="font-size:12px;line-height:1.6">
+      <div class="info-block" style="line-height:1.6">
         If you use WheatCoordDB in your research, please cite:<br><br>
         <em>Grewal et al. (in preparation). WheatCoordDB: a gene-anchored coordinate conversion resource for hexaploid wheat assemblies.</em>
       </div>
@@ -421,12 +421,13 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
           </div>
         </li>
         <li>
-          <span class="coming-icon">📥</span>
+          <span class="coming-icon">🇨🇳</span>
           <div>
-            <div class="coming-title">API access</div>
-            <div class="coming-desc">Programmatic coordinate conversion via REST endpoint</div>
+            <div class="coming-title">Chinese cultivar panel</div>
+            <div class="coming-desc">17 Chinese wheat cultivars from Jiao et al. (2025, <em>Nature</em>) spanning Chinese breeding history</div>
           </div>
         </li>
+
       </ul>
     </div>
   </div>
@@ -435,8 +436,6 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
   <a href="https://grewallab.com/" target="_blank">Grewal lab</a>, University of Nottingham
   <span class="sep">·</span>
   <a href="https://github.com/Surbhigrewal/WheatCoordDB" target="_blank">GitHub</a>
-  <span class="sep">·</span>
-  Data: IWGSC CS RefSeq v2.1 anchored to 24 assemblies via Liftoff
 </footer>
 
 <script>
@@ -852,8 +851,8 @@ async function doSingleConvert(){
       document.getElementById('s-multi-title').textContent=
         chr+':'+start.toLocaleString()+'–'+end.toLocaleString()+' → '+targets.length+' assemblies';
       document.getElementById('s-multi-tbody').innerHTML=results.map((r,i)=>{
-        if(r.error) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--red-dark);font-size:12px">${r.error}</td><td><span class="tag tag-low">error</span></td><td></td></tr>`;
-        if(r.inBreakpointGap) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--amber-dark);font-size:12px">Query falls within translocation breakpoint gap: no anchor coverage</td><td><span class="tag tag-mid">breakpoint</span></td><td></td></tr>`;
+        if(r.error) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--red-dark);font-size:13px">${r.error}</td><td><span class="tag tag-low">error</span></td><td></td></tr>`;
+        if(r.inBreakpointGap) return `<tr><td class="td-asm">${r.assembly}</td><td colspan="3" style="color:var(--amber-dark);font-size:13px">Query falls within translocation breakpoint gap: no anchor coverage</td><td><span class="tag tag-mid">breakpoint</span></td><td></td></tr>`;
         if(r.split){
           // Render one row per part, with assembly name only on first
           return r.parts.map((p,pi)=>{
