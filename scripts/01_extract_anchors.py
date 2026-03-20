@@ -16,10 +16,16 @@ anchors are assigned to the correct target chromosome and processed with
 separate collinearity filtering per segment.
 
 Output: TSV with columns:
-  gene_id | cs_chr | cs_start | cs_end | cs_strand |
-  tgt_chr | tgt_start | tgt_end | tgt_strand |
-  coverage | identity | cs_midpoint | tgt_midpoint | segment
+  gene_id | cs_chr | cs_start | cs_end | cs_strand | cs_midpoint |
+  <assembly>_tgt_chr | <assembly>_tgt_start | <assembly>_tgt_end |
+  <assembly>_tgt_strand | <assembly>_tgt_midpoint |
+  <assembly>_coverage | <assembly>_identity | segment
   (segment: 'collinear' | 'translocation:<cs_chr>_to_<tgt_chr>')
+
+Target columns are prefixed with the assembly name at output time so that
+anchor files are self-describing when used outside the pipeline context.
+The segment column is not prefixed as it describes the anchor relationship,
+not an assembly-specific attribute.
 """
 
 import argparse
@@ -439,12 +445,10 @@ def main():
     parser.add_argument("--translocation-map", default=None,
                         help="TSV file of known translocations "
                              "(assembly, cs_chr, bp_proximal, bp_distal, tgt_chr_trans)")
-    parser.add_argument("--assembly-name", default=None,
-                        help="Name of target assembly (required with --translocation-map)")
+    parser.add_argument("--assembly-name", required=True,
+                        help="Name of target assembly (e.g. Jagger). Used to prefix "
+                             "target columns in output: tgt_chr -> <assembly>_tgt_chr etc.")
     args = parser.parse_args()
-
-    if args.translocation_map and not args.assembly_name:
-        parser.error("--assembly-name is required when --translocation-map is provided")
 
     print(f"Parsing CS GFF3: {args.cs_gff}", file=sys.stderr)
     cs_records = parse_gff3(args.cs_gff, feature_type=args.feature_type)
@@ -476,6 +480,23 @@ def main():
             for (tgt, seg), sg in grp.groupby(["tgt_chr", "segment"]):
                 tag = f" [{seg}]" if seg != "collinear" else ""
                 print(f"  {cs_chr} -> {tgt}{tag}: {len(sg)} anchors", file=sys.stderr)
+
+    # Prefix target columns with assembly name
+    # cs_* columns and gene_id/segment stay unprefixed; tgt_* columns get assembly prefix
+    tgt_cols = ["tgt_chr", "tgt_start", "tgt_end", "tgt_strand", "tgt_midpoint",
+                "coverage", "identity"]
+    rename_map = {c: f"{args.assembly_name}_{c}" for c in tgt_cols if c in df.columns}
+    if rename_map:
+        df = df.rename(columns=rename_map)
+        print(f"  Prefixed columns: {list(rename_map.values())}", file=sys.stderr)
+
+    # Reorder columns: gene_id, cs_*, <asm>_tgt_*, segment
+    cs_cols  = ["gene_id", "cs_chr", "cs_start", "cs_end", "cs_strand", "cs_midpoint"]
+    tgt_pfx  = [f"{args.assembly_name}_{c}" for c in tgt_cols if c in rename_map or
+                f"{args.assembly_name}_{c}" in df.columns]
+    other    = [c for c in df.columns if c not in cs_cols and c not in tgt_pfx]
+    final_cols = [c for c in cs_cols + tgt_pfx + other if c in df.columns]
+    df = df[final_cols]
 
     # Save output
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)

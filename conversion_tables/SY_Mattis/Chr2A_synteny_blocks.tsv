@@ -1,4 +1,4 @@
-cs_chr	cs_start	cs_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+cs_chr	cs_start	cs_end	SY_Mattis_tgt_chr	SY_Mattis_tgt_start	SY_Mattis_tgt_end	n_anchors	mean_identity
 Chr2A	500711	3143518	Chr2A	418892	4602281	12	0.9369999999999999
 Chr2A	5300718	237897856	Chr2A	5578666	236051795	1753	0.9897227609811751
 Chr2A	260439994	260738141	Chr2A	258630939	258906375	4	0.998

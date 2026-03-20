@@ -1,4 +1,4 @@
-cs_chr	cs_start	cs_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+cs_chr	cs_start	cs_end	ArinaLrFor_tgt_chr	ArinaLrFor_tgt_start	ArinaLrFor_tgt_end	n_anchors	mean_identity
 Chr7A	1705972	9315164	Chr7A	5195764	11956046	123	0.9879512195121951
 Chr7A	14299338	74184701	Chr7A	13624452	74332528	649	0.9932126348228043
 Chr7A	77026948	149795904	Chr7A	77248932	157288727	669	0.9967234678624813

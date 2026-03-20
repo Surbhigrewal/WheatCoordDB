@@ -58,10 +58,10 @@ cs_list_chromosomes <- function(conv, target_name) {
     if (!file.exists(f)) stop(paste("No table for", target_name, cs_chr))
   }
   dt <- fread(f)
-  # Add anchor_fraction proxy if column absent (old tables)
-  if (!"anchor_fraction" %in% names(dt)) {
-    dt[, anchor_fraction := pmin(anchor_density_5Mb / 50, 1.0)]
-  }
+  # Strip assembly prefix from target columns
+  # e.g. Jagger_tgt_chr -> tgt_chr, Jagger_anchor_fraction -> anchor_fraction
+  prefix <- paste0(target_name, "_")
+  setnames(dt, names(dt), sub(paste0("^", prefix), "", names(dt)))
   conv$cache[[key]] <<- dt
   dt
 }

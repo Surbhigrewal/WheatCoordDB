@@ -211,7 +211,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
   <a class="logo" href="#">Wheat<span>CoordDB</span></a>
   <div class="nav-links">
     <a href="#converter">Convert</a>
-    <a href="#about">About</a>
+    <a href="guide.html">Guide</a>
     <a href="https://github.com/Surbhigrewal/WheatCoordDB" target="_blank">GitHub</a>
     <a href="#cite">Cite</a>
   </div>
@@ -387,44 +387,12 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
     <div class="panel" id="about">
       <div class="panel-title">About</div>
       <div class="info-block">
-        <p style="margin-bottom:.75rem"><strong>WheatCoordDB</strong> converts coordinates from <strong>IWGSC CS RefSeq v2.1</strong> to 24 hexaploid wheat assemblies using orthologous gene anchors projected by <a href="https://github.com/agshumate/Liftoff" target="_blank" style="color:var(--green)">Liftoff</a>.</p>
-        <p style="margin-bottom:.75rem">Interpolation uses PCHIP splines fitted through ~95,000 gene anchor midpoints per assembly. Confidence is the <strong>anchor recovery fraction</strong> — the proportion of expected CS genes recovered as anchors within a ±5 Mb window, sampled at up to 50 evenly-spaced positions across the query region (1 per 5 Mb). This normalises for gene density variation along chromosomes, so gene-poor pericentromeric regions are not penalised relative to gene-rich telomeric arms.</p>
-        <p>Built by the <a href="https://grewallab.com/" target="_blank" style="color:var(--green)">Grewal lab</a>, University of Nottingham.</p>
+        <p style="margin-bottom:.75rem"><strong>WheatCoordDB</strong> converts coordinates from <strong>IWGSC CS RefSeq v2.1</strong> to 24 hexaploid wheat assemblies using gene-anchored PCHIP spline interpolation. Runs entirely in your browser.</p>
+        <p style="margin-bottom:.75rem">Built by the <a href="https://grewallab.com/" target="_blank" style="color:var(--green)">Grewal lab</a>, University of Nottingham. See the <a href="guide.html" style="color:var(--green)">Guide</a> for full documentation, confidence thresholds, validation results and assembly details.</p>
+        <p>Want your favourite wheat assembly added? <a href="mailto:surbhi.grewal@nottingham.ac.uk" style="color:var(--green)">Get in touch</a>.</p>
       </div>
     </div>
 
-    <div class="panel">
-      <div class="panel-title">Assemblies</div>
-      <ul class="assembly-list">
-        <li class="asm-group-hdr">10-wheat panel</li>
-        <li>Jagger <span class="tag tag-hi">ready</span></li>
-        <li>Lancer <span class="tag tag-hi">ready</span></li>
-        <li>ArinaLrFor <span class="tag tag-hi">ready</span></li>
-        <li>Stanley <span class="tag tag-hi">ready</span></li>
-        <li>Spelt <span class="tag tag-hi">ready</span></li>
-        <li>Mace <span class="tag tag-hi">ready</span></li>
-        <li>SY_Mattis <span class="tag tag-hi">ready</span></li>
-        <li>Julius <span class="tag tag-hi">ready</span></li>
-        <li>Landmark <span class="tag tag-hi">ready</span></li>
-        <li>Norin61 <span class="tag tag-hi">ready</span></li>
-        <li class="asm-group-hdr">CS versions</li>
-        <li>CS_IAAS <span class="tag tag-hi">ready</span></li>
-        <li>CS_CAU <span class="tag tag-hi">ready</span></li>
-        <li>CS_v1 <span class="tag tag-hi">ready</span></li>
-        <li class="asm-group-hdr">Additional cultivars</li>
-        <li>Aikang58 <span class="tag tag-hi">ready</span></li>
-        <li>Chuanmai104 <span class="tag tag-hi">ready</span></li>
-        <li>Sumai3 <span class="tag tag-hi">ready</span></li>
-        <li>JIN50 <span class="tag tag-hi">ready</span></li>
-        <li>MOV <span class="tag tag-hi">ready</span></li>
-        <li>Fielder <span class="tag tag-hi">ready</span></li>
-        <li>Kariega <span class="tag tag-hi">ready</span></li>
-        <li>Attraktion <span class="tag tag-hi">ready</span></li>
-        <li>Renan_v2 <span class="tag tag-hi">ready</span></li>
-        <li>Paragon_v3 <span class="tag tag-hi">ready</span></li>
-        <li>Cadenza_v2 <span class="tag tag-hi">ready</span></li>
-      </ul>
-    </div>
 
     <div class="panel" id="cite">
       <div class="panel-title">Cite</div>
@@ -433,6 +401,17 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
         <em>Grewal et al. (in preparation). WheatCoordDB: a gene-anchored coordinate conversion resource for hexaploid wheat assemblies.</em>
       </div>
     </div>
+
+
+    <div class="panel" id="coming-soon">
+      <div class="panel-title">Coming soon</div>
+      <ul class="coming-list">
+        <li>
+          <span class="coming-icon">⇄</span>
+          <div>
+            <div class="coming-title">Reverse lookup</div>
+            <div class="coming-desc">Convert target assembly coordinates back to CS v2.1</div>
+          </div>
 
     <div class="panel" id="coming-soon">
       <div class="panel-title">Coming soon</div>
@@ -600,16 +579,29 @@ async function loadAnchorData(asm) {
   cache[asm]=byChr; return byChr;
 }
 
+// Robust slope from first/last nEdge points via linear regression
+// Prevents a single rogue anchor pair producing a wild extrapolation slope
+function _robustSlope(xs,ys,fromEnd){
+  const n=xs.length;
+  const nEdge=Math.min(10,Math.max(2,Math.floor(n/4)));
+  const xi=fromEnd?xs.slice(-nEdge):xs.slice(0,nEdge);
+  const yi=fromEnd?ys.slice(-nEdge):ys.slice(0,nEdge);
+  let sx=0,sy=0,sxy=0,sx2=0;
+  for(let i=0;i<nEdge;i++){sx+=xi[i];sy+=yi[i];sxy+=xi[i]*yi[i];sx2+=xi[i]*xi[i];}
+  const denom=nEdge*sx2-sx*sx;
+  return denom===0?0:(nEdge*sxy-sx*sy)/denom;
+}
 function linterp(xs,ys,x){
   const n=xs.length;
-  // Extrapolate linearly beyond boundaries using the first/last two points
   if(x<=xs[0]){
     if(n<2) return ys[0];
-    return ys[0]+(x-xs[0])*(ys[1]-ys[0])/(xs[1]-xs[0]);
+    const slope=_robustSlope(xs,ys,false);
+    return Math.max(0, ys[0]+(x-xs[0])*slope);
   }
   if(x>=xs[n-1]){
     if(n<2) return ys[n-1];
-    return ys[n-1]+(x-xs[n-1])*(ys[n-1]-ys[n-2])/(xs[n-1]-xs[n-2]);
+    const slope=_robustSlope(xs,ys,true);
+    return Math.max(0, ys[n-1]+(x-xs[n-1])*slope);
   }
   let lo=0,hi=n-1;
   while(hi-lo>1){const m=(lo+hi)>>1;if(xs[m]<=x)lo=m;else hi=m;}

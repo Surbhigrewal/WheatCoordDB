@@ -1,22 +1,22 @@
-cs_chr	Landmark_tgt_chr	n_anchors	mean_anchor_gap_Mb	interp_type	n_synteny_blocks
-Chr1A	Chr1A	3908	0.153	linear	11
-Chr1B	Chr1B	4215	0.165	linear	14
-Chr1D	Chr1D	4244	0.118	linear	4
-Chr2A	Chr2A	5380	0.146	linear	15
-Chr2B	Chr2B	5322	0.151	linear	11
-Chr2D	Chr2D	5665	0.116	linear	7
-Chr3A	Chr3A	4823	0.156	linear	17
-Chr3B	Chr3B	5242	0.162	linear	21
-Chr3D	Chr3D	4433	0.14	linear	12
-Chr4A	Chr4A	3893	0.194	linear	25
-Chr4B	Chr4B	3552	0.19	linear	10
-Chr4D	Chr4D	3409	0.148	linear	17
-Chr5A	Chr5A	5011	0.142	linear	14
-Chr5B	Chr5B	5068	0.141	linear	11
-Chr5D	Chr5D	5309	0.107	linear	5
-Chr6A	Chr6A	3627	0.172	linear	19
-Chr6B	Chr6B	3675	0.199	linear	20
-Chr6D	Chr6D	3810	0.13	linear	12
-Chr7A	Chr7A	5071	0.147	linear	5
-Chr7B	Chr7B	4316	0.176	linear	12
-Chr7D	Chr7D	5162	0.124	linear	8
+cs_chr	Landmark_tgt_chr	n_anchors	Landmark_mean_anchor_gap_Mb	Landmark_interp_type	n_segments	Landmark_mean_anchor_fraction
+Chr1A	Chr1A	3908	0.153	linear	1	0.923
+Chr1B	Chr1B	4215	0.165	linear	1	0.889
+Chr1D	Chr1D	4244	0.118	linear	1	0.955
+Chr2A	Chr2A	5380	0.146	linear	1	0.882
+Chr2B	Chr2B	5322	0.151	linear	1	0.897
+Chr2D	Chr2D	5665	0.116	linear	1	0.968
+Chr3A	Chr3A	4823	0.156	linear	1	0.938
+Chr3B	Chr3B	5242	0.162	linear	1	0.9
+Chr3D	Chr3D	4433	0.14	linear	1	0.867
+Chr4A	Chr4A	3892	0.194	linear	1	0.778
+Chr4B	Chr4B	3552	0.19	linear	1	0.793
+Chr4D	Chr4D	3409	0.148	linear	1	0.958
+Chr5A	Chr5A	5011	0.142	linear	1	0.92
+Chr5B	Chr5B	5068	0.141	linear	1	0.873
+Chr5D	Chr5D	5309	0.107	linear	1	0.964
+Chr6A	Chr6A	3627	0.172	linear	1	0.899
+Chr6B	Chr6B	3675	0.199	linear	1	0.738
+Chr6D	Chr6D	3810	0.13	linear	1	0.957
+Chr7A	Chr7A	5071	0.147	linear	1	0.94
+Chr7B	Chr7B	4316	0.176	linear	1	0.889
+Chr7D	Chr7D	5162	0.124	linear	1	0.964

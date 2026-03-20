@@ -1,4 +1,4 @@
-gene_id	cs_chr	cs_start	cs_end	cs_strand	cs_midpoint	tgt_chr	tgt_start	tgt_end	tgt_strand	tgt_midpoint	coverage	identity	segment
+gene_id	cs_chr	cs_start	cs_end	cs_strand	cs_midpoint	SY_Mattis_tgt_chr	SY_Mattis_tgt_start	SY_Mattis_tgt_end	SY_Mattis_tgt_strand	SY_Mattis_tgt_midpoint	SY_Mattis_coverage	SY_Mattis_identity	segment
 gene:TraesCS2A03G0001600	Chr2A	498907	502516	+	500711	Chr2A	417099	420686	+	418892	0.955	0.908	collinear
 gene:TraesCS2A03G0002500	Chr2A	560892	563807	-	562349	Chr2A	595837	598752	-	597294	1.0	0.974	collinear
 gene:TraesCS2A03G0006600	Chr2A	1841287	1843264	+	1842275	Chr2A	2629793	2631768	+	2630780	0.99	0.931	collinear

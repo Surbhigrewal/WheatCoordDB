@@ -1,4 +1,4 @@
-cs_chr	cs_start	cs_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+cs_chr	cs_start	cs_end	SY_Mattis_tgt_chr	SY_Mattis_tgt_start	SY_Mattis_tgt_end	n_anchors	mean_identity
 Chr4B	5730886	10804377	Chr4B	3614290	8437537	62	0.9927903225806451
 Chr4B	14794860	86155240	Chr4B	12138651	82590525	644	0.9976319875776398
 Chr4B	88370406	147877650	Chr4B	84805225	143989448	361	0.9992105263157895

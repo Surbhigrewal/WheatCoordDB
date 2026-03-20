@@ -1,22 +1,22 @@
-cs_chr	Spelt_tgt_chr	n_anchors	mean_anchor_gap_Mb	interp_type	n_synteny_blocks
-Chr1A	Chr1A	4057	0.148	linear	7
-Chr1B	Chr1B	4141	0.169	linear	17
-Chr1D	Chr1D	4356	0.114	linear	4
-Chr2A	Chr2A	5149	0.153	linear	14
-Chr2B	Chr2B	5306	0.153	linear	12
-Chr2D	Chr2D	5626	0.116	linear	7
-Chr3A	Chr3A	4853	0.154	linear	15
-Chr3B	Chr3B	5289	0.161	linear	19
-Chr3D	Chr3D	4714	0.13	linear	11
-Chr4A	Chr4A	3750	0.201	linear	29
-Chr4B	Chr4B	3517	0.191	linear	8
-Chr4D	Chr4D	3517	0.146	linear	17
-Chr5A	Chr5A	5120	0.139	linear	11
-Chr5B	Chr5B	4966	0.143	linear	11
-Chr5D	Chr5D	5390	0.105	linear	4
-Chr6A	Chr6A	2636	0.196	linear	17
-Chr6B	Chr6B	3668	0.199	linear	17
-Chr6D	Chr6D	3162	0.14	linear	9
-Chr7A	Chr7A	4846	0.153	linear	8
-Chr7B	Chr7B	4136	0.183	linear	14
-Chr7D	Chr7D	5206	0.123	linear	8
+cs_chr	Spelt_tgt_chr	n_anchors	Spelt_mean_anchor_gap_Mb	Spelt_interp_type	n_segments	Spelt_mean_anchor_fraction
+Chr1A	Chr1A	4057	0.148	linear	1	0.922
+Chr1B	Chr1B	4141	0.169	linear	1	0.873
+Chr1D	Chr1D	4356	0.114	linear	1	0.972
+Chr2A	Chr2A	5149	0.153	linear	1	0.892
+Chr2B	Chr2B	5307	0.153	linear	1	0.902
+Chr2D	Chr2D	5626	0.116	linear	1	0.968
+Chr3A	Chr3A	4853	0.154	linear	1	0.94
+Chr3B	Chr3B	5289	0.161	linear	1	0.911
+Chr3D	Chr3D	4714	0.13	linear	1	0.95
+Chr4A	Chr4A	3750	0.201	linear	1	0.737
+Chr4B	Chr4B	3517	0.191	linear	1	0.785
+Chr4D	Chr4D	3517	0.146	linear	1	0.984
+Chr5A	Chr5A	5120	0.139	linear	1	0.923
+Chr5B	Chr5B	4966	0.143	linear	1	0.871
+Chr5D	Chr5D	5390	0.105	linear	1	0.977
+Chr6A	Chr6A	2636	0.196	linear	1	0.799
+Chr6B	Chr6B	3668	0.199	linear	1	0.726
+Chr6D	Chr6D	3162	0.14	linear	1	0.87
+Chr7A	Chr7A	4846	0.153	linear	1	0.911
+Chr7B	Chr7B	4136	0.183	linear	1	0.848
+Chr7D	Chr7D	5206	0.123	linear	1	0.971

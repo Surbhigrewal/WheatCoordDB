@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	ArinaLrFor_tgt_chr	ArinaLrFor_tgt_start	ArinaLrFor_tgt_end	n_anchors	mean_identity
 Chr5D	298647	4695314	Chr5D	1723943	6092160	62	0.9965
 Chr5D	6780466	143714900	Chr5D	6581096	148201446	1015	0.9994
 Chr5D	151476064	185711594	Chr5D	154852334	189012234	58	0.9986

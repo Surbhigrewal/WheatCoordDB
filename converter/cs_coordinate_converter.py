@@ -90,6 +90,12 @@ class CSCoordinateConverter:
                     f"Available: {self.available_chromosomes(target_name)}"
                 )
         df = pd.read_csv(table_file, sep="\t", compression="gzip")
+        # Strip assembly prefix from target columns for internal use
+        # e.g. Jagger_tgt_chr -> tgt_chr, Jagger_anchor_fraction -> anchor_fraction
+        prefix = target_name + "_"
+        rename = {c: c[len(prefix):] for c in df.columns if c.startswith(prefix)}
+        if rename:
+            df = df.rename(columns=rename)
         self._tables[key] = df
         return df
 

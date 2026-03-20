@@ -124,10 +124,32 @@ def build_spline_converter(cs_anchors, tgt_anchors, cs_chr_len, tgt_chr_len):
     tgt_sorted = tgt_anchors[sort_idx]
 
     if len(cs_sorted) >= 2:
-        slope_left  = (tgt_sorted[1]  - tgt_sorted[0])  / max(cs_sorted[1]  - cs_sorted[0],  1)
-        slope_right = (tgt_sorted[-1] - tgt_sorted[-2]) / max(cs_sorted[-1] - cs_sorted[-2], 1)
-        tgt_left  = max(0,           tgt_sorted[0]  - slope_left  * cs_sorted[0])
-        tgt_right = min(tgt_chr_len, tgt_sorted[-1] + slope_right * (cs_chr_len - cs_sorted[-1]))
+        # Use robust slope from first/last min(10, N//4) anchors via linear regression
+        # to avoid a single rogue anchor pair destabilising the boundary extrapolation
+        n_edge = max(2, min(10, len(cs_sorted) // 4))
+
+        # Left boundary slope
+        cs_l, tgt_l = cs_sorted[:n_edge], tgt_sorted[:n_edge]
+        cs_span_l = cs_l[-1] - cs_l[0]
+        if cs_span_l > 0:
+            slope_left = np.polyfit(cs_l, tgt_l, 1)[0]
+        else:
+            slope_left = (tgt_sorted[1] - tgt_sorted[0]) / max(cs_sorted[1] - cs_sorted[0], 1)
+
+        # Right boundary slope
+        cs_r, tgt_r = cs_sorted[-n_edge:], tgt_sorted[-n_edge:]
+        cs_span_r = cs_r[-1] - cs_r[0]
+        if cs_span_r > 0:
+            slope_right = np.polyfit(cs_r, tgt_r, 1)[0]
+        else:
+            slope_right = (tgt_sorted[-1] - tgt_sorted[-2]) / max(cs_sorted[-1] - cs_sorted[-2], 1)
+
+        tgt_left  = tgt_sorted[0]  - slope_left  * cs_sorted[0]
+        tgt_right = tgt_sorted[-1] + slope_right * (cs_chr_len - cs_sorted[-1])
+
+        # Clamp to valid range — never extrapolate beyond chromosome bounds
+        tgt_left  = max(0,           tgt_left)
+        tgt_right = min(tgt_chr_len, tgt_right)
     else:
         tgt_left  = 0
         tgt_right = tgt_chr_len
@@ -242,16 +264,37 @@ def plot_synteny_dots(anchors_df, cs_chr, target_name, output_path):
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
 
+        import matplotlib.colors as mcolors
+
         fig, ax = plt.subplots(figsize=(8, 6))
+        cmap = plt.cm.plasma_r
+        norm = mcolors.Normalize(vmin=0.9, vmax=1.0)
+
+        id_col = next((c for c in anchors_df.columns if c.endswith("_identity")), None)
+
         for tgt_chr, grp in anchors_df.groupby("tgt_chr"):
-            ax.scatter(grp["cs_midpoint"] / 1e6, grp["tgt_midpoint"] / 1e6,
-                       s=2, alpha=0.5, label=tgt_chr)
-        ax.set_xlabel(f"CS {cs_chr} position (Mb)")
-        ax.set_ylabel(f"{target_name} position (Mb)")
-        ax.set_title(f"Synteny: CS {cs_chr} → {target_name}")
-        ax.legend(loc="upper left", fontsize=7, markerscale=3)
+            x = grp["cs_midpoint"] / 1e6
+            y = grp["tgt_midpoint"] / 1e6
+            if id_col and id_col in grp.columns:
+                c = grp[id_col].clip(0.9, 1.0)
+                sc = ax.scatter(x, y, c=c, cmap=cmap, norm=norm,
+                                s=2, alpha=0.6, linewidths=0, rasterized=True)
+            else:
+                ax.scatter(x, y, s=2, alpha=0.5, color="#0d0887",
+                           linewidths=0, rasterized=True, label=tgt_chr)
+
+        if id_col:
+            sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+            sm.set_array([])
+            cbar = fig.colorbar(sm, ax=ax, fraction=0.03, pad=0.04)
+            cbar.set_label("Sequence identity", fontsize=9)
+            cbar.ax.tick_params(labelsize=8)
+
+        ax.set_xlabel(f"CS {cs_chr} position (Mb)", fontsize=10)
+        ax.set_ylabel(f"{target_name} position (Mb)", fontsize=10)
+        ax.set_title(f"CS {cs_chr} → {target_name}", fontsize=11)
         plt.tight_layout()
-        plt.savefig(output_path, dpi=150)
+        plt.savefig(output_path, dpi=150, bbox_inches="tight")
         plt.close()
     except ImportError:
         pass
@@ -272,6 +315,8 @@ def main():
     parser.add_argument("--density-window", type=int, default=5_000_000,
                         help="Window (bp) for anchor_density and anchor_fraction (default: 5000000)")
     parser.add_argument("--plot-dir", default=None)
+    parser.add_argument("--overview-plot", default=None,
+                        help="Path to save 21-chr overview dotplot PNG")
     args = parser.parse_args()
 
     outdir = Path(args.output_dir)
@@ -283,35 +328,20 @@ def main():
     anchors = pd.read_csv(args.anchors, sep="\t")
     print(f"  Total anchors: {len(anchors)}", file=sys.stderr)
 
-    print(f"Loading CS chrom sizes: {args.cs_chrom_sizes}", file=sys.stderr)
-    cs_sizes = load_chrom_sizes(args.cs_chrom_sizes)
-
-    # Detect assembly-prefixed column names (e.g. Lancer_tgt_chr -> tgt_chr)
-    col_tgt_chr   = next((c for c in anchors.columns if c.endswith("tgt_chr")),      None)
-    col_tgt_start = next((c for c in anchors.columns if c.endswith("tgt_start")),    None)
-    col_tgt_end   = next((c for c in anchors.columns if c.endswith("tgt_end")),      None)
-    col_tgt_mid   = next((c for c in anchors.columns if c.endswith("tgt_midpoint")), None)
-    col_tgt_strand= next((c for c in anchors.columns if c.endswith("tgt_strand")),   None)
-    col_coverage  = next((c for c in anchors.columns if c.endswith("coverage")),     None)
-    col_identity  = next((c for c in anchors.columns if c.endswith("identity")),     None)
-    if not col_tgt_chr:
-        print(f"ERROR: cannot find tgt_chr column. Columns: {list(anchors.columns)}", file=sys.stderr)
-        sys.exit(1)
-    print(f"  Using target columns: {col_tgt_chr}, {col_tgt_mid}", file=sys.stderr)
-    rename_map = {}
-    for src, dst in [
-        (col_tgt_chr,    "tgt_chr"),
-        (col_tgt_start,  "tgt_start"),
-        (col_tgt_end,    "tgt_end"),
-        (col_tgt_mid,    "tgt_midpoint"),
-        (col_tgt_strand, "tgt_strand"),
-        (col_coverage,   "coverage"),
-        (col_identity,   "identity"),
-    ]:
-        if src and src != dst:
-            rename_map[src] = dst
+    # Normalise assembly-prefixed column names to generic names
+    # 01_extract_anchors.py writes e.g. Jagger_tgt_chr; strip prefix for internal use
+    prefix = args.target_name + "_"
+    rename_map = {c: c[len(prefix):] for c in anchors.columns if c.startswith(prefix)}
     if rename_map:
         anchors = anchors.rename(columns=rename_map)
+    required = ["tgt_chr", "tgt_start", "tgt_end", "tgt_midpoint"]
+    missing = [c for c in required if c not in anchors.columns]
+    if missing:
+        print(f"ERROR: missing columns {missing}. Got: {list(anchors.columns)}", file=sys.stderr)
+        sys.exit(1)
+
+    print(f"Loading CS chrom sizes: {args.cs_chrom_sizes}", file=sys.stderr)
+    cs_sizes = load_chrom_sizes(args.cs_chrom_sizes)
 
     if args.cs_gene_density:
         print(f"Loading CS gene density: {args.cs_gene_density}", file=sys.stderr)
@@ -363,10 +393,6 @@ def main():
         # For standard chromosomes: one segment (collinear, one tgt_chr).
         # For translocated chromosomes: multiple segments, each covering a
         # different CS coordinate range and mapping to a different tgt_chr.
-        # Add segment column if absent (assemblies run without --translocation-map)
-        if "segment" not in grp.columns:
-            grp = grp.copy()
-            grp["segment"] = "collinear"
         segments = grp.groupby(["tgt_chr", "segment"], sort=False)
         seg_list = [(key, sub.sort_values("cs_midpoint").reset_index(drop=True))
                     for key, sub in segments
@@ -470,15 +496,16 @@ def main():
                 print(f"  WARNING: {n_low} positions ({frac_low:.1%}) have "
                       f"anchor_fraction < 0.5", file=sys.stderr)
 
-        # Build output DataFrame
+        # Build output DataFrame — prefix all target columns with assembly name
+        pfx = args.target_name + "_"
         conv_df = pd.DataFrame({
-            "cs_chr":             cs_chr,
-            "cs_pos":             cs_positions,
-            "tgt_chr":            tgt_chr_arr,
-            "tgt_pos":            tgt_pos_arr,
-            "anchor_density_5Mb": density_arr,
-            "anchor_fraction":    np.round(fraction_arr, 3),
-            "interp_type":        interp_type_arr,
+            "cs_chr":                      cs_chr,
+            "cs_pos":                      cs_positions,
+            f"{pfx}tgt_chr":              tgt_chr_arr,
+            f"{pfx}tgt_pos":              tgt_pos_arr,
+            f"{pfx}anchor_density_5Mb":   density_arr,
+            f"{pfx}anchor_fraction":       np.round(fraction_arr, 3),
+            f"{pfx}interp_type":          interp_type_arr,
         })
 
         # Save conversion table
@@ -486,10 +513,15 @@ def main():
         conv_df.to_csv(conv_file, sep="\t", index=False, compression="gzip")
         print(f"  Saved: {conv_file}", file=sys.stderr)
 
-        # Save clean anchors (all segments)
+        # Save clean anchors — re-prefix tgt columns with assembly name
         grp_all_segs = pd.concat([seg_df for _, seg_df in seg_list], ignore_index=True)
+        pfx = args.target_name + "_"
+        tgt_generic = ["tgt_chr", "tgt_start", "tgt_end", "tgt_strand",
+                       "tgt_midpoint", "coverage", "identity"]
+        anchor_rename = {c: f"{pfx}{c}" for c in tgt_generic if c in grp_all_segs.columns}
+        grp_out = grp_all_segs.rename(columns=anchor_rename)
         anchor_file = outdir / f"{cs_chr}_anchors.tsv"
-        grp_all_segs.to_csv(anchor_file, sep="\t", index=False)
+        grp_out.to_csv(anchor_file, sep="\t", index=False)
 
         # Synteny blocks (per segment, combined)
         all_blocks = []
@@ -499,13 +531,20 @@ def main():
                 all_blocks.append(blocks)
         if all_blocks:
             blocks_df = pd.concat(all_blocks, ignore_index=True)
+            # Prefix tgt columns in synteny blocks
+            blk_rename = {c: f"{args.target_name}_{c}"
+                          for c in ["tgt_chr","tgt_start","tgt_end"]
+                          if c in blocks_df.columns}
+            blocks_df = blocks_df.rename(columns=blk_rename)
             blocks_df.to_csv(outdir / f"{cs_chr}_synteny_blocks.tsv", sep="\t", index=False)
             bed_file = outdir / f"{cs_chr}_synteny.bed"
+            pfx = args.target_name + "_"
+            tc, ts, te = f"{pfx}tgt_chr", f"{pfx}tgt_start", f"{pfx}tgt_end"
             with open(bed_file, "w") as bf:
-                bf.write("# CS_chr\tCS_start\tCS_end\ttgt_chr\ttgt_start\ttgt_end\tn_anchors\tmean_identity\n")
+                bf.write(f"# CS_chr\tCS_start\tCS_end\t{tc}\t{ts}\t{te}\tn_anchors\tmean_identity\n")
                 for _, b in blocks_df.iterrows():
                     bf.write(f"{b['cs_chr']}\t{b['cs_start']}\t{b['cs_end']}\t"
-                             f"{b['tgt_chr']}\t{b['tgt_start']}\t{b['tgt_end']}\t"
+                             f"{b[tc]}\t{b[ts]}\t{b[te]}\t"
                              f"{b['n_anchors']}\t{b['mean_identity']:.4f}\n")
 
         # QC plot
@@ -517,15 +556,16 @@ def main():
         tgt_chr_summary = "+".join(s["tgt_chr"] for s in summary_segs)
         total_anchors   = sum(s["n_anchors"] for s in summary_segs)
         mean_gap_all    = float(np.mean([s["mean_gap"] for s in summary_segs]))
+        pfx = args.target_name + "_"
         chr_summary.append({
             "cs_chr":               cs_chr,
-            "tgt_chr":              tgt_chr_summary,
+            f"{pfx}tgt_chr":        tgt_chr_summary,
             "n_anchors":            total_anchors,
-            "mean_anchor_gap_Mb":   round(mean_gap_all / 1e6, 3),
-            "interp_type":          "+".join(s["interp_type"] for s in summary_segs),
-            "n_segments":           len(summary_segs),
-            "mean_anchor_fraction": round(float(np.nanmean(fraction_arr)), 3)
-                                    if len(fraction_arr) > 0 else None,
+            f"{pfx}mean_anchor_gap_Mb":   round(mean_gap_all / 1e6, 3),
+            f"{pfx}interp_type":          "+".join(s["interp_type"] for s in summary_segs),
+            "n_segments":                 len(summary_segs),
+            f"{pfx}mean_anchor_fraction": round(float(np.nanmean(fraction_arr)), 3)
+                                          if len(fraction_arr) > 0 else None,
         })
 
     summary_df = pd.DataFrame(chr_summary)
@@ -535,6 +575,98 @@ def main():
     print(f"SUMMARY for {args.target_name}:", file=sys.stderr)
     print(summary_df.to_string(index=False), file=sys.stderr)
     print(f"\nAll outputs in: {outdir}", file=sys.stderr)
+
+    # ── 21-chromosome overview dotplot ────────────────────────────────────────
+    if args.overview_plot:
+        try:
+            import matplotlib
+            matplotlib.use("Agg")
+            import matplotlib.pyplot as plt
+            import matplotlib.colors as mcolors
+
+            CHROMOSOMES = [f"Chr{g}{s}" for g in range(1, 8) for s in ["A", "B", "D"]]
+            NROWS, NCOLS = 7, 3
+            cmap = plt.cm.plasma_r
+            norm = mcolors.Normalize(vmin=0.9, vmax=1.0)
+
+            fig, axes = plt.subplots(NROWS, NCOLS, figsize=(14, 22), squeeze=False)
+            fig.suptitle(
+                f"CS RefSeq v2.1  →  {args.target_name}\nSynteny anchors — all 21 chromosomes",
+                fontsize=13, fontweight="bold", y=0.998
+            )
+
+            has_identity = False
+            pfx = args.target_name + "_"
+
+            for idx, chrom in enumerate(CHROMOSOMES):
+                row, col = divmod(idx, NCOLS)
+                ax = axes[row][col]
+                ax.set_title(f"{chrom[3]}{chrom[4]}", fontsize=9, pad=3)
+
+                anchor_file = outdir / f"{chrom}_anchors.tsv"
+                if not anchor_file.exists():
+                    ax.text(0.5, 0.5, "no data", ha="center", va="center",
+                            transform=ax.transAxes, fontsize=8, color="grey")
+                    ax.set_xticks([]); ax.set_yticks([])
+                    continue
+
+                df_a = pd.read_csv(anchor_file, sep="\t")
+                if df_a.empty:
+                    ax.text(0.5, 0.5, "no data", ha="center", va="center",
+                            transform=ax.transAxes, fontsize=8, color="grey")
+                    ax.set_xticks([]); ax.set_yticks([])
+                    continue
+
+                tgt_mid_col = f"{pfx}tgt_midpoint"
+                id_col      = f"{pfx}identity"
+
+                if "cs_midpoint" not in df_a.columns or tgt_mid_col not in df_a.columns:
+                    ax.text(0.5, 0.5, "column\nerror", ha="center", va="center",
+                            transform=ax.transAxes, fontsize=7, color="red")
+                    continue
+
+                x = df_a["cs_midpoint"] / 1e6
+                y = df_a[tgt_mid_col] / 1e6
+
+                if id_col in df_a.columns:
+                    c = df_a[id_col].clip(0.9, 1.0)
+                    ax.scatter(x, y, c=c, cmap=cmap, norm=norm,
+                               s=1.5, alpha=0.6, linewidths=0, rasterized=True)
+                    has_identity = True
+                else:
+                    ax.scatter(x, y, s=1.5, alpha=0.6, color="#3a86ff",
+                               linewidths=0, rasterized=True)
+
+                if row == NROWS - 1:
+                    ax.set_xlabel("CS (Mb)", fontsize=7)
+                else:
+                    ax.tick_params(labelbottom=False)
+                if col == 0:
+                    ax.set_ylabel(f"{args.target_name} (Mb)", fontsize=7)
+                else:
+                    ax.tick_params(labelleft=False)
+                ax.tick_params(axis="both", labelsize=6)
+                ax.text(0.97, 0.03, f"n={len(df_a):,}", ha="right", va="bottom",
+                        transform=ax.transAxes, fontsize=6, color="dimgrey")
+
+            if has_identity:
+                cbar_ax = fig.add_axes([0.92, 0.15, 0.015, 0.25])
+                sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+                sm.set_array([])
+                cbar = fig.colorbar(sm, cax=cbar_ax)
+                cbar.set_label("Sequence identity", fontsize=8)
+                cbar.ax.tick_params(labelsize=7)
+
+            plt.subplots_adjust(left=0.07, right=0.90, top=0.97, bottom=0.04,
+                                hspace=0.35, wspace=0.15)
+
+            Path(args.overview_plot).parent.mkdir(parents=True, exist_ok=True)
+            fig.savefig(args.overview_plot, dpi=200, bbox_inches="tight")
+            plt.close(fig)
+            print(f"  Overview dotplot saved: {args.overview_plot}", file=sys.stderr)
+
+        except Exception as e:
+            print(f"  WARNING: overview dotplot failed: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":

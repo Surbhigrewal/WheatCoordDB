@@ -1,4 +1,4 @@
-gene_id	cs_chr	cs_start	cs_end	cs_strand	cs_midpoint	tgt_chr	tgt_start	tgt_end	tgt_strand	tgt_midpoint	coverage	identity	segment
+gene_id	cs_chr	cs_start	cs_end	cs_strand	cs_midpoint	ArinaLrFor_tgt_chr	ArinaLrFor_tgt_start	ArinaLrFor_tgt_end	ArinaLrFor_tgt_strand	ArinaLrFor_tgt_midpoint	ArinaLrFor_coverage	ArinaLrFor_identity	segment
 gene:TraesCS3D03G0096300	Chr3D	21772332	21773589	-	21772960	Chr3D	20334755	20336012	-	20335383	1.0	1.0	collinear
 gene:TraesCS3D03G0096400	Chr3D	21796592	21798779	+	21797685	Chr3D	20359015	20361202	+	20360108	1.0	1.0	collinear
 gene:TraesCS3D03G0096600	Chr3D	21891750	21892811	+	21892280	Chr3D	20456364	20457425	+	20456894	1.0	1.0	collinear

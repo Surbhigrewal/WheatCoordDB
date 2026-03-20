@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	SY_Mattis_tgt_chr	SY_Mattis_tgt_start	SY_Mattis_tgt_end	n_anchors	mean_identity
 Chr6D	1966226	27630303	Chr6D	14313	25864721	502	0.9991
 Chr6D	32741204	35336532	Chr6D	30706041	33064276	50	0.9993
 Chr6D	49876700	56759409	Chr6D	37565581	44286254	59	0.9987

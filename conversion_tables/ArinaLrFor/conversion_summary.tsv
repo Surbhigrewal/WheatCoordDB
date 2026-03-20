@@ -1,22 +1,22 @@
-cs_chr	tgt_chr	n_anchors	n_anchors_collinear	n_anchors_translocation	has_translocation	mean_anchor_gap_Mb	interp_type	n_synteny_blocks
-Chr1A	Chr1A	3649	3649	0	False	0.164	linear	13
-Chr1B	Chr1B	4176	4176	0	False	0.167	linear	18
-Chr1D	Chr1D	4326	4326	0	False	0.115	linear	4
-Chr2A	Chr2A	5433	5433	0	False	0.145	linear	17
-Chr2B	Chr2B	5187	5187	0	False	0.156	linear	11
-Chr2D	Chr2D	5030	5030	0	False	0.128	linear	9
-Chr3A	Chr3A	4773	4773	0	False	0.157	linear	17
-Chr3B	Chr3B	5164	5164	0	False	0.165	linear	20
-Chr3D	Chr3D	4683	4683	0	False	0.127	linear	12
-Chr4A	Chr4A	4053	4053	0	False	0.186	linear	21
-Chr4B	Chr4B	3529	3529	0	False	0.19	linear	9
-Chr4D	Chr4D	3447	3447	0	False	0.147	linear	18
-Chr5A	Chr5A	5011	5011	0	False	0.142	linear	13
-Chr5B	Chr5B/Chr7B	4801	945	3856	True	0.155	linear/linear	10
-Chr5D	Chr5D	5361	5361	0	False	0.106	linear	6
-Chr6A	Chr6A	3730	3730	0	False	0.166	linear	17
-Chr6B	Chr6B	3700	3700	0	False	0.198	linear	16
-Chr6D	Chr6D	3831	3831	0	False	0.129	linear	10
-Chr7A	Chr7A	4795	4795	0	False	0.155	linear	8
-Chr7B	Chr5B/Chr7B	4351	1753	2598	True	0.177	linear/linear	18
-Chr7D	Chr7D	5244	5244	0	False	0.123	linear	7
+cs_chr	ArinaLrFor_tgt_chr	n_anchors	ArinaLrFor_mean_anchor_gap_Mb	ArinaLrFor_interp_type	n_segments	ArinaLrFor_mean_anchor_fraction
+Chr1A	Chr1A	3649	0.164	linear	1	0.906
+Chr1B	Chr1B	4176	0.167	linear	1	0.914
+Chr1D	Chr1D	4326	0.115	linear	1	0.968
+Chr2A	Chr2A	5433	0.145	linear	1	0.895
+Chr2B	Chr2B	5187	0.156	linear	1	0.836
+Chr2D	Chr2D	5030	0.128	linear	1	0.914
+Chr3A	Chr3A	4773	0.157	linear	1	0.938
+Chr3B	Chr3B	5164	0.165	linear	1	0.876
+Chr3D	Chr3D	4683	0.127	linear	1	0.95
+Chr4A	Chr4A	4053	0.186	linear	1	0.806
+Chr4B	Chr4B	3529	0.19	linear	1	0.796
+Chr4D	Chr4D	3447	0.147	linear	1	0.964
+Chr5A	Chr5A	5011	0.142	linear	1	0.879
+Chr5B	Chr5B+Chr7B	4801	0.155	linear+linear	2	0.843
+Chr5D	Chr5D	5361	0.106	linear	1	0.973
+Chr6A	Chr6A	3730	0.166	linear	1	0.952
+Chr6B	Chr6B	3700	0.198	linear	1	0.714
+Chr6D	Chr6D	3831	0.129	linear	1	0.959
+Chr7A	Chr7A	4795	0.155	linear	1	0.908
+Chr7B	Chr5B+Chr7B	4351	0.177	linear+linear	2	0.893
+Chr7D	Chr7D	5244	0.123	linear	1	0.974
