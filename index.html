@@ -29,7 +29,7 @@
   --radius-lg:   12px;
 }
 
-body { font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 16px; line-height: 1.6; }
+body { font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 18px; line-height: 1.6; }
 
 nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 54px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
 .logo { font-size: 16px; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
@@ -41,7 +41,7 @@ nav { background: var(--white); border-bottom: 1px solid var(--border); padding:
 .hero { background: var(--white); border-bottom: 1px solid var(--border); padding: 2.5rem 2rem 2rem; }
 .hero-inner { max-width: 960px; margin: 0 auto; }
 .hero h1 { font-size: 28px; font-weight: 500; letter-spacing: -.025em; line-height: 1.25; margin-bottom: .5rem; }
-.hero p { font-family: -apple-system, system-ui, sans-serif; font-size: 15px; color: var(--text-2); line-height: 1.7; max-width: 580px; margin-bottom: 1rem; }
+.hero p { font-family: -apple-system, system-ui, sans-serif; font-size: 16px; color: var(--text-2); line-height: 1.7; max-width: 580px; margin-bottom: 1rem; }
 .badges { display: flex; gap: 8px; flex-wrap: wrap; }
 .badge { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
 .b-green { background: var(--green-light); color: var(--green-dark); }
@@ -63,8 +63,8 @@ nav { background: var(--white); border-bottom: 1px solid var(--border); padding:
 
 .field { margin-bottom: 1rem; }
 .field-label { display: block; font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-2); margin-bottom: 6px; }
-input[type="number"] { width: 100%; padding: 9px 12px; font-size: 15px; font-family: -apple-system, system-ui, sans-serif; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); appearance: none; -webkit-appearance: none; transition: border-color .15s, box-shadow .15s; }
-select.single-select { width: 100%; padding: 9px 32px 9px 12px; font-size: 15px; font-family: -apple-system, system-ui, sans-serif; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); appearance: none; -webkit-appearance: none; transition: border-color .15s, box-shadow .15s; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b64'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+input[type="number"] { width: 100%; padding: 9px 12px; font-size: 16px; font-family: -apple-system, system-ui, sans-serif; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); appearance: none; -webkit-appearance: none; transition: border-color .15s, box-shadow .15s; }
+select.single-select { width: 100%; padding: 9px 32px 9px 12px; font-size: 16px; font-family: -apple-system, system-ui, sans-serif; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); appearance: none; -webkit-appearance: none; transition: border-color .15s, box-shadow .15s; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b64'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
 select.single-select:focus, input[type="number"]:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(45,106,79,.1); }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
@@ -160,7 +160,7 @@ tr:last-child td { border-bottom: none; }
 
 /* Sidebar */
 .sidebar { display: flex; flex-direction: column; gap: 1rem; }
-.info-block { font-family: -apple-system, system-ui, sans-serif; font-size: 14px; color: var(--text-2); line-height: 1.7; }
+.info-block { font-family: -apple-system, system-ui, sans-serif; font-size: 15px; color: var(--text-2); line-height: 1.7; }
 .info-block strong { color: var(--text); font-weight: 500; }
 .assembly-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
 .assembly-list li { font-family: -apple-system, system-ui, sans-serif; font-size: 12px; color: var(--text-2); padding: 5px 0; border-bottom: 1px solid var(--bg-2); display: flex; justify-content: space-between; align-items: center; }
@@ -251,7 +251,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
               <div class="asm-picker-actions">
                 <button onclick="selectAll('s')">All</button>
                 <button onclick="selectNone('s')">None</button>
-                <button onclick="selectGroup('s','ten')">10-wheat</button>
+                <button onclick="selectGroup('s','ten')">10+ wheat</button>
               </div>
             </div>
             <div class="asm-picker-groups" id="s-asm-groups"></div>
@@ -347,7 +347,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
               <div class="asm-picker-actions">
                 <button onclick="selectAll('b')">All</button>
                 <button onclick="selectNone('b')">None</button>
-                <button onclick="selectGroup('b','ten')">10-wheat</button>
+                <button onclick="selectGroup('b','ten')">10+ wheat</button>
               </div>
             </div>
             <div class="asm-picker-groups" id="b-asm-groups"></div>
@@ -441,7 +441,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
 
 <script>
 const GROUPS = [
-  { label:'10-wheat panel', id:'ten',
+  { label:'10+ wheat panel', id:'ten',
     assemblies:['Jagger','Lancer','ArinaLrFor','Stanley','Spelt','Mace','SY_Mattis','Julius','Landmark','Norin61'] },
   { label:'CS versions', id:'cs',
     assemblies:['CS_IAAS','CS_CAU','CS_v1'] },

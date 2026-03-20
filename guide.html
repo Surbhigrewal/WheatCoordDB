@@ -29,7 +29,7 @@
   --radius-lg:   12px;
 }
 
-body { font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 16px; line-height: 1.7; }
+body { font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 18px; line-height: 1.7; }
 
 nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 54px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
 .logo { font-size: 16px; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
@@ -41,15 +41,15 @@ nav { background: var(--white); border-bottom: 1px solid var(--border); padding:
 .hero { background: var(--white); border-bottom: 1px solid var(--border); padding: 2.5rem 2rem 2rem; }
 .hero-inner { max-width: 860px; margin: 0 auto; }
 .hero h1 { font-size: 26px; font-weight: 500; letter-spacing: -.025em; line-height: 1.25; margin-bottom: .5rem; }
-.hero p { font-family: -apple-system, system-ui, sans-serif; font-size: 15px; color: var(--text-2); line-height: 1.7; }
+.hero p { font-family: -apple-system, system-ui, sans-serif; font-size: 16px; color: var(--text-2); line-height: 1.7; }
 
 .guide-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 4rem; display: flex; flex-direction: column; gap: 2.5rem; }
 
 .section { }
 .section-title { font-family: -apple-system, system-ui, sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--green-dark); margin-bottom: 1rem; padding-bottom: .4rem; border-bottom: 2px solid var(--green-mid); }
-.section p { margin-bottom: .85rem; font-size: 16px; }
+.section p { margin-bottom: .85rem; font-size: 18px; }
 .section p:last-child { margin-bottom: 0; }
-.section h3 { font-family: -apple-system, system-ui, sans-serif; font-size: 15px; font-weight: 600; color: var(--text); margin: 1.25rem 0 .4rem; }
+.section h3 { font-family: -apple-system, system-ui, sans-serif; font-size: 16px; font-weight: 600; color: var(--text); margin: 1.25rem 0 .4rem; }
 
 /* Code blocks */
 code { font-family: 'Courier New', monospace; font-size: 12px; background: var(--bg-2); padding: 2px 6px; border-radius: 3px; color: #4a4a42; }
@@ -151,7 +151,7 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
 
     <h3>Interactive dotplot</h3>
     <p>For single-position or region queries with one or two target assemblies, an interactive synteny dotplot is shown below the result. The dotplot displays all gene anchors for the queried chromosome coloured by sequence identity (dark blue = high identity, yellow = lower identity), with the query region highlighted as a red box. This lets you visually verify that your region of interest falls within a well-anchored collinear block before relying on the converted coordinates.</p>
-    <p>The dotplot is not available in batch mode (BED file upload) or when more than two target assemblies are selected simultaneously, as rendering multiple dotplots would be too slow for large queries. For these cases, refer to the per-assembly chromosome profile plots on <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/anchors_plots" style="color:var(--green)">GitHub</a>.</p>
+    <p>The dotplot is not available in batch mode (BED file upload) or when more than two target assemblies are selected simultaneously, as rendering multiple dotplots would be too slow for large queries. For these cases, refer to the per-assembly chromosome profile plots on <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/anchors_plots" style="color:var(--green)" target="_blank">GitHub</a>.</p>
   </div>
 
   <!-- ── 2. Confidence scores ───────────────────────────────────────────────── -->
@@ -190,7 +190,7 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
     </table>
 
     <div class="callout">
-      <strong>Regional variation:</strong> confidence scores are specific to the query region and assembly. The same chromosome can have High confidence on chromosome arms and Low confidence in pericentromeric regions or known introgression intervals. Check the per-assembly chromosome profiles on <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/anchors_plots" style="color:var(--amber-dark)">GitHub</a> to understand accuracy in your region of interest before relying on a result.
+      <strong>Regional variation:</strong> confidence scores are specific to the query region and assembly. The same chromosome can have High confidence on chromosome arms and Low confidence in pericentromeric regions or known introgression intervals. Check the per-assembly chromosome profiles on <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/anchors_plots" style="color:var(--amber-dark)" target="_blank">GitHub</a> to understand accuracy in your region of interest before relying on a result.
     </div>
   </div>
 
@@ -244,14 +244,14 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
     </div>
 
     <div class="callout">
-      <strong>Important caveat:</strong> these headline figures are genome-wide averages. Individual chromosomes and specific regions within an assembly can have substantially higher error rates, particularly in pericentromeric regions, known introgression intervals, and regions of low anchor density. <strong>We strongly recommend checking the per-assembly chromosome profile plots on <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/accuracy" style="color:var(--amber-dark)">GitHub</a></strong> to assess the likely accuracy for your specific region of interest before using converted coordinates for fine-mapping or marker design.
+      <strong>Important caveat:</strong> these headline figures are genome-wide averages. Individual chromosomes and specific regions within an assembly can have substantially higher error rates, particularly in pericentromeric regions, known introgression intervals, and regions of low anchor density. <strong>We strongly recommend checking the per-assembly chromosome profile plots on <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/accuracy" style="color:var(--amber-dark)" target="_blank">GitHub</a></strong> to assess the likely accuracy for your specific region of interest before using converted coordinates for fine-mapping or marker design.
     </div>
 
     <h3>KASP validation notes</h3>
     <p>KASP marker positions in target assemblies were obtained by BLASTn of flanking sequences (~100 bp). Of 51,331 marker-assembly pairs tested, 93.9% showed correct chromosome assignment. Large errors (>5 Mb) were concentrated in Low-confidence regions (82.6% of large errors had anchor recovery fraction &lt;50%) and on chromosomes with known homeologous sequence similarity (particularly Chr4A and Chr6B), where short BLAST queries can produce ambiguous hits. These BLAST mapping artefacts are distinct from WheatCoordDB interpolation errors.</p>
 
     <h3>Per-assembly accuracy profiles</h3>
-    <p>Detailed plots showing anchor recovery fraction, anchor density, mean anchor gap, and coordinate accuracy along all 21 chromosomes for each of the 24 assemblies are available in the <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/anchors_plots" style="color:var(--green)">supplementary plots folder on GitHub</a>. These plots allow users to identify chromosomal regions where accuracy may be reduced for a specific assembly before relying on converted coordinates.</p>
+    <p>Detailed plots showing anchor recovery fraction, anchor density, mean anchor gap, and coordinate accuracy along all 21 chromosomes for each of the 24 assemblies are available in the <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/anchors_plots" style="color:var(--green)" target="_blank">supplementary plots folder on GitHub</a>. These plots allow users to identify chromosomal regions where accuracy may be reduced for a specific assembly before relying on converted coordinates.</p>
   </div>
 
   <!-- ── 5. Assemblies ─────────────────────────────────────────────────────── -->
@@ -262,7 +262,7 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
 
     <div class="asm-grid">
       <div class="asm-group">
-        <div class="asm-group-hdr">10-wheat panel</div>
+        <div class="asm-group-hdr">10+ wheat panel</div>
         <div class="asm-item"><span class="asm-name">Jagger</span><span class="badge b-green" style="font-size:10px">ready</span></div>
         <div class="asm-item"><span class="asm-name">Lancer</span><span class="badge b-green" style="font-size:10px">ready</span></div>
         <div class="asm-item"><span class="asm-name">ArinaLrFor</span><span class="badge b-green" style="font-size:10px">ready</span></div>
@@ -305,7 +305,7 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
     <div class="section-title">Contact</div>
     <p>WheatCoordDB is developed and maintained by the <a href="https://grewallab.com/" style="color:var(--green)">Grewal lab</a> at the University of Nottingham.</p>
     <p>For questions, bug reports, or assembly addition requests, contact <a href="mailto:surbhi.grewal@nottingham.ac.uk" style="color:var(--green)">surbhi.grewal@nottingham.ac.uk</a>.</p>
-    <p>To report issues or contribute, visit the <a href="https://github.com/Surbhigrewal/WheatCoordDB" style="color:var(--green)">GitHub repository</a>.</p>
+    <p>To report issues or contribute, visit the <a href="https://github.com/Surbhigrewal/WheatCoordDB" style="color:var(--green)" target="_blank">GitHub repository</a>.</p>
   </div>
 
 </div><!-- /guide-wrap -->
