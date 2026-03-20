@@ -29,7 +29,7 @@
   --radius-lg:   12px;
 }
 
-body { font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.7; }
+body { font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 16px; line-height: 1.7; }
 
 nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 2rem; height: 54px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
 .logo { font-size: 16px; font-weight: 600; letter-spacing: -.02em; color: var(--text); text-decoration: none; }
@@ -41,15 +41,15 @@ nav { background: var(--white); border-bottom: 1px solid var(--border); padding:
 .hero { background: var(--white); border-bottom: 1px solid var(--border); padding: 2.5rem 2rem 2rem; }
 .hero-inner { max-width: 860px; margin: 0 auto; }
 .hero h1 { font-size: 26px; font-weight: 500; letter-spacing: -.025em; line-height: 1.25; margin-bottom: .5rem; }
-.hero p { font-family: -apple-system, system-ui, sans-serif; font-size: 14px; color: var(--text-2); line-height: 1.7; }
+.hero p { font-family: -apple-system, system-ui, sans-serif; font-size: 15px; color: var(--text-2); line-height: 1.7; }
 
 .guide-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 4rem; display: flex; flex-direction: column; gap: 2.5rem; }
 
 .section { }
-.section-title { font-family: -apple-system, system-ui, sans-serif; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--green-dark); margin-bottom: 1rem; padding-bottom: .4rem; border-bottom: 2px solid var(--green-mid); }
-.section p { margin-bottom: .85rem; font-size: 15px; }
+.section-title { font-family: -apple-system, system-ui, sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--green-dark); margin-bottom: 1rem; padding-bottom: .4rem; border-bottom: 2px solid var(--green-mid); }
+.section p { margin-bottom: .85rem; font-size: 16px; }
 .section p:last-child { margin-bottom: 0; }
-.section h3 { font-family: -apple-system, system-ui, sans-serif; font-size: 14px; font-weight: 600; color: var(--text); margin: 1.25rem 0 .4rem; }
+.section h3 { font-family: -apple-system, system-ui, sans-serif; font-size: 15px; font-weight: 600; color: var(--text); margin: 1.25rem 0 .4rem; }
 
 /* Code blocks */
 code { font-family: 'Courier New', monospace; font-size: 12px; background: var(--bg-2); padding: 2px 6px; border-radius: 3px; color: #4a4a42; }
@@ -67,7 +67,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; color: #3a3a32; line
 /* Confidence table */
 .conf-table { width: 100%; border-collapse: collapse; font-family: -apple-system, system-ui, sans-serif; font-size: 13px; margin: .75rem 0 1rem; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 .conf-table th { text-align: left; padding: 8px 14px; background: var(--bg-2); color: var(--text-2); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--border); }
-.conf-table td { padding: 9px 14px; border-bottom: 1px solid var(--bg-2); vertical-align: top; }
+.conf-table td { padding: 9px 14px; border-bottom: 1px solid var(--bg-2); vertical-align: top; font-size: 14px; }
 .conf-table tr:last-child td { border-bottom: none; }
 
 /* Badge inline examples */
@@ -80,7 +80,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; color: #3a3a32; line
 @media (max-width: 600px) { .asm-grid { grid-template-columns: 1fr 1fr; } }
 .asm-group { }
 .asm-group-hdr { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); padding: 8px 12px 5px; background: var(--bg-2); border-bottom: 1px solid var(--border); }
-.asm-item { padding: 6px 12px; border-bottom: 1px solid var(--bg-2); display: flex; justify-content: space-between; align-items: center; color: var(--text-2); }
+.asm-item { padding: 6px 12px; border-bottom: 1px solid var(--bg-2); display: flex; justify-content: space-between; align-items: center; color: var(--text-2); font-size: 14px; }
 .asm-item:last-child { border-bottom: none; }
 .asm-name { color: var(--text); font-weight: 500; }
 
@@ -89,13 +89,13 @@ pre code { background: none; padding: 0; font-size: 12.5px; color: #3a3a32; line
 @media (max-width: 600px) { .val-grid { grid-template-columns: 1fr; } }
 .val-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
 .val-card-title { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); margin-bottom: .75rem; }
-.val-row { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; border-bottom: 1px solid var(--bg-2); font-family: -apple-system, system-ui, sans-serif; font-size: 12px; }
+.val-row { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; border-bottom: 1px solid var(--bg-2); font-family: -apple-system, system-ui, sans-serif; font-size: 13px; }
 .val-row:last-child { border-bottom: none; }
 .val-tier { color: var(--text-2); }
-.val-num { font-weight: 600; color: var(--text); font-size: 13px; }
+.val-num { font-weight: 600; color: var(--text); font-size: 14px; }
 
 /* Callout box */
-.callout { background: var(--amber-light); border: 1px solid #e8c87a; border-radius: var(--radius); padding: .85rem 1.1rem; font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: var(--amber-dark); line-height: 1.6; margin: .75rem 0; }
+.callout { background: var(--amber-light); border: 1px solid #e8c87a; border-radius: var(--radius); padding: .85rem 1.1rem; font-family: -apple-system, system-ui, sans-serif; font-size: 14px; color: var(--amber-dark); line-height: 1.6; margin: .75rem 0; }
 .callout strong { font-weight: 700; }
 .callout-green { background: var(--green-light); border-color: var(--green-mid); color: var(--green-dark); }
 
@@ -148,6 +148,10 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
 
     <h3>Coordinate format</h3>
     <p>All coordinates are in base pairs (bp). The converter accepts plain integers — do not include commas or unit suffixes. Chromosome names follow the convention <code>Chr1A</code>, <code>Chr1B</code>, <code>Chr1D</code> through <code>Chr7D</code> (21 chromosomes total).</p>
+
+    <h3>Interactive dotplot</h3>
+    <p>For single-position or region queries with one or two target assemblies, an interactive synteny dotplot is shown below the result. The dotplot displays all gene anchors for the queried chromosome coloured by sequence identity (dark blue = high identity, yellow = lower identity), with the query region highlighted as a red box. This lets you visually verify that your region of interest falls within a well-anchored collinear block before relying on the converted coordinates.</p>
+    <p>The dotplot is not available in batch mode (BED file upload) or when more than two target assemblies are selected simultaneously, as rendering multiple dotplots would be too slow for large queries. For these cases, refer to the per-assembly chromosome profile plots on <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/anchors_plots" style="color:var(--green)">GitHub</a>.</p>
   </div>
 
   <!-- ── 2. Confidence scores ───────────────────────────────────────────────── -->
@@ -186,7 +190,7 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
     </table>
 
     <div class="callout">
-      <strong>Regional variation:</strong> confidence scores are specific to the query region and assembly. The same chromosome can have High confidence on chromosome arms and Low confidence in pericentromeric regions or known introgression intervals. Check the per-assembly chromosome profiles on <a href="https://github.com/Surbhigrewal/WheatCoordDB" style="color:var(--amber-dark)">GitHub</a> to understand accuracy in your region of interest before relying on a result.
+      <strong>Regional variation:</strong> confidence scores are specific to the query region and assembly. The same chromosome can have High confidence on chromosome arms and Low confidence in pericentromeric regions or known introgression intervals. Check the per-assembly chromosome profiles on <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/anchors_plots" style="color:var(--amber-dark)">GitHub</a> to understand accuracy in your region of interest before relying on a result.
     </div>
   </div>
 
@@ -201,7 +205,12 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
     <p>The entire chromosome appears to be assembled in the opposite orientation in the target relative to CS. All coordinates on this chromosome will be inverted. This is an assembly orientation choice, not a biological inversion.</p>
 
     <h3>~ symbol before coordinates</h3>
-    <p>A tilde (<code>~</code>) prefix indicates the coordinate was <strong>extrapolated</strong> beyond the range of available anchors. The first anchor on a chromosome may not start at position 0, and the last anchor may not reach the chromosome end. Extrapolated coordinates are estimated by projecting the boundary slope beyond the anchor range and may be less reliable than interpolated coordinates. The anchor coverage range is shown in the warning message below the result.</p>
+    <p>A tilde (<code>~</code>) prefix indicates the coordinate was <strong>extrapolated</strong> beyond the range of available anchors. The first anchor on a chromosome may not start at position 0, and the last anchor may not reach the chromosome end. Extrapolated coordinates are estimated by projecting the boundary slope beyond the anchor range and may be less reliable than interpolated coordinates.</p>
+    <p>When extrapolation occurs, a warning message appears below the result:</p>
+    <div style="background:var(--amber-light);border:1px solid #e8c87a;border-radius:var(--radius);padding:.75rem 1rem;font-family:-apple-system,system-ui,sans-serif;font-size:13px;color:var(--amber-dark);margin:.5rem 0 1rem;line-height:1.6">
+      ⚠ <strong>Extrapolated coordinates</strong> — query extends beyond anchor range on Chr1B (anchors cover 1.8–700.4 Mb). Returned coordinates are linearly extrapolated and may be unreliable.
+    </div>
+    <p>The anchor coverage range shown in the message tells you where reliable interpolation begins and ends on that chromosome for that assembly. Queries that start before or end after these positions will be extrapolated. In most cases extrapolation works well — the boundary slope is estimated from the nearest 10 anchors rather than just the two outermost points — but in pericentromeric regions or near structural rearrangements the extrapolated coordinate may be less accurate than usual.</p>
 
     <h3><span class="example-badge eb-amber">⚠ Query spans a translocation breakpoint</span></h3>
     <p>The query region overlaps a known inter-chromosomal translocation boundary. The result is split into two segments — one for each side of the breakpoint, mapping to different target chromosomes. This currently applies to <strong>ArinaLrFor</strong> and <strong>SY_Mattis</strong>, which carry a Chr5B/Chr7B translocation: the proximal portion of Chr5B maps to Chr5B in the target, while the distal portion maps to Chr7B. A query spanning the breakpoint will return two results accordingly.</p>
@@ -217,7 +226,7 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
     <p>WheatCoordDB was validated using two independent approaches: leave-one-out (LOO) cross-validation across all 24 assemblies, and KASP marker validation against 2,547 SNP markers with known positions in 21 assemblies.</p>
 
     <h3>Leave-one-out (LOO) cross-validation</h3>
-    <p>For each of 23 assemblies (Chuanmai104 excluded from LOO due to assembly naming), one assembly was held out and its anchor positions were predicted from the remaining assemblies' splines. Prediction error was calculated as the distance between the predicted and actual anchor midpoint positions.</p>
+    <p>For each of the 24 assemblies, one assembly was held out and its anchor positions were predicted from the remaining assemblies' splines. Prediction error was calculated as the distance between the predicted and actual anchor midpoint positions.</p>
 
     <div class="val-grid">
       <div class="val-card">
@@ -235,14 +244,14 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
     </div>
 
     <div class="callout">
-      <strong>Important caveat:</strong> these headline figures are genome-wide averages. Individual chromosomes and specific regions within an assembly can have substantially higher error rates, particularly in pericentromeric regions, known introgression intervals, and regions of low anchor density. <strong>We strongly recommend checking the per-assembly chromosome profile plots on <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/supplementary" style="color:var(--amber-dark)">GitHub</a></strong> to assess the likely accuracy for your specific region of interest before using converted coordinates for fine-mapping or marker design.
+      <strong>Important caveat:</strong> these headline figures are genome-wide averages. Individual chromosomes and specific regions within an assembly can have substantially higher error rates, particularly in pericentromeric regions, known introgression intervals, and regions of low anchor density. <strong>We strongly recommend checking the per-assembly chromosome profile plots on <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/accuracy" style="color:var(--amber-dark)">GitHub</a></strong> to assess the likely accuracy for your specific region of interest before using converted coordinates for fine-mapping or marker design.
     </div>
 
     <h3>KASP validation notes</h3>
     <p>KASP marker positions in target assemblies were obtained by BLASTn of flanking sequences (~100 bp). Of 51,331 marker-assembly pairs tested, 93.9% showed correct chromosome assignment. Large errors (>5 Mb) were concentrated in Low-confidence regions (82.6% of large errors had anchor recovery fraction &lt;50%) and on chromosomes with known homeologous sequence similarity (particularly Chr4A and Chr6B), where short BLAST queries can produce ambiguous hits. These BLAST mapping artefacts are distinct from WheatCoordDB interpolation errors.</p>
 
     <h3>Per-assembly accuracy profiles</h3>
-    <p>Detailed plots showing anchor recovery fraction, anchor density, mean anchor gap, and coordinate accuracy along all 21 chromosomes for each of the 24 assemblies are available in the <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/supplementary" style="color:var(--green)">supplementary plots folder on GitHub</a>. These plots allow users to identify chromosomal regions where accuracy may be reduced for a specific assembly before relying on converted coordinates.</p>
+    <p>Detailed plots showing anchor recovery fraction, anchor density, mean anchor gap, and coordinate accuracy along all 21 chromosomes for each of the 24 assemblies are available in the <a href="https://github.com/Surbhigrewal/WheatCoordDB/tree/main/plots/anchors_plots" style="color:var(--green)">supplementary plots folder on GitHub</a>. These plots allow users to identify chromosomal regions where accuracy may be reduced for a specific assembly before relying on converted coordinates.</p>
   </div>
 
   <!-- ── 5. Assemblies ─────────────────────────────────────────────────────── -->
