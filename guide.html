@@ -130,7 +130,7 @@ footer .sep { margin: 0 .5rem; }
   <div class="section" id="how-to-use">
     <div class="section-title">How to use the converter</div>
 
-    <p>All conversions run entirely in your browser. No data is sent to any server. The converter reads pre-computed gene anchor files and interpolates target coordinates using PCHIP splines.</p>
+    <p>All conversions run entirely in your browser. No data is sent to any server. The converter loads pre-computed PCHIP conversion tables (sampled at 1 kb resolution) on demand and interpolates target coordinates using piecewise linear lookup between adjacent table entries. Anchor files are additionally loaded for dotplot rendering.</p>
 
     <h3>Single position or region</h3>
     <p>Enter a chromosome, a start position, and an end position (in base pairs). For a single position, enter the same value in both fields. Select one or more target assemblies and click Convert.</p>

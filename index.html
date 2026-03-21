@@ -290,7 +290,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
         <div class="result-card" id="s-result-single">
           <div class="result-header">
             <span class="result-header-title" id="s-res-title">—</span>
-            <span class="result-header-sub">PCHIP spline interpolation</span>
+            
           </div>
           <div class="result-metrics">
             <div class="metric"><div class="metric-lbl">Chromosome</div><div class="metric-val" id="s-res-chr">—</div></div>
@@ -315,7 +315,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
         <div class="result-card" id="s-result-multi">
           <div class="result-header">
             <span class="result-header-title" id="s-multi-title">—</span>
-            <span class="result-header-sub">PCHIP spline interpolation</span>
+            
             <button class="btn-sm" id="s-multi-copy-all" onclick="copyAllCoords()" style="font-size:13px;padding:4px 11px">Copy all</button>
           </div>
           <div class="table-scroll">
@@ -446,9 +446,11 @@ const GROUPS = [
   { label:'Additional cultivars', id:'add',
     assemblies:['Aikang58','Chuanmai104','Sumai3','JIN50','MOV','Fielder','Kariega','Attraktion','Renan_v2','Paragon_v3','Cadenza_v2'] }
 ];
-const DATA_BASE = 'data/anchors/';
-const cache = {};
-let geneDensity = null;   // {chr -> {pos:Float64Array, density:Float32Array}}
+const DATA_BASE = 'data/anchors/';      // anchor files — dotplot only
+const CONV_BASE = 'conversion_tables/'; // PCHIP tables at 1 kb resolution
+const cache = {};       // anchor data cache (dotplot)
+const convCache = {};   // conversion table cache keyed 'asm/chr'
+let geneDensity = null;
 let parsedFileRows = [];
 
 async function loadGeneDensity() {
@@ -536,6 +538,47 @@ function hideLoading(p){document.getElementById(p+'-loading').style.display='non
 function fmtMb(v){return(v/1e6).toFixed(2)+' Mb';}
 function fmtBp(v){return Math.round(v).toLocaleString()+' bp';}
 
+// Load per-chromosome PCHIP conversion table (pre-evaluated at 1 kb)
+async function loadConvTable(asm, chr) {
+  const key = asm+'/'+chr;
+  if (convCache[key]) return convCache[key];
+  const url = CONV_BASE+asm+'/'+chr+'_conversion.tsv.gz';
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('Could not load '+url+' ('+r.status+')');
+  const ds = new DecompressionStream('gzip');
+  const stream = (await r.blob()).stream().pipeThrough(ds);
+  const reader = stream.getReader();
+  const chunks = [];
+  while(true){const{done,value}=await reader.read();if(done)break;chunks.push(value);}
+  const out = new Uint8Array(chunks.reduce((n,c)=>n+c.length,0));
+  let off=0; for(const c of chunks){out.set(c,off);off+=c.length;}
+  const lines = new TextDecoder().decode(out).trim().split('\n');
+  const hdr = lines[0].split('\t');
+  const pi=hdr.indexOf('cs_pos'),
+        ti=hdr.findIndex(h=>h===asm+'_tgt_chr'),
+        vi=hdr.findIndex(h=>h===asm+'_tgt_pos'),
+        fi=hdr.findIndex(h=>h===asm+'_anchor_fraction');
+  if(pi<0||ti<0||vi<0) throw new Error('Unexpected columns in conv table '+key);
+  const m = lines.length - 1;
+  const csPos   = new Float64Array(m);
+  const tgtPos  = new Float64Array(m);
+  const tgtChr  = [];
+  const ancFrac = fi>=0 ? new Float32Array(m) : null;
+  let j=0;
+  for(let i=1;i<lines.length;i++){
+    if(!lines[i].trim()) continue;
+    const c=lines[i].split('\t');
+    csPos[j]  = parseFloat(c[pi]);
+    tgtPos[j] = parseFloat(c[vi]);
+    tgtChr.push(c[ti]);
+    if(ancFrac) ancFrac[j] = parseFloat(c[fi]);
+    j++;
+  }
+  const result = {csPos, tgtPos, tgtChr, ancFrac, n:j};
+  convCache[key] = result; return result;
+}
+
+// Load anchor data — used for dotplot rendering only
 async function loadAnchorData(asm) {
   if (cache[asm]) return cache[asm];
   const r = await fetch(DATA_BASE+asm+'_anchors.tsv.gz');
@@ -596,6 +639,94 @@ function linterp(xs,ys,x){
 }
 function linterpEx(xs,ys,x){
   return {val:linterp(xs,ys,x), extrapolated: x<xs[0]||x>xs[xs.length-1]};
+}
+
+// Mean anchor_fraction from conv table over query range [s,e]
+function convFrac(ancFrac, csPos, s, e, n) {
+  const nS = Math.max(1, Math.min(50, Math.floor((e-s)/5e6)+1));
+  let total=0, count=0;
+  for(let i=0;i<nS;i++){
+    const q = nS===1 ? (s+e)/2 : s+(e-s)*i/(nS-1);
+    let lo=0,hi=n-1;
+    while(hi-lo>1){const m=(lo+hi)>>1;if(csPos[m]<=q)lo=m;else hi=m;}
+    const f=ancFrac[lo];
+    if(!isNaN(f)&&isFinite(f)){total+=Math.min(1,Math.max(0,f));count++;}
+  }
+  return count>0?total/count:0;
+}
+// Check if typed tgtPos array is predominantly inverted
+function chrIsInvertedArr(tgtPos,n){
+  if(n<4) return false;
+  let neg=0,pos=0;
+  for(let i=1;i<n;i++){const d=tgtPos[i]-tgtPos[i-1];if(d<0)neg++;else if(d>0)pos++;}
+  return neg>pos;
+}
+// Interpolate position from typed Float64 arrays
+function linterpTyped(csPos, tgtPos, n, x) {
+  if(x<=csPos[0]){
+    if(n<2) return {val:tgtPos[0],extrapolated:x<csPos[0]};
+    const slope=_robustSlope(Array.from(csPos.slice(0,Math.min(10,n))),
+                              Array.from(tgtPos.slice(0,Math.min(10,n))),false);
+    return {val:Math.max(0,tgtPos[0]+(x-csPos[0])*slope),extrapolated:x<csPos[0]};
+  }
+  if(x>=csPos[n-1]){
+    const s0=Math.max(0,n-Math.min(10,n));
+    const slope=_robustSlope(Array.from(csPos.slice(s0)),
+                              Array.from(tgtPos.slice(s0)),true);
+    return {val:Math.max(0,tgtPos[n-1]+(x-csPos[n-1])*slope),extrapolated:true};
+  }
+  let lo=0,hi=n-1;
+  while(hi-lo>1){const m=(lo+hi)>>1;if(csPos[m]<=x)lo=m;else hi=m;}
+  const v=tgtPos[lo]+(x-csPos[lo])/(csPos[hi]-csPos[lo])*(tgtPos[hi]-tgtPos[lo]);
+  return {val:v,extrapolated:false};
+}
+// Convert using pre-computed PCHIP conversion table
+function cvtFromTable(ct, s, e) {
+  const {csPos, tgtPos, tgtChr, ancFrac, n} = ct;
+  const mid=(s+e)/2;
+  // Find tgtChr at start, mid, end
+  function chrAt(pos){
+    let lo=0,hi=n-1;
+    while(hi-lo>1){const m=(lo+hi)>>1;if(csPos[m]<=pos)lo=m;else hi=m;}
+    return tgtChr[lo];
+  }
+  const chrS=chrAt(s), chrE=chrAt(e), chrM=chrAt(mid);
+  // Translocation: different chromosomes at start vs end
+  if(chrS!==chrE){
+    const segs=new Set([chrS,chrE,chrM]);
+    const parts=[];
+    for(const tc of segs){
+      let seg0=-1,seg1=-1;
+      for(let i=0;i<n;i++){if(tgtChr[i]===tc){if(seg0<0)seg0=i;seg1=i;}}
+      if(seg0<0) continue;
+      const segCs0=csPos[seg0],segCs1=csPos[seg1];
+      const qs=Math.max(s,segCs0),qe=Math.min(e,segCs1);
+      if(qs>=qe) continue;
+      const segCP=csPos.slice(seg0,seg1+1), segTP=tgtPos.slice(seg0,seg1+1);
+      const segN=seg1-seg0+1;
+      const rs=linterpTyped(segCP,segTP,segN,qs);
+      const re=linterpTyped(segCP,segTP,segN,qe);
+      const frac=ancFrac?convFrac(ancFrac.slice(seg0,seg1+1),segCP,qs,qe,segN):0;
+      parts.push({tgtChr:tc,tgtStart:Math.round(rs.val),tgtEnd:Math.round(re.val),
+                  csQueryStart:qs,csQueryEnd:qe,density:frac,
+                  inverted:Math.round(re.val)<Math.round(rs.val),wholeChrInv:false,
+                  extrapolated:false,csAnchorMin:segCs0,csAnchorMax:segCs1,splitResult:true});
+    }
+    if(parts.length>0) return{split:true,parts,tgtChr:parts.map(p=>p.tgtChr).join('/')};
+    return{split:false,tgtChr:'breakpoint',tgtStart:0,tgtEnd:0,density:0,
+           inverted:false,wholeChrInv:false,extrapolated:true,
+           csAnchorMin:s,csAnchorMax:e,inBreakpointGap:true};
+  }
+  // Single segment
+  const rs=linterpTyped(csPos,tgtPos,n,s);
+  const re=linterpTyped(csPos,tgtPos,n,e);
+  const frac=ancFrac?convFrac(ancFrac,csPos,s,e,n):0;
+  return{split:false,tgtChr:chrM,
+         tgtStart:Math.round(rs.val),tgtEnd:Math.round(re.val),
+         density:frac,inverted:Math.round(re.val)<Math.round(rs.val),
+         wholeChrInv:chrIsInvertedArr(tgtPos,n),
+         extrapolated:rs.extrapolated||re.extrapolated,
+         csAnchorMin:csPos[0],csAnchorMax:csPos[n-1]};
 }
 function aDensity(mids,q,w=5e6){let n=0;for(const m of mids)if(Math.abs(m-q)<=w)n++;return n;}
 
@@ -710,17 +841,20 @@ async function doSingleConvert(){
   if(isNaN(start)||isNaN(end)){showError('s-error','Please enter start and end positions.');return;}
   if(end<start){showError('s-error','End must be greater than or equal to start.');return;}
   document.getElementById('s-btn').disabled=true;
-  showLoading('s','Loading anchor data for '+targets.length+' assembl'+(targets.length>1?'ies':'y')+'…');
+  showLoading('s','Loading conversion tables for '+targets.length+' assembl'+(targets.length>1?'ies':'y')+'…');
   try {
-    const [allData] = await Promise.all([Promise.all(targets.map(loadAnchorData)), loadGeneDensity()]);
+    // Load conversion tables for this chromosome + anchor data for dotplot
+    const [convTables, allAnchorData] = await Promise.all([
+      Promise.all(targets.map(t => loadConvTable(t, chr))),
+      Promise.all(targets.map(t => loadAnchorData(t).catch(()=>null)))
+    ]);
     hideLoading('s');
     const results=targets.map((t,i)=>{
       try{
-        const r=cvt(allData[i],chr,start,end);
-        r._data=allData[i];
+        const r=cvtFromTable(convTables[i],start,end);
+        r._data=allAnchorData[i];  // anchor data for dotplot (may be null)
         r.assembly=t;
         r.error=null;
-        // For split results tgtStart/tgtEnd are undefined — set safe defaults
         if(r.split){r.tgtStart=r.parts[0].tgtStart;r.tgtEnd=r.parts[r.parts.length-1].tgtEnd;}
         return r;
       }
@@ -844,7 +978,7 @@ async function doSingleConvert(){
       const dc = document.getElementById('s-dotplot-container');
       dc.innerHTML = '';
       dp.style.display = 'block';
-      dc.appendChild(makeDotplotBlock(r.assembly, allData[0], chr, r, start, end, true));
+      dc.appendChild(makeDotplotBlock(r.assembly, r._data, chr, r, start, end, true));
 
     } else {
       document.getElementById('s-multi-title').textContent=
@@ -892,10 +1026,10 @@ async function doSingleConvert(){
         if (r.error) return;
         if (r.split) {
           r.parts.forEach(p => {
-            dc.appendChild(makeDotplotBlock(r.assembly, allData[i], chr, p, p.csQueryStart, p.csQueryEnd, false));
+            dc.appendChild(makeDotplotBlock(r.assembly, r._data, chr, p, p.csQueryStart, p.csQueryEnd, false));
           });
         } else {
-          dc.appendChild(makeDotplotBlock(r.assembly, allData[i], chr, r, start, end, false));
+          dc.appendChild(makeDotplotBlock(r.assembly, r._data, chr, r, start, end, false));
         }
       });
     }
@@ -935,23 +1069,33 @@ async function doBatchConvert(){
   document.getElementById('b-btn').disabled=true;
   showLoading('b','Loading '+targets.length+' assembl'+(targets.length>1?'ies':'y')+'…');
   try{
-    const [allData] = await Promise.all([Promise.all(targets.map(loadAnchorData)), loadGeneDensity()]);
+    // Collect all unique chromosomes in the batch
+    const chrsNeeded = new Set(parsedFileRows.map(c=>c[0]).filter(Boolean));
+    // Load conv tables for all asm × chr combinations
+    const tableMap = {};
+    const fetches = [];
+    for(const t of targets) for(const chr of chrsNeeded)
+      fetches.push(loadConvTable(t,chr).then(ct=>{
+        if(!tableMap[t]) tableMap[t]={};
+        tableMap[t][chr]=ct;
+      }).catch(()=>{}));
+    await Promise.all(fetches);
     hideLoading('b');
     showLoading('b','Converting '+parsedFileRows.length+' regions…');
     batchTargets=targets; batchResults=[]; let failed=0;
     for(const cols of parsedFileRows){
-      if(cols.length<3) continue;
+      if(cols.length<2) continue;
       const chr=cols[0];
       const isSingle=cols.length<3||cols[2]===undefined||cols[2]==='';
       const s=parseInt(cols[1]);
       const e=isSingle?s:parseInt(cols[2]);
       const extra=isSingle?cols.slice(2):cols.slice(3);
-      const perTarget=targets.map((t,i)=>{
+      const perTarget=targets.map((t)=>{
         try{
-          const r=cvt(allData[i],chr,s,e);
+          const ct=tableMap[t]&&tableMap[t][chr];
+          if(!ct) throw new Error('No table for '+t+'/'+chr);
+          const r=cvtFromTable(ct,s,e);
           if(r.split){
-            // For split results, return the first part as primary with a note
-            // Full split info stored in r.parts for TSV export
             const p0=r.parts[0], p1=r.parts[1]||null;
             return{tgtChr:r.tgtChr,
                    tgtStart:p0?Math.min(p0.tgtStart,p0.tgtEnd):'',
