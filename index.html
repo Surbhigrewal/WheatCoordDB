@@ -538,6 +538,32 @@ function hideLoading(p){document.getElementById(p+'-loading').style.display='non
 function fmtMb(v){return(v/1e6).toFixed(2)+' Mb';}
 function fmtBp(v){return Math.round(v).toLocaleString()+' bp';}
 
+const anchorRangeCache = {};
+// Fetch min/max cs_midpoint from per-chr anchor TSV to detect true anchor range
+async function getAnchorRange(asm, chr) {
+  const key = asm+'/'+chr;
+  if (anchorRangeCache[key] !== undefined) return anchorRangeCache[key];
+  try {
+    const url = CONV_BASE+asm+'/'+chr+'_anchors.tsv';
+    const r = await fetch(url);
+    if (!r.ok) { anchorRangeCache[key]=null; return null; }
+    const text = await r.text();
+    const lines = text.trim().split('\n');
+    const hdr = lines[0].split('\t');
+    const mi = hdr.indexOf('cs_midpoint');
+    if (mi<0) { anchorRangeCache[key]=null; return null; }
+    let mn=Infinity, mx=-Infinity;
+    for(let i=1;i<lines.length;i++){
+      if(!lines[i].trim()) continue;
+      const v = parseFloat(lines[i].split('\t')[mi]);
+      if(!isNaN(v)){if(v<mn)mn=v;if(v>mx)mx=v;}
+    }
+    const result = mn<=mx ? [mn,mx] : null;
+    anchorRangeCache[key] = result;
+    return result;
+  } catch(e) { anchorRangeCache[key]=null; return null; }
+}
+
 // Load per-chromosome PCHIP conversion table (pre-evaluated at 1 kb)
 async function loadConvTable(asm, chr) {
   const key = asm+'/'+chr;
@@ -681,7 +707,7 @@ function linterpTyped(csPos, tgtPos, n, x) {
   return {val:v,extrapolated:false};
 }
 // Convert using pre-computed PCHIP conversion table
-function cvtFromTable(ct, s, e) {
+function cvtFromTable(ct, s, e, anchorRange=null) {
   const {csPos, tgtPos, tgtChr, ancFrac, n} = ct;
   const mid=(s+e)/2;
   // Find tgtChr at start, mid, end
@@ -721,13 +747,9 @@ function cvtFromTable(ct, s, e) {
   const rs=linterpTyped(csPos,tgtPos,n,s);
   const re=linterpTyped(csPos,tgtPos,n,e);
   const frac=ancFrac?convFrac(ancFrac,csPos,s,e,n):0;
-  // Find true anchor range: first/last position with non-zero anchor_fraction
-  // (positions before first anchor or after last anchor have anchor_fraction ~0)
-  let ancMin=csPos[0], ancMax=csPos[n-1];
-  if(ancFrac){
-    for(let i=0;i<n;i++){if(ancFrac[i]>0.01){ancMin=csPos[i];break;}}
-    for(let i=n-1;i>=0;i--){if(ancFrac[i]>0.01){ancMax=csPos[i];break;}}
-  }
+  // Determine true anchor range from passed-in anchor range [min, max]
+  const ancMin = anchorRange ? anchorRange[0] : csPos[0];
+  const ancMax = anchorRange ? anchorRange[1] : csPos[n-1];
   const extrapolated = s<ancMin || e>ancMax;
   return{split:false,tgtChr:chrM,
          tgtStart:Math.round(rs.val),tgtEnd:Math.round(re.val),
@@ -850,15 +872,16 @@ async function doSingleConvert(){
   document.getElementById('s-btn').disabled=true;
   showLoading('s','Loading conversion tables for '+targets.length+' assembl'+(targets.length>1?'ies':'y')+'…');
   try {
-    // Load conversion tables for this chromosome + anchor data for dotplot
-    const [convTables, allAnchorData] = await Promise.all([
+    // Load conversion tables + anchor ranges for this chromosome
+    const [convTables, anchorRanges, allAnchorData] = await Promise.all([
       Promise.all(targets.map(t => loadConvTable(t, chr))),
+      Promise.all(targets.map(t => getAnchorRange(t, chr))),
       Promise.all(targets.map(t => loadAnchorData(t).catch(()=>null)))
     ]);
     hideLoading('s');
     const results=targets.map((t,i)=>{
       try{
-        const r=cvtFromTable(convTables[i],start,end);
+        const r=cvtFromTable(convTables[i],start,end,anchorRanges[i]);
         r._data=allAnchorData[i];  // anchor data for dotplot (may be null)
         r.assembly=t;
         r.error=null;
@@ -1078,14 +1101,20 @@ async function doBatchConvert(){
   try{
     // Collect all unique chromosomes in the batch
     const chrsNeeded = new Set(parsedFileRows.map(c=>c[0]).filter(Boolean));
-    // Load conv tables for all asm × chr combinations
+    // Load conv tables + anchor ranges for all asm × chr combinations
     const tableMap = {};
+    const rangeMap = {};
     const fetches = [];
-    for(const t of targets) for(const chr of chrsNeeded)
+    for(const t of targets) for(const chr of chrsNeeded){
       fetches.push(loadConvTable(t,chr).then(ct=>{
         if(!tableMap[t]) tableMap[t]={};
         tableMap[t][chr]=ct;
       }).catch(()=>{}));
+      fetches.push(getAnchorRange(t,chr).then(ar=>{
+        if(!rangeMap[t]) rangeMap[t]={};
+        rangeMap[t][chr]=ar;
+      }).catch(()=>{}));
+    }
     await Promise.all(fetches);
     hideLoading('b');
     showLoading('b','Converting '+parsedFileRows.length+' regions…');
@@ -1101,7 +1130,8 @@ async function doBatchConvert(){
         try{
           const ct=tableMap[t]&&tableMap[t][chr];
           if(!ct) throw new Error('No table for '+t+'/'+chr);
-          const r=cvtFromTable(ct,s,e);
+          const ar=rangeMap[t]&&rangeMap[t][chr]||null;
+          const r=cvtFromTable(ct,s,e,ar);
           if(r.split){
             const p0=r.parts[0], p1=r.parts[1]||null;
             return{tgtChr:r.tgtChr,
