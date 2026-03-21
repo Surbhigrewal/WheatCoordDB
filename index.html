@@ -721,12 +721,19 @@ function cvtFromTable(ct, s, e) {
   const rs=linterpTyped(csPos,tgtPos,n,s);
   const re=linterpTyped(csPos,tgtPos,n,e);
   const frac=ancFrac?convFrac(ancFrac,csPos,s,e,n):0;
+  // Find true anchor range: first/last position with non-zero anchor_fraction
+  // (positions before first anchor or after last anchor have anchor_fraction ~0)
+  let ancMin=csPos[0], ancMax=csPos[n-1];
+  if(ancFrac){
+    for(let i=0;i<n;i++){if(ancFrac[i]>0.01){ancMin=csPos[i];break;}}
+    for(let i=n-1;i>=0;i--){if(ancFrac[i]>0.01){ancMax=csPos[i];break;}}
+  }
+  const extrapolated = s<ancMin || e>ancMax;
   return{split:false,tgtChr:chrM,
          tgtStart:Math.round(rs.val),tgtEnd:Math.round(re.val),
          density:frac,inverted:Math.round(re.val)<Math.round(rs.val),
          wholeChrInv:chrIsInvertedArr(tgtPos,n),
-         extrapolated:rs.extrapolated||re.extrapolated,
-         csAnchorMin:csPos[0],csAnchorMax:csPos[n-1]};
+         extrapolated,csAnchorMin:ancMin,csAnchorMax:ancMax};
 }
 function aDensity(mids,q,w=5e6){let n=0;for(const m of mids)if(Math.abs(m-q)<=w)n++;return n;}
 
