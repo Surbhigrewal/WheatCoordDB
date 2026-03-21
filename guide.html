@@ -52,12 +52,12 @@ nav { background: var(--white); border-bottom: 1px solid var(--border); padding:
 .section h3 { font-family: -apple-system, system-ui, sans-serif; font-size: 20px; font-weight: 600; color: var(--text); margin: 1.5rem 0 .5rem; }
 
 /* Code blocks */
-code { font-family: 'Courier New', monospace; font-size: 12px; background: var(--bg-2); padding: 2px 6px; border-radius: 3px; color: #4a4a42; }
+code { font-family: 'Courier New', monospace; font-size: 15px; background: var(--bg-2); padding: 2px 6px; border-radius: 3px; color: #4a4a42; }
 pre { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; overflow-x: auto; margin: .75rem 0 1rem; }
-pre code { background: none; padding: 0; font-size: 12.5px; color: #3a3a32; line-height: 1.6; }
+pre code { background: none; padding: 0; font-size: 15px; color: #3a3a32; line-height: 1.6; }
 
 /* Badges shown inline */
-.badge { font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; display: inline-block; }
+.badge { font-family: -apple-system, system-ui, sans-serif; font-size: 15px; font-weight: 500; padding: 4px 12px; border-radius: 20px; display: inline-block; }
 .b-green { background: var(--green-light); color: var(--green-dark); }
 .b-amber { background: var(--amber-light); color: var(--amber-dark); }
 .b-red   { background: var(--red-light);   color: var(--red-dark); }
@@ -66,12 +66,12 @@ pre code { background: none; padding: 0; font-size: 12.5px; color: #3a3a32; line
 
 /* Confidence table */
 .conf-table { width: 100%; border-collapse: collapse; font-family: -apple-system, system-ui, sans-serif; font-size: 13px; margin: .75rem 0 1rem; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-.conf-table th { text-align: left; padding: 8px 14px; background: var(--bg-2); color: var(--text-2); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--border); }
+.conf-table th { text-align: left; padding: 8px 14px; background: var(--bg-2); color: var(--text-2); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--border); }
 .conf-table td { padding: 9px 14px; border-bottom: 1px solid var(--bg-2); vertical-align: top; font-size: 15px; }
 .conf-table tr:last-child td { border-bottom: none; }
 
 /* Badge inline examples */
-.example-badge { display: inline-flex; align-items: center; gap: 5px; font-family: -apple-system, system-ui, sans-serif; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; vertical-align: middle; }
+.example-badge { display: inline-flex; align-items: center; gap: 5px; font-family: -apple-system, system-ui, sans-serif; font-size: 15px; font-weight: 600; padding: 4px 10px; border-radius: 20px; vertical-align: middle; }
 .eb-amber { color: var(--amber-dark); background: var(--amber-light); border: 1px solid #e8c87a; }
 .eb-red   { color: var(--red-dark);   background: var(--red-light);   border: 1px solid #f0b8b8; }
 
@@ -79,7 +79,7 @@ pre code { background: none; padding: 0; font-size: 12.5px; color: #3a3a32; line
 .asm-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; font-family: -apple-system, system-ui, sans-serif; font-size: 13px; }
 @media (max-width: 600px) { .asm-grid { grid-template-columns: 1fr 1fr; } }
 .asm-group { }
-.asm-group-hdr { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); padding: 8px 12px 5px; background: var(--bg-2); border-bottom: 1px solid var(--border); }
+.asm-group-hdr { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-3); padding: 8px 12px 5px; background: var(--bg-2); border-bottom: 1px solid var(--border); }
 .asm-item { padding: 7px 12px; border-bottom: 1px solid var(--bg-2); display: flex; justify-content: space-between; align-items: center; color: var(--text-2); font-size: 15px; }
 .asm-item:last-child { border-bottom: none; }
 .asm-name { color: var(--text); font-weight: 500; }
@@ -231,15 +231,15 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
     <div class="val-grid">
       <div class="val-card">
         <div class="val-card-title">LOO: by gene recovery tier</div>
-        <div class="val-row"><span class="val-tier"><span class="badge b-green" style="font-size:10px">High ≥80%</span></span><span class="val-num">107 bp median · 5.4 kb P90</span></div>
-        <div class="val-row"><span class="val-tier"><span class="badge b-amber" style="font-size:10px">Moderate 50–80%</span></span><span class="val-num">1.4 kb median · 58 kb P90</span></div>
-        <div class="val-row"><span class="val-tier"><span class="badge b-red" style="font-size:10px">Low &lt;50%</span></span><span class="val-num">3.9 kb median · 201 kb P90</span></div>
+        <div class="val-row"><span class="val-tier"><span class="badge b-green" style="font-size:14px">High ≥80%</span></span><span class="val-num">107 bp median · 5.4 kb P90</span></div>
+        <div class="val-row"><span class="val-tier"><span class="badge b-amber" style="font-size:14px">Moderate 50–80%</span></span><span class="val-num">1.4 kb median · 58 kb P90</span></div>
+        <div class="val-row"><span class="val-tier"><span class="badge b-red" style="font-size:14px">Low &lt;50%</span></span><span class="val-num">3.9 kb median · 201 kb P90</span></div>
       </div>
       <div class="val-card">
         <div class="val-card-title">KASP SNP markers: by gene recovery tier</div>
-        <div class="val-row"><span class="val-tier"><span class="badge b-green" style="font-size:10px">High ≥80%</span></span><span class="val-num">26 bp median · 3.0 kb P90</span></div>
-        <div class="val-row"><span class="val-tier"><span class="badge b-amber" style="font-size:10px">Moderate 50–80%</span></span><span class="val-num">311 bp median · 207 kb P90</span></div>
-        <div class="val-row"><span class="val-tier"><span class="badge b-red" style="font-size:10px">Low &lt;50%</span></span><span class="val-num">4.6 Mb median · 41.9 Mb P90</span></div>
+        <div class="val-row"><span class="val-tier"><span class="badge b-green" style="font-size:14px">High ≥80%</span></span><span class="val-num">26 bp median · 3.0 kb P90</span></div>
+        <div class="val-row"><span class="val-tier"><span class="badge b-amber" style="font-size:14px">Moderate 50–80%</span></span><span class="val-num">311 bp median · 207 kb P90</span></div>
+        <div class="val-row"><span class="val-tier"><span class="badge b-red" style="font-size:14px">Low &lt;50%</span></span><span class="val-num">4.6 Mb median · 41.9 Mb P90</span></div>
       </div>
     </div>
 
@@ -263,37 +263,37 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
     <div class="asm-grid">
       <div class="asm-group">
         <div class="asm-group-hdr">10+ wheat panel</div>
-        <div class="asm-item"><span class="asm-name">Jagger</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Lancer</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">ArinaLrFor</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Stanley</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Spelt</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Mace</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">SY_Mattis</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Julius</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Landmark</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Norin61</span><span class="badge b-green" style="font-size:10px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Jagger</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Lancer</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">ArinaLrFor</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Stanley</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Spelt</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Mace</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">SY_Mattis</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Julius</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Landmark</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Norin61</span><span class="badge b-green" style="font-size:14px">ready</span></div>
       </div>
       <div class="asm-group">
         <div class="asm-group-hdr">CS versions</div>
-        <div class="asm-item"><span class="asm-name">CS_IAAS</span><span class="badge b-blue" style="font-size:10px">T2T</span></div>
-        <div class="asm-item"><span class="asm-name">CS_CAU</span><span class="badge b-blue" style="font-size:10px">T2T</span></div>
-        <div class="asm-item"><span class="asm-name">CS_v1</span><span class="badge b-gray" style="font-size:10px">RefSeq v1</span></div>
+        <div class="asm-item"><span class="asm-name">CS_IAAS</span><span class="badge b-blue" style="font-size:14px">T2T</span></div>
+        <div class="asm-item"><span class="asm-name">CS_CAU</span><span class="badge b-blue" style="font-size:14px">T2T</span></div>
+        <div class="asm-item"><span class="asm-name">CS_v1</span><span class="badge b-gray" style="font-size:14px">RefSeq v1</span></div>
         <div class="asm-group-hdr" style="margin-top:0">Additional cultivars</div>
-        <div class="asm-item"><span class="asm-name">Aikang58</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Chuanmai104</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Sumai3</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">JIN50</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">MOV</span><span class="badge b-green" style="font-size:10px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Aikang58</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Chuanmai104</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Sumai3</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">JIN50</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">MOV</span><span class="badge b-green" style="font-size:14px">ready</span></div>
       </div>
       <div class="asm-group">
         <div class="asm-group-hdr">&nbsp;</div>
-        <div class="asm-item"><span class="asm-name">Fielder</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Kariega</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Attraktion</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Renan_v2</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Paragon_v3</span><span class="badge b-green" style="font-size:10px">ready</span></div>
-        <div class="asm-item"><span class="asm-name">Cadenza_v2</span><span class="badge b-green" style="font-size:10px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Fielder</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Kariega</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Attraktion</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Renan_v2</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Paragon_v3</span><span class="badge b-green" style="font-size:14px">ready</span></div>
+        <div class="asm-item"><span class="asm-name">Cadenza_v2</span><span class="badge b-green" style="font-size:14px">ready</span></div>
       </div>
     </div>
 
