@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WheatCoordDB: wheat genome coordinate converter</title>
-<meta name="description" content="Convert genomic coordinates between IWGSC wheat CS RefSeq v2.1 or v1.0 and 24 hexaploid wheat assemblies using gene-anchored spline interpolation.">
+<meta name="description" content="Convert genomic coordinates between IWGSC wheat CS RefSeq v2.1 or v1.0 and hexaploid wheat assemblies using gene-anchored spline interpolation.">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -205,7 +205,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
 .coming-desc { font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: var(--text-2); line-height: 1.5; margin-top: 1px; }
 
 /* Reference version toggle */
-.ref-toggle-wrap { max-width: 960px; margin: 0 auto; padding: .75rem 2rem 0; display: flex; align-items: center; gap: .75rem; font-family: -apple-system, system-ui, sans-serif; font-size: 14px; color: var(--text-2); }
+.ref-toggle-wrap { max-width: 960px; margin: 0 auto; padding: .6rem 2rem 0; display: flex; align-items: center; gap: .75rem; font-family: -apple-system, system-ui, sans-serif; font-size: 14px; color: var(--text-2); }
 .ref-toggle { display: flex; border: 1px solid var(--border-2); border-radius: 20px; overflow: hidden; font-family: -apple-system, system-ui, sans-serif; font-size: 13px; font-weight: 500; background: var(--bg-2); }
 .ref-btn { padding: 5px 16px; border: none; background: transparent; color: var(--text-2); cursor: pointer; transition: background .15s, color .15s; border-radius: 20px; white-space: nowrap; }
 .ref-btn.active { background: var(--text); color: var(--white); }
@@ -402,7 +402,7 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
       <div class="info-block">
         <p style="margin-bottom:.75rem" id="about-desc"><strong>WheatCoordDB</strong> converts coordinates from <strong>IWGSC CS RefSeq v2.1</strong> to 24 hexaploid wheat assemblies using gene anchor interpolation. Runs entirely in your browser.</p>
         <p style="margin-bottom:.75rem">Built by the <a href="https://grewallab.com/" target="_blank" style="color:var(--green)">Grewal lab</a>, University of Nottingham. See the <a href="guide.html" style="color:var(--green)">Guide</a> for full documentation, confidence thresholds, validation results and assembly details.</p>
-        <p>Want your favourite wheat assembly added? <a href="/cdn-cgi/l/email-protection#0b787e79696362256c796e7c6a674b65647f7f62656c636a66256a68257e60" style="color:var(--green)">Get in touch</a>.</p>
+        <p>Want your favourite wheat assembly added? <a href="/cdn-cgi/l/email-protection#24575156464c4d0a435641534548644a4b50504d4a434c45490a45470a514f" style="color:var(--green)">Get in touch</a>.</p>
       </div>
     </div>
 
@@ -452,7 +452,6 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ── Reference configuration ───────────────────────────────────────────────
 const REF_CONFIG = {
   v2: {
     label:    'CS RefSeq v2.1',
@@ -474,7 +473,7 @@ const REF_CONFIG = {
     dataBase: 'v1/data/anchors/',
     convBase: 'v1/conversion_tables/',
     density:  'v1/data/cs_gene_density.tsv.gz',
-    nAsm:     23,
+    nAsm:     24,
     groups: [
       { label:'10+ wheat panel', id:'ten',
         assemblies:['Jagger','Lancer','ArinaLrFor','Stanley','Spelt','Mace','SY_Mattis','Julius','Landmark','Norin61'] },
@@ -491,11 +490,6 @@ let GROUPS    = REF_CONFIG[activeRef].groups;
 let DATA_BASE = REF_CONFIG[activeRef].dataBase;
 let CONV_BASE = REF_CONFIG[activeRef].convBase;
 
-const cache = {};       // anchor data cache (dotplot) — keyed 'ref/asm'
-const convCache = {};   // conversion table cache keyed 'ref/asm/chr'
-let geneDensity = null;
-let parsedFileRows = [];
-
 function setRef(ref) {
   if (ref === activeRef) return;
   activeRef = ref;
@@ -504,16 +498,11 @@ function setRef(ref) {
   GROUPS    = cfg.groups;
   DATA_BASE = cfg.dataBase;
   CONV_BASE = cfg.convBase;
-  geneDensity = null; // force reload for new reference
-
-  // Update toggle buttons
+  geneDensity = null;
   document.getElementById('ref-btn-v2').classList.toggle('active', ref === 'v2');
   document.getElementById('ref-btn-v1').classList.toggle('active', ref === 'v1');
-
-  // Update hero text and badges
-  const isV2 = ref === 'v2';
   document.getElementById('hero-desc').textContent =
-    'Convert genomic coordinates from IWGSC CS ' + cfg.label +
+    'Convert genomic coordinates from IWGSC ' + cfg.label +
     ' to equivalent positions across ' + cfg.nAsm +
     ' hexaploid wheat assemblies. Powered by gene anchor interpolation. Runs entirely in your browser; no data leaves your machine.';
   document.getElementById('hero-badge-count').textContent = cfg.nAsm + ' assemblies';
@@ -521,20 +510,7 @@ function setRef(ref) {
   document.getElementById('about-desc').innerHTML =
     '<strong>WheatCoordDB</strong> converts coordinates from <strong>IWGSC ' + cfg.label +
     '</strong> to ' + cfg.nAsm + ' hexaploid wheat assemblies using gene anchor interpolation. Runs entirely in your browser.';
-
-  // Rebuild pickers and clear results
   buildPickers();
-// Apply stored reference preference on load
-(function initRef() {
-  const stored = localStorage.getItem('wheatcoorddb_ref') || 'v2';
-  if (stored !== 'v2') {
-    setRef(stored);
-  } else {
-    // Ensure v2 toggle button is marked active (default)
-    document.getElementById('ref-btn-v2').classList.add('active');
-    document.getElementById('ref-btn-v1').classList.remove('active');
-  }
-})();
   document.getElementById('s-result-single').classList.remove('visible');
   document.getElementById('s-result-multi').classList.remove('visible');
   document.getElementById('s-dotplot-section').style.display = 'none';
@@ -542,6 +518,11 @@ function setRef(ref) {
   hideError('s-error');
   hideError('b-error');
 }
+
+const cache = {};
+const convCache = {};
+let geneDensity = null;
+let parsedFileRows = [];
 
 async function loadGeneDensity() {
   if (geneDensity) return geneDensity;
@@ -591,9 +572,10 @@ let batchResults = [];
 let batchTargets = [];
 
 function buildPickers() {
+  const groups = REF_CONFIG[activeRef].groups;
   ['s','b'].forEach(p => {
     const el = document.getElementById(p+'-asm-groups');
-    el.innerHTML = GROUPS.map(g =>
+    el.innerHTML = groups.map(g =>
       `<div class="asm-group-label">${g.label}</div>` +
       g.assemblies.map(a =>
         `<label class="asm-option"><input type="checkbox" data-group="${g.id}" value="${a}" onchange="updateCount('${p}')">${a}</label>`
@@ -696,8 +678,8 @@ async function loadConvTable(asm, chr) {
 
 // Load anchor data — used for dotplot rendering only
 async function loadAnchorData(asm) {
-  const _cacheKey = activeRef+'/'+asm;
-  if (cache[_cacheKey]) return cache[_cacheKey];
+  const _ck = activeRef+'/'+asm;
+  if (cache[_ck]) return cache[_ck];
   const r = await fetch(DATA_BASE+asm+'_anchors.tsv.gz');
   if (!r.ok) throw new Error('Could not load '+asm+' ('+r.status+')');
   const ds = new DecompressionStream('gzip');
@@ -723,7 +705,7 @@ async function loadAnchorData(asm) {
     byChr[chr].tgtMid.push(parseFloat(cols[pi]));
     byChr[chr].tgtChr.push(cols[ti]);
   }
-  cache[_cacheKey]=byChr; return byChr;
+  cache[_ck]=byChr; return byChr;
 }
 
 // Robust slope from first/last nEdge points via linear regression
@@ -1583,4 +1565,31 @@ function copyAllCoords(){
   const lines=btns.map(b=>{
     const asm=b.closest('tr')?.querySelector('.td-asm')?.textContent?.trim()||'';
     return asm+'	'+b.dataset.coords;
- 
+  }).join('\n');
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>{
+    const btn=document.getElementById('s-multi-copy-all');
+    const orig=btn.textContent;
+    btn.textContent='Copied!';
+    setTimeout(()=>{btn.textContent=orig;},1800);
+  }).catch(()=>{});
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('tab-single').classList.contains('active')) doSingleConvert();
+});
+// Restore saved reference preference — always apply to ensure buttons + picker are consistent
+(function(){
+  const stored = localStorage.getItem('wheatcoorddb_ref') || 'v2';
+  activeRef = stored;
+  GROUPS    = REF_CONFIG[stored].groups;
+  DATA_BASE = REF_CONFIG[stored].dataBase;
+  CONV_BASE = REF_CONFIG[stored].convBase;
+  buildPickers();
+  document.getElementById('ref-btn-v2').classList.toggle('active', stored === 'v2');
+  document.getElementById('ref-btn-v1').classList.toggle('active', stored === 'v1');
+  const cfg = REF_CONFIG[stored];
+  document.getElementById('hero-badge-count').textContent = cfg.nAsm + ' assemblies';
+  document.getElementById('hero-badge-ref').textContent = cfg.label + ' reference';
+})();
+</script>
+</body>
+</html>
