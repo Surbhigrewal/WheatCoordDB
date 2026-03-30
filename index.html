@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WheatCoordDB: CS RefSeq v2.1 coordinate converter</title>
-<meta name="description" content="Convert genomic coordinates from IWGSC wheat CS RefSeq v2.1 to 24 target assemblies using gene-anchored spline interpolation.">
+<title>WheatCoordDB: wheat genome coordinate converter</title>
+<meta name="description" content="Convert genomic coordinates between IWGSC wheat CS RefSeq v2.1 or v1.0 and 24 hexaploid wheat assemblies using gene-anchored spline interpolation.">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -203,6 +203,12 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
 .coming-icon { font-size: 18px; line-height: 1.3; flex-shrink: 0; }
 .coming-title { font-family: -apple-system, system-ui, sans-serif; font-size: 15px; font-weight: 600; color: var(--text); }
 .coming-desc { font-family: -apple-system, system-ui, sans-serif; font-size: 13px; color: var(--text-2); line-height: 1.5; margin-top: 1px; }
+
+/* Reference version toggle */
+.ref-toggle-wrap { max-width: 960px; margin: 0 auto; padding: .75rem 2rem 0; display: flex; align-items: center; gap: .75rem; font-family: -apple-system, system-ui, sans-serif; font-size: 14px; color: var(--text-2); }
+.ref-toggle { display: flex; border: 1px solid var(--border-2); border-radius: 20px; overflow: hidden; font-family: -apple-system, system-ui, sans-serif; font-size: 13px; font-weight: 500; background: var(--bg-2); }
+.ref-btn { padding: 5px 16px; border: none; background: transparent; color: var(--text-2); cursor: pointer; transition: background .15s, color .15s; border-radius: 20px; white-space: nowrap; }
+.ref-btn.active { background: var(--text); color: var(--white); }
 </style>
 </head>
 <body>
@@ -220,13 +226,21 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
 <div class="hero">
   <div class="hero-inner">
     <h1>Wheat genome coordinate converter</h1>
-    <p>Convert genomic coordinates from IWGSC CS RefSeq v2.1 to equivalent positions across 24 hexaploid wheat assemblies. Powered by gene anchor interpolation. Runs entirely in your browser; no data leaves your machine.</p>
+    <p id="hero-desc">Convert genomic coordinates from IWGSC CS RefSeq v2.1 to equivalent positions across 24 hexaploid wheat assemblies. Powered by gene anchor interpolation. Runs entirely in your browser; no data leaves your machine.</p>
     <div class="badges">
-      <span class="badge b-green">24 assemblies</span>
+      <span class="badge b-green" id="hero-badge-count">24 assemblies</span>
       <span class="badge b-green">~95k gene anchors</span>
-      <span class="badge b-blue">CS RefSeq v2.1 reference</span>
+      <span class="badge b-blue" id="hero-badge-ref">CS RefSeq v2.1 reference</span>
       <span class="badge b-gray">Multi-target BED support</span>
     </div>
+  </div>
+</div>
+
+<div class="ref-toggle-wrap">
+  <span>Reference genome:</span>
+  <div class="ref-toggle">
+    <button class="ref-btn active" id="ref-btn-v2" onclick="setRef('v2')">CS RefSeq v2.1</button>
+    <button class="ref-btn" id="ref-btn-v1" onclick="setRef('v1')">CS RefSeq v1.0</button>
   </div>
 </div>
 
@@ -386,9 +400,9 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
     <div class="panel" id="about">
       <div class="panel-title">About</div>
       <div class="info-block">
-        <p style="margin-bottom:.75rem"><strong>WheatCoordDB</strong> converts coordinates from <strong>IWGSC CS RefSeq v2.1</strong> to 24 hexaploid wheat assemblies using gene anchor interpolation. Runs entirely in your browser.</p>
+        <p style="margin-bottom:.75rem" id="about-desc"><strong>WheatCoordDB</strong> converts coordinates from <strong>IWGSC CS RefSeq v2.1</strong> to 24 hexaploid wheat assemblies using gene anchor interpolation. Runs entirely in your browser.</p>
         <p style="margin-bottom:.75rem">Built by the <a href="https://grewallab.com/" target="_blank" style="color:var(--green)">Grewal lab</a>, University of Nottingham. See the <a href="guide.html" style="color:var(--green)">Guide</a> for full documentation, confidence thresholds, validation results and assembly details.</p>
-        <p>Want your favourite wheat assembly added? <a href="mailto:surbhi.grewal@nottingham.ac.uk" style="color:var(--green)">Get in touch</a>.</p>
+        <p>Want your favourite wheat assembly added? <a href="/cdn-cgi/l/email-protection#0b787e79696362256c796e7c6a674b65647f7f62656c636a66256a68257e60" style="color:var(--green)">Get in touch</a>.</p>
       </div>
     </div>
 
@@ -437,26 +451,102 @@ canvas.dotplot { width: 100%; height: auto; border-radius: 4px; display: block; 
   <a href="https://github.com/Surbhigrewal/WheatCoordDB" target="_blank">GitHub</a>
 </footer>
 
-<script>
-const GROUPS = [
-  { label:'10+ wheat panel', id:'ten',
-    assemblies:['Jagger','Lancer','ArinaLrFor','Stanley','Spelt','Mace','SY_Mattis','Julius','Landmark','Norin61'] },
-  { label:'CS versions', id:'cs',
-    assemblies:['CS_IAAS','CS_CAU','CS_v1'] },
-  { label:'Additional cultivars', id:'add',
-    assemblies:['Aikang58','Chuanmai104','Sumai3','JIN50','MOV','Fielder','Kariega','Attraktion','Renan_v2','Paragon_v3','Cadenza_v2'] }
-];
-const DATA_BASE = 'data/anchors/';      // anchor files — dotplot only
-const CONV_BASE = 'conversion_tables/'; // PCHIP tables at 1 kb resolution
-const cache = {};       // anchor data cache (dotplot)
-const convCache = {};   // conversion table cache keyed 'asm/chr'
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── Reference configuration ───────────────────────────────────────────────
+const REF_CONFIG = {
+  v2: {
+    label:    'CS RefSeq v2.1',
+    dataBase: 'data/anchors/',
+    convBase: 'conversion_tables/',
+    density:  'data/cs_gene_density.tsv.gz',
+    nAsm:     24,
+    groups: [
+      { label:'10+ wheat panel', id:'ten',
+        assemblies:['Jagger','Lancer','ArinaLrFor','Stanley','Spelt','Mace','SY_Mattis','Julius','Landmark','Norin61'] },
+      { label:'CS versions', id:'cs',
+        assemblies:['CS_IAAS','CS_CAU','CS_v1'] },
+      { label:'Additional cultivars', id:'add',
+        assemblies:['Aikang58','Chuanmai104','Sumai3','JIN50','MOV','Fielder','Kariega','Attraktion','Renan_v2','Paragon_v3','Cadenza_v2'] }
+    ]
+  },
+  v1: {
+    label:    'CS RefSeq v1.0',
+    dataBase: 'v1/data/anchors/',
+    convBase: 'v1/conversion_tables/',
+    density:  'v1/data/cs_gene_density.tsv.gz',
+    nAsm:     23,
+    groups: [
+      { label:'10+ wheat panel', id:'ten',
+        assemblies:['Jagger','Lancer','ArinaLrFor','Stanley','Spelt','Mace','SY_Mattis','Julius','Landmark','Norin61'] },
+      { label:'CS versions', id:'cs',
+        assemblies:['CS_IAAS','CS_CAU','CS_v2.1'] },
+      { label:'Additional cultivars', id:'add',
+        assemblies:['Aikang58','Chuanmai104','Sumai3','JIN50','MOV','Fielder','Kariega','Attraktion','Renan_v2','Paragon_v3','Cadenza_v2'] }
+    ]
+  }
+};
+
+let activeRef = localStorage.getItem('wheatcoorddb_ref') || 'v2';
+let GROUPS    = REF_CONFIG[activeRef].groups;
+let DATA_BASE = REF_CONFIG[activeRef].dataBase;
+let CONV_BASE = REF_CONFIG[activeRef].convBase;
+
+const cache = {};       // anchor data cache (dotplot) — keyed 'ref/asm'
+const convCache = {};   // conversion table cache keyed 'ref/asm/chr'
 let geneDensity = null;
 let parsedFileRows = [];
+
+function setRef(ref) {
+  if (ref === activeRef) return;
+  activeRef = ref;
+  localStorage.setItem('wheatcoorddb_ref', ref);
+  const cfg = REF_CONFIG[ref];
+  GROUPS    = cfg.groups;
+  DATA_BASE = cfg.dataBase;
+  CONV_BASE = cfg.convBase;
+  geneDensity = null; // force reload for new reference
+
+  // Update toggle buttons
+  document.getElementById('ref-btn-v2').classList.toggle('active', ref === 'v2');
+  document.getElementById('ref-btn-v1').classList.toggle('active', ref === 'v1');
+
+  // Update hero text and badges
+  const isV2 = ref === 'v2';
+  document.getElementById('hero-desc').textContent =
+    'Convert genomic coordinates from IWGSC CS ' + cfg.label +
+    ' to equivalent positions across ' + cfg.nAsm +
+    ' hexaploid wheat assemblies. Powered by gene anchor interpolation. Runs entirely in your browser; no data leaves your machine.';
+  document.getElementById('hero-badge-count').textContent = cfg.nAsm + ' assemblies';
+  document.getElementById('hero-badge-ref').textContent = cfg.label + ' reference';
+  document.getElementById('about-desc').innerHTML =
+    '<strong>WheatCoordDB</strong> converts coordinates from <strong>IWGSC ' + cfg.label +
+    '</strong> to ' + cfg.nAsm + ' hexaploid wheat assemblies using gene anchor interpolation. Runs entirely in your browser.';
+
+  // Rebuild pickers and clear results
+  buildPickers();
+// Apply stored reference preference on load
+(function initRef() {
+  const stored = localStorage.getItem('wheatcoorddb_ref') || 'v2';
+  if (stored !== 'v2') {
+    setRef(stored);
+  } else {
+    // Ensure v2 toggle button is marked active (default)
+    document.getElementById('ref-btn-v2').classList.add('active');
+    document.getElementById('ref-btn-v1').classList.remove('active');
+  }
+})();
+  document.getElementById('s-result-single').classList.remove('visible');
+  document.getElementById('s-result-multi').classList.remove('visible');
+  document.getElementById('s-dotplot-section').style.display = 'none';
+  document.getElementById('b-table-wrap').classList.remove('visible');
+  hideError('s-error');
+  hideError('b-error');
+}
 
 async function loadGeneDensity() {
   if (geneDensity) return geneDensity;
   try {
-    const r = await fetch('data/cs_gene_density.tsv.gz');
+    const r = await fetch(REF_CONFIG[activeRef].density);
     if (!r.ok) { geneDensity = {}; return geneDensity; }
     const ds = new DecompressionStream('gzip');
     const stream = (await r.blob()).stream().pipeThrough(ds);
@@ -541,7 +631,7 @@ function fmtBp(v){return Math.round(v).toLocaleString()+' bp';}
 const anchorRangeCache = {};
 // Fetch min/max cs_midpoint from per-chr anchor TSV to detect true anchor range
 async function getAnchorRange(asm, chr) {
-  const key = asm+'/'+chr;
+  const key = activeRef+'/'+asm+'/'+chr;
   if (anchorRangeCache[key] !== undefined) return anchorRangeCache[key];
   try {
     const url = CONV_BASE+asm+'/'+chr+'_anchors.tsv';
@@ -566,7 +656,7 @@ async function getAnchorRange(asm, chr) {
 
 // Load per-chromosome PCHIP conversion table (pre-evaluated at 1 kb)
 async function loadConvTable(asm, chr) {
-  const key = asm+'/'+chr;
+  const key = activeRef+'/'+asm+'/'+chr;
   if (convCache[key]) return convCache[key];
   const url = CONV_BASE+asm+'/'+chr+'_conversion.tsv.gz';
   const r = await fetch(url);
@@ -606,7 +696,8 @@ async function loadConvTable(asm, chr) {
 
 // Load anchor data — used for dotplot rendering only
 async function loadAnchorData(asm) {
-  if (cache[asm]) return cache[asm];
+  const _cacheKey = activeRef+'/'+asm;
+  if (cache[_cacheKey]) return cache[_cacheKey];
   const r = await fetch(DATA_BASE+asm+'_anchors.tsv.gz');
   if (!r.ok) throw new Error('Could not load '+asm+' ('+r.status+')');
   const ds = new DecompressionStream('gzip');
@@ -632,7 +723,7 @@ async function loadAnchorData(asm) {
     byChr[chr].tgtMid.push(parseFloat(cols[pi]));
     byChr[chr].tgtChr.push(cols[ti]);
   }
-  cache[asm]=byChr; return byChr;
+  cache[_cacheKey]=byChr; return byChr;
 }
 
 // Robust slope from first/last nEdge points via linear regression
@@ -1492,12 +1583,4 @@ function copyAllCoords(){
   const lines=btns.map(b=>{
     const asm=b.closest('tr')?.querySelector('.td-asm')?.textContent?.trim()||'';
     return asm+'	'+b.dataset.coords;
-  });
-  const btn=document.getElementById('s-multi-copy-all');
-  copyText(lines.join(String.fromCharCode(10)), btn);
-}
-
-buildPickers();
-</script>
-</body>
-</html>
+ 

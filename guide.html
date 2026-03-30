@@ -103,6 +103,8 @@ footer { border-top: 1px solid var(--border); margin-top: 3rem; padding: 1.5rem 
 footer a { color: var(--text-2); text-decoration: none; }
 footer a:hover { color: var(--text); }
 footer .sep { margin: 0 .5rem; }
+.notice-banner { background: #e6f1fb; border: 1px solid #b3d4f0; border-radius: var(--radius); padding: .75rem 1.1rem; font-family: -apple-system, system-ui, sans-serif; font-size: 15px; color: #185fa5; line-height: 1.6; margin-bottom: 1rem; }
+.notice-banner strong { font-weight: 700; }
 </style>
 </head>
 <body>
@@ -158,7 +160,7 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
   <div class="section" id="confidence">
     <div class="section-title">Confidence scores</div>
 
-    <p>Every conversion result includes a confidence score: the <strong>anchor recovery fraction</strong>. This is the proportion of CS RefSeq v2.1 gene models expected to be present in a ±5 Mb window around the query position that were successfully projected onto the target assembly by Liftoff.</p>
+    <p>Every conversion result includes a confidence score: the <strong>anchor recovery fraction</strong>. This is the proportion of reference assembly gene models expected to be present in a ±5 Mb window around the query position that were successfully projected onto the target assembly by Liftoff.</p>
 
     <p>Unlike a raw anchor count, the recovery fraction normalises for gene density variation along the chromosome, so pericentromeric regions have fewer genes per Mb, so they are not penalised simply for being gene-poor. What matters is how many of the available genes were recovered.</p>
 
@@ -223,6 +225,7 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
   <div class="section" id="validation">
     <div class="section-title">Technical validation</div>
 
+    <div class="notice-banner"><strong>ℹ Note:</strong> Validation figures below apply to the <strong>CS RefSeq v2.1</strong> reference. Validation for the CS RefSeq v1.0 reference is in preparation.</div>
     <p>WheatCoordDB was validated using two independent approaches: leave-one-out (LOO) cross-validation across all 24 assemblies, and KASP marker validation against 2,547 SNP markers with known positions in 21 assemblies.</p>
 
     <h3>Leave-one-out (LOO) cross-validation</h3>
@@ -258,7 +261,8 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
   <div class="section" id="assemblies">
     <div class="section-title">Included assemblies</div>
 
-    <p>All 24 assemblies are chromosome-scale hexaploid wheat (<em>Triticum aestivum</em>) assemblies unless otherwise noted. Gene anchors were projected from IWGSC CS RefSeq v2.1 using Liftoff with alignment thresholds of 90% coverage and 90% identity.</p>
+    <p>WheatCoordDB provides two parallel coordinate systems. In <strong>CS RefSeq v2.1 mode</strong> (default), 24 target assemblies are available, with gene anchors projected from the v2.1 annotation. In <strong>CS RefSeq v1.0 mode</strong>, 23 target assemblies are available (CS v2.1 is included as a target; CS v1.0 itself becomes the reference). All assemblies are chromosome-scale hexaploid wheat (<em>Triticum aestivum</em>). Liftoff alignment thresholds of 90% coverage and 90% identity were applied in both cases.</p>
+    <p>The table below shows assemblies available in v2.1 mode. In v1.0 mode, CS_v1 is replaced by CS_v2.1 as a target in the CS versions group.</p>
 
     <div class="asm-grid">
       <div class="asm-group">
@@ -298,24 +302,18 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
     </div>
 
     <p style="margin-top:1rem">Planned additions include 17 Chinese cultivars from Jiao et al. (2025, <em>Nature</em>) spanning Chinese wheat breeding history, and wild relative assemblies (<em>Ae. tauschii</em>, <em>T. timopheevii</em>, <em>Th. bessarabicum</em>).</p>
-    <p>Want a different assembly included? <a href="mailto:surbhi.grewal@nottingham.ac.uk" style="color:var(--green)">Get in touch</a>. We are happy to add any publicly available chromosome-scale wheat assembly. Please provide the accession number or a download link.</p>
+    <p>Want a different assembly included? <a href="/cdn-cgi/l/email-protection#05767077676d6c2b627760726469456b6a71716c6b626d64682b64662b706e" style="color:var(--green)">Get in touch</a>. We are happy to add any publicly available chromosome-scale wheat assembly. Please provide the accession number or a download link.</p>
   </div>
 
   <!-- ── 6. Contact ────────────────────────────────────────────────────────── -->
   <div class="section" id="contact">
     <div class="section-title">Contact</div>
     <p>WheatCoordDB is developed and maintained by the <a href="https://grewallab.com/" style="color:var(--green)">Grewal lab</a> at the University of Nottingham.</p>
-    <p>For questions, bug reports, or assembly addition requests, contact <a href="mailto:surbhi.grewal@nottingham.ac.uk" style="color:var(--green)">surbhi.grewal@nottingham.ac.uk</a>.</p>
+    <p>For questions, bug reports, or assembly addition requests, contact <a href="/cdn-cgi/l/email-protection#a3d0d6d1c1cbca8dc4d1c6d4c2cfe3cdccd7d7cacdc4cbc2ce8dc2c08dd6c8" style="color:var(--green)"><span class="__cf_email__" data-cfemail="9cefe9eefef4f5b2fbeef9ebfdf0dcf2f3e8e8f5f2fbf4fdf1b2fdffb2e9f7">[email&#160;protected]</span></a>.</p>
     <p>To report issues or contribute, visit the <a href="https://github.com/Surbhigrewal/WheatCoordDB" style="color:var(--green)" target="_blank">GitHub repository</a>.</p>
   </div>
 
 </div><!-- /guide-wrap -->
 
 <footer>
-  <a href="https://grewallab.com/" target="_blank">Grewal lab</a>, University of Nottingham
-  <span class="sep">·</span>
-  <a href="https://github.com/Surbhigrewal/WheatCoordDB" target="_blank">GitHub</a>
-</footer>
-
-</body>
-</html>
+  <a href="https://grew
