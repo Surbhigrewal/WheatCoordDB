@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	ArinaLrFor_tgt_chr	ArinaLrFor_tgt_start	ArinaLrFor_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr1D	85144	169063458	Chr1D	79763	167357172	1231	0.9963
 Chr1D	174112790	241478197	Chr1D	169316963	236311470	332	0.9998
 Chr1D	243970232	263198593	Chr1D	238815168	257942148	206	0.9996

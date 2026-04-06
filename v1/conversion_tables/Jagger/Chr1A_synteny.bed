@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Jagger_tgt_chr	Jagger_tgt_start	Jagger_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr1A	55218	159522669	Chr1A	16840	158260919	1163	0.9958
 Chr1A	161671479	177432536	Chr1A	160420976	176038205	29	0.9982
 Chr1A	179530042	182122609	Chr1A	178077593	180683969	6	0.9997

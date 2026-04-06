@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	CS_v2.1_tgt_chr	CS_v2.1_tgt_start	CS_v2.1_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr7A	211205518	211732393	Chr7A	162169043	162693239	20	0.9964
 Chr7A	239629	71670370	Chr7A	239033	74955432	1118	0.9993
 Chr7A	73730871	311914665	Chr7A	77011021	316231457	1591	0.9997
 Chr7A	314415263	356369547	Chr7A	318780197	360650910	82	0.9990

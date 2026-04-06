@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	Spelt_tgt_chr	Spelt_tgt_start	Spelt_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr1A	171461663	177484497	Chr1A	187710123	193544068	11	0.9943
 Chr1A	55218	159522669	Chr1A	29550	162292533	1174	0.9952
 Chr1A	161671479	171020640	Chr1A	164462652	173999121	20	0.9964
 Chr1A	200578799	202086777	Chr1A	203131871	204607866	5	0.9954

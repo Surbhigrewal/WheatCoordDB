@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Landmark_tgt_chr	Landmark_tgt_start	Landmark_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr4D	410678	140903099	Chr4D	17984	141386277	1402	0.9984
 Chr4D	143579930	155648423	Chr4D	144065742	156119643	15	0.9999
 Chr4D	163412513	183387226	Chr4D	163871175	183764297	27	0.9986

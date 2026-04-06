@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Julius_tgt_chr	Julius_tgt_start	Julius_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr2B	21238	202920401	Chr2B	14754	204835737	1792	0.9920
 Chr2B	206113490	240314058	Chr2B	205387858	239770435	202	0.9955
 Chr2B	242536523	270216010	Chr2B	242233989	275041199	127	0.9955

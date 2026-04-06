@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	JIN50_tgt_chr	JIN50_tgt_start	JIN50_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr7B	34838	36507841	Chr7B	45754	37555196	344	0.9957
 Chr7B	39548352	154814815	Chr7B	39843424	158023307	843	0.9957
 Chr7B	267241424	268454741	Chr7B	271972024	273146425	3	1.0000

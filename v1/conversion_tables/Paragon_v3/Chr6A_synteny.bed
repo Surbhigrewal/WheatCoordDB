@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Paragon_v3_tgt_chr	Paragon_v3_tgt_start	Paragon_v3_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr6A	57605	162912229	Chr6A	125958	164197038	1488	0.9943
 Chr6A	166503285	172174207	Chr6A	167738472	173389268	30	0.9995
 Chr6A	174450789	233957452	Chr6A	175646663	234719778	206	0.9991

@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Stanley_tgt_chr	Stanley_tgt_start	Stanley_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr1A	55218	21085730	Chr1A	566091	21344544	298	0.9896
 Chr1A	28362791	159522669	Chr1A	22085368	155020575	783	0.9978
 Chr1A	161671479	177432536	Chr1A	157200826	172957500	29	0.9995

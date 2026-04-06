@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	CS_IAAS_tgt_chr	CS_IAAS_tgt_start	CS_IAAS_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr6B	114487	103962989	Chr6B	22490	109739086	1150	0.9997
 Chr6B	106468710	109142658	Chr6B	112233274	114880918	7	1.0000
 Chr6B	111685641	240401733	Chr6B	118037587	247837240	817	0.9998

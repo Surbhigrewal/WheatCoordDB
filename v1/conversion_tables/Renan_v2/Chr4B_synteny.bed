@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Renan_v2_tgt_chr	Renan_v2_tgt_start	Renan_v2_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr4B	234405	83143343	Chr4B	694107	84029275	750	0.9889
 Chr4B	85363222	152088859	Chr4B	86249592	152823896	364	0.9939
 Chr4B	154112314	161625531	Chr4B	154824592	162545225	11	0.9847

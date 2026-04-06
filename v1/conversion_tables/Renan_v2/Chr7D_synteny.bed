@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Renan_v2_tgt_chr	Renan_v2_tgt_start	Renan_v2_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr7D	210218	277735513	Chr7D	369015	280882183	2455	0.9906
 Chr7D	285244822	285683864	Chr7D	289124153	289580520	3	0.9750
 Chr7D	288461215	296514200	Chr7D	292702489	300730870	14	0.9889

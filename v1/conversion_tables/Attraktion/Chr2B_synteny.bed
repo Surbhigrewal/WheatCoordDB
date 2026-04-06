@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	Attraktion_tgt_chr	Attraktion_tgt_start	Attraktion_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr2B	375133991	376118209	Chr2B	255254877	256230821	6	1.0000
 Chr2B	10698	202920401	Chr2B	106141	204291728	1762	0.9937
 Chr2B	205644786	240314058	Chr2B	204390807	239154112	204	0.9974
 Chr2B	242536523	270216010	Chr2B	241610718	274250228	126	0.9991
