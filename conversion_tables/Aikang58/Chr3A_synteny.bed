@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	Aikang58_tgt_chr	Aikang58_tgt_start	Aikang58_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr3A	122914309	133833859	Chr3A	544542815	555534422	80	0.9999
 Chr3A	28273	2015787	Chr3A	1072119	2776219	21	0.9729
 Chr3A	6969528	122734453	Chr3A	2883486	117702222	1212	0.9953
 Chr3A	134412071	140281429	Chr3A	118005926	123842739	47	0.9958

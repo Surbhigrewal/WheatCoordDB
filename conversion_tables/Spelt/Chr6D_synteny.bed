@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	Spelt_tgt_chr	Spelt_tgt_start	Spelt_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr6D	43783	27630303	Chr6D	81246	25624697	509	0.9973
 Chr6D	52787044	56759409	Chr6D	29960671	33479528	31	0.9995
 Chr6D	64544097	186375773	Chr6D	41165118	162716122	935	0.9989
 Chr6D	188380630	200393382	Chr6D	164688619	176726761	21	0.9996

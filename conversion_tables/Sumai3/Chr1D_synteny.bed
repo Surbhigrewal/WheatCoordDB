@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Sumai3_tgt_chr	Sumai3_tgt_start	Sumai3_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr1D	21205	171916820	Chr1D	1705293	173505572	1291	0.9979
 Chr1D	176978740	244077016	Chr1D	178502514	245396576	331	0.9996
 Chr1D	246590066	265739242	Chr1D	247888261	267003275	210	0.9998

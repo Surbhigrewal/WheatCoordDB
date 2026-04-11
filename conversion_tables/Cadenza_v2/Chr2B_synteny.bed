@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	Cadenza_v2_tgt_chr	Cadenza_v2_tgt_start	Cadenza_v2_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr2B	311093602	313513906	Chr2B	298160918	300576054	5	0.9996
 Chr2B	31439	131021009	Chr2B	2594920	133430776	1296	0.9917
 Chr2B	137271666	211003478	Chr2B	134589150	206491310	558	0.9954
 Chr2B	213718220	248272484	Chr2B	206590362	241295170	205	0.9978

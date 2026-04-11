@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	MOV_tgt_chr	MOV_tgt_start	MOV_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr3A	28273	2015787	Chr3A	702405	2567600	31	0.9975
 Chr3A	6969528	78576427	Chr3A	2686183	73894473	922	0.9931
 Chr3A	82052622	85761424	Chr3A	74284248	77977147	25	0.9998

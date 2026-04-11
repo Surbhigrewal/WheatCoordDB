@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Julius_tgt_chr	Julius_tgt_start	Julius_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr1D	21205	171916820	Chr1D	73660	168682477	1257	0.9966
 Chr1D	176978740	244077016	Chr1D	170743435	237990574	326	0.9993
 Chr1D	246590066	265739242	Chr1D	240485742	259656002	210	0.9989

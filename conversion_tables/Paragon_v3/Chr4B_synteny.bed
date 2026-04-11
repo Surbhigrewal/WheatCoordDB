@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Paragon_v3_tgt_chr	Paragon_v3_tgt_start	Paragon_v3_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr4B	233162	86155240	Chr4B	262795	86235531	787	0.9957
 Chr4B	88370406	155154630	Chr4B	88462263	155119865	393	0.9993
 Chr4B	157172475	164642854	Chr4B	157118783	165766039	12	0.9997

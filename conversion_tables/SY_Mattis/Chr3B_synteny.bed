@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	SY_Mattis_tgt_chr	SY_Mattis_tgt_start	SY_Mattis_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr3B	33545863	33996997	Chr3B	23405462	23863613	5	0.9844
 Chr3B	74037	6805777	Chr3B	51615	6281034	109	0.9871
 Chr3B	10012714	33498295	Chr3B	3667149	31766365	308	0.9874
 Chr3B	35804253	35821190	Chr3B	32970062	32987026	8	0.9998

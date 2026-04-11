@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Mace_tgt_chr	Mace_tgt_start	Mace_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr6D	43783	27630303	Chr6D	29531	26062833	529	0.9989
 Chr6D	32741204	38579793	Chr6D	30765014	36610178	62	0.9998
 Chr6D	52787044	56759409	Chr6D	37586941	41530761	31	0.9999

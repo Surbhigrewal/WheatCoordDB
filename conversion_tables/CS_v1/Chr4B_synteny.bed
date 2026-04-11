@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	CS_v1_tgt_chr	CS_v1_tgt_start	CS_v1_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr4B	230	86155240	Chr4B	230	83143343	829	0.9998
 Chr4B	88370406	155154630	Chr4B	85363222	152088859	392	0.9994
 Chr4B	157172475	164642854	Chr4B	154112314	161625531	12	1.0000

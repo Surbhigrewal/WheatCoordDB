@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	JIN50_tgt_chr	JIN50_tgt_start	JIN50_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr1D	21205	171916820	Chr1D	93780	169137467	1261	0.9961
 Chr1D	176978740	244077016	Chr1D	174152060	241041044	330	0.9995
 Chr1D	246590066	265739242	Chr1D	243543422	262635837	206	0.9998

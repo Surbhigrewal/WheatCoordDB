@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Norin61_tgt_chr	Norin61_tgt_start	Norin61_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr6A	119203	165560133	Chr6A	365901	165282460	1480	0.9945
 Chr6A	169123596	174690876	Chr6A	168833752	174420723	25	0.9997
 Chr6A	177010402	237636332	Chr6A	176738712	236737181	202	0.9990

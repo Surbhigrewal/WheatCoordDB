@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	MOV_tgt_chr	MOV_tgt_start	MOV_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr2B	31439	83640026	Chr2B	223472	85683046	921	0.9921
 Chr2B	91563025	111008213	Chr2B	86127981	106057611	159	0.9954
 Chr2B	113156395	131021009	Chr2B	106127835	123542410	152	0.9935

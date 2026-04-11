@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	CS_IAAS_tgt_chr	CS_IAAS_tgt_start	CS_IAAS_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr6D	43783	27630303	Chr6D	234219	29433753	548	0.9999
 Chr6D	32741204	38579793	Chr6D	34552527	42405915	94	0.9997
 Chr6D	41537060	46120294	Chr6D	45353671	49916069	67	0.9995

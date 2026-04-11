@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	Spelt_tgt_chr	Spelt_tgt_start	Spelt_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr7B	324796789	326779654	Chr7B	303825007	305252786	5	0.9954
 Chr7B	34602	36923564	Chr7B	61177	35026380	315	0.9943
 Chr7B	42917585	183070778	Chr7B	35213051	175653943	962	0.9939
 Chr7B	185568431	267827770	Chr7B	178122545	259028015	364	0.9961

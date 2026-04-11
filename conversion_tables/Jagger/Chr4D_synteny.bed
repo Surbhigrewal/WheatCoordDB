@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	Jagger_tgt_chr	Jagger_tgt_start	Jagger_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr4D	410644	758354	Chr4D	8397471	8725881	12	0.9989
 Chr4D	1633572	141272747	Chr4D	527352	141919862	1361	0.9978
 Chr4D	143939177	159173700	Chr4D	144597121	159888507	17	0.9940
 Chr4D	163710731	183649096	Chr4D	164421467	184359848	26	0.9989

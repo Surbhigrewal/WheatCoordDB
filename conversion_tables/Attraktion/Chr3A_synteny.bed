@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Attraktion_tgt_chr	Attraktion_tgt_start	Attraktion_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr3A	28273	2015787	Chr3A	1109675	2597199	17	0.9669
 Chr3A	6969528	140281429	Chr3A	2703242	137029129	1385	0.9963
 Chr3A	142385461	192745740	Chr3A	139100365	188579406	216	0.9984

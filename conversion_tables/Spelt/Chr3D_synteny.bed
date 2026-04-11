@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	Spelt_tgt_chr	Spelt_tgt_start	Spelt_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr3D	163980	20579486	Chr3D	155707	22289989	336	0.9840
 Chr3D	21214157	116955327	Chr3D	25144041	125470934	967	0.9992
 Chr3D	119094314	145655212	Chr3D	127594621	154117763	160	0.9996
 Chr3D	147725835	194192900	Chr3D	156215421	202474517	262	0.9993

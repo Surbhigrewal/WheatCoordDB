@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	JIN50_tgt_chr	JIN50_tgt_start	JIN50_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr3A	7236006	140281429	Chr3A	273424	133709717	1361	0.9955
 Chr3A	142385461	192745740	Chr3A	135810096	185737114	215	0.9984
 Chr3A	195861474	263087799	Chr3A	188841254	256681890	205	0.9995

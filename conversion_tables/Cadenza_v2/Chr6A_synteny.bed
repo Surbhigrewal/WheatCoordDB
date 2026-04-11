@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Cadenza_v2_tgt_chr	Cadenza_v2_tgt_start	Cadenza_v2_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr6A	119203	165560133	Chr6A	192060	164159323	1514	0.9955
 Chr6A	169123596	174751019	Chr6A	167700748	173351489	30	0.9996
 Chr6A	177010402	237636332	Chr6A	175608866	235761040	204	0.9993

@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	Lancer_tgt_chr	Lancer_tgt_start	Lancer_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr2B	323710435	326781828	Chr2B	306586869	308104500	5	0.9810
 Chr2B	31439	130848155	Chr2B	157557	115027829	1170	0.9847
 Chr2B	136259240	194459440	Chr2B	115921569	164816410	356	0.9700
 Chr2B	196604960	211003478	Chr2B	164951378	178086727	78	0.9689

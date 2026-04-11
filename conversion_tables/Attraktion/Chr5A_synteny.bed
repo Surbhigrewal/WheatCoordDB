@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	Attraktion_tgt_chr	Attraktion_tgt_start	Attraktion_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr5A	239807284	240640429	Chr5A	258153514	258985503	12	0.9996
 Chr5A	2225913	62409843	Chr5A	75970	61695961	524	0.9967
 Chr5A	65256920	152899436	Chr5A	64946132	152004798	401	0.9978
 Chr5A	156754150	160718182	Chr5A	155846458	159834774	13	1.0000

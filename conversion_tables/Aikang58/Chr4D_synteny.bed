@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Aikang58_tgt_chr	Aikang58_tgt_start	Aikang58_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr4D	410644	141272747	Chr4D	34168	143233659	1403	0.9990
 Chr4D	143939177	159173700	Chr4D	145934600	161113184	17	0.9995
 Chr4D	163710731	183649096	Chr4D	165647456	185758696	26	0.9997

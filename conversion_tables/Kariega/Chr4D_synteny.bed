@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Kariega_tgt_chr	Kariega_tgt_start	Kariega_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr4D	410644	141272747	Chr4D	215460	143802522	1421	0.9995
 Chr4D	143939177	159173700	Chr4D	146463165	161666337	18	0.9994
 Chr4D	163710731	183649096	Chr4D	166218022	186712120	27	0.9998

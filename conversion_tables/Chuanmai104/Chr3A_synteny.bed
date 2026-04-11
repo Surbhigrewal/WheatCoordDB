@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Chuanmai104_tgt_chr	Chuanmai104_tgt_start	Chuanmai104_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr3A	28273	140281429	Chr3A	733211	139847394	1398	0.9951
 Chr3A	142385461	192745740	Chr3A	141946894	191860890	216	0.9985
 Chr3A	195861474	263087799	Chr3A	194965073	262802911	205	0.9992

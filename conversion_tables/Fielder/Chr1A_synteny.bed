@@ -1,4 +1,5 @@
-# CS_chr	CS_start	CS_end	Fielder_tgt_chr	Fielder_tgt_start	Fielder_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
+Chr1A	4765341	5080578	Chr1A	4517554	4832353	12	0.9852
 Chr1A	55218	161541694	Chr1A	38666	167863813	1167	0.9954
 Chr1A	163678239	179426534	Chr1A	170036352	185781622	31	0.9994
 Chr1A	181647298	184244993	Chr1A	188120430	190694712	6	0.9972

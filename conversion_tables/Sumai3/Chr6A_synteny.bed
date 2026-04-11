@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Sumai3_tgt_chr	Sumai3_tgt_start	Sumai3_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr6A	119203	165560133	Chr6A	21375	165383567	1445	0.9921
 Chr6A	169123596	174751019	Chr6A	168925019	174575806	30	0.9996
 Chr6A	177010402	237636332	Chr6A	176833206	236983666	204	0.9993

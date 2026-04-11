@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	Chuanmai104_tgt_chr	Chuanmai104_tgt_start	Chuanmai104_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr6D	43783	27630303	Chr6D	128768	28827014	525	0.9988
 Chr6D	32741204	38579793	Chr6D	33802809	41369118	93	0.9995
 Chr6D	41537060	46120294	Chr6D	44437079	49043420	67	0.9992

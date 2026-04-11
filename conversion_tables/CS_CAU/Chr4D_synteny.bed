@@ -1,4 +1,4 @@
-# CS_chr	CS_start	CS_end	CS_CAU_tgt_chr	CS_CAU_tgt_start	CS_CAU_tgt_end	n_anchors	mean_identity
+# CS_chr	CS_start	CS_end	tgt_chr	tgt_start	tgt_end	n_anchors	mean_identity
 Chr4D	410644	141272747	Chr4D	278704	142873694	1423	0.9999
 Chr4D	143939177	159173700	Chr4D	145535248	160739689	18	0.9998
 Chr4D	163710731	183649096	Chr4D	165277432	185791697	27	0.9999
