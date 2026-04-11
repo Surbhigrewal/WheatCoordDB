@@ -1566,7 +1566,7 @@ function copyAllCoords(){
     const asm=b.closest('tr')?.querySelector('.td-asm')?.textContent?.trim()||'';
     return asm+'	'+b.dataset.coords;
   }).join('\n');
-  navigator.clipboard.writeText(lines.join('\n')).then(()=>{
+  navigator.clipboard.writeText(lines).then(()=>{
     const btn=document.getElementById('s-multi-copy-all');
     const orig=btn.textContent;
     btn.textContent='Copied!';

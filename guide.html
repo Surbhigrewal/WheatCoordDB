@@ -175,19 +175,19 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
         <td><span class="badge b-green">High confidence</span></td>
         <td>≥ 80% gene recovery</td>
         <td>Green tag · full confidence bar</td>
-        <td>Strong collinearity. Median coordinate error ~26 bp (KASP) / ~107 bp (LOO). Suitable for fine-mapping and marker design.</td>
+        <td>Strong collinearity — the region is well-anchored in this assembly. Coordinate error is typically within tens of base pairs. Suitable for fine-mapping and marker design.</td>
       </tr>
       <tr>
         <td><span class="badge b-amber">Moderate confidence</span></td>
         <td>50–80% gene recovery</td>
         <td>Amber tag · partial bar</td>
-        <td>Reduced collinearity: structural variation, introgression, or assembly gap likely in this region. Median error ~311 bp (KASP) / ~1.4 kb (LOO). Use with caution.</td>
+        <td>Reduced collinearity — structural variation, an introgression, or an assembly gap is likely present nearby. Coordinate error is typically hundreds of base pairs to a few kilobases. Use with caution and verify against the per-assembly dotplots.</td>
       </tr>
       <tr>
         <td><span class="badge b-red">Low confidence</span></td>
         <td>&lt; 50% gene recovery</td>
         <td>Red tag · minimal bar</td>
-        <td>Very low collinearity. Median error ~4.6 Mb (KASP) / ~3.9 kb (LOO). The returned coordinate may be unreliable. Treat as approximate only.</td>
+        <td>Very low collinearity — few gene anchors were recovered in this region. The returned coordinate may be unreliable and error can reach megabase scale. Treat as approximate only; do not use for marker design without independent verification.</td>
       </tr>
     </table>
 
@@ -225,7 +225,7 @@ Chr4A  200000000 250000000 yield_QTL</code></pre>
   <div class="section" id="validation">
     <div class="section-title">Technical validation</div>
 
-    <div class="notice-banner"><strong>ℹ Note:</strong> Validation figures below apply to the <strong>CS RefSeq v2.1</strong> reference. Validation for the CS RefSeq v1.0 reference is in preparation.</div>
+    <div class="notice-banner"><strong>ℹ Note:</strong> Validation figures below apply to the <strong>CS RefSeq v2.1</strong> reference only. Validation for CS RefSeq v1.0 is in preparation. Figures are expected to improve in a forthcoming update following pipeline improvements to the recovery of intra-chromosomal rearrangement blocks.</div>
     <p>WheatCoordDB was validated using two independent approaches: leave-one-out (LOO) cross-validation across all 24 assemblies, and KASP marker validation against 2,547 SNP markers with known positions in 21 assemblies.</p>
 
     <h3>Leave-one-out (LOO) cross-validation</h3>
