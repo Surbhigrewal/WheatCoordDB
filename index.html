@@ -1149,7 +1149,7 @@ function loadFile(file){
   const reader=new FileReader();
   reader.onload=e=>{
     const lines=e.target.result.trim().split('\n').filter(l=>l.trim()&&!l.startsWith('#'));
-    parsedFileRows=lines.map(l=>l.trim().split(/\t| +/));
+    parsedFileRows=lines.map(l=>{const cols=l.trim().split(/\t| +/);if(cols[0])cols[0]=cols[0].replace(/^chr/i,'Chr');return cols;});
     const MAX_ROWS=1000;
     let warnMsg='';
     if(parsedFileRows.length>MAX_ROWS){
@@ -1232,7 +1232,7 @@ function renderBatchTable(failed){
   if(maxExtra) r1+=`<th colspan="${maxExtra}"></th>`;
   r1+='</tr>';
   let r2=`<tr><th>chr</th><th>start</th><th>end</th>`;
-  batchTargets.forEach(()=>{r2+=`<th>chr</th><th>start</th><th>end</th><th>density</th>`;});
+  batchTargets.forEach(()=>{r2+=`<th>chr</th><th>start</th><th>end</th><th>confidence</th>`;});
   for(let i=0;i<maxExtra;i++) r2+=`<th>col${i+4}</th>`;
   r2+='</tr>';
   thead.innerHTML=r1+r2;
@@ -1246,7 +1246,7 @@ function renderBatchTable(failed){
       row+=`<td class="${ok?'td-green':''}">${pt.tgtChr}${splitNote}</td>`+
            `<td class="${ok?'td-green':''}">${pt.tgtStart!==''&&pt.tgtStart!=null?Math.round(pt.tgtStart).toLocaleString():''}</td>`+
            `<td class="${ok?'td-green':''}">${pt.tgtEnd!==''&&pt.tgtEnd!=null?Math.round(pt.tgtEnd).toLocaleString():''}</td>`+
-           `<td><span class="tag tag-${cc(pt.density)}">${pt.density}</span></td>`;
+           `<td><span class="conf-tag ${cc(pt.density)}">${pt.tgtChr==='ERR'?'—':fmtConf(pt.density)}</span></td>`;
     });
     r.extra.forEach(v=>{row+=`<td>${v}</td>`;});
     return '<tr>'+row+'</tr>';
@@ -1566,7 +1566,7 @@ function copyAllCoords(){
     const asm=b.closest('tr')?.querySelector('.td-asm')?.textContent?.trim()||'';
     return asm+'	'+b.dataset.coords;
   }).join('\n');
-  navigator.clipboard.writeText(lines).then(()=>{
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>{
     const btn=document.getElementById('s-multi-copy-all');
     const orig=btn.textContent;
     btn.textContent='Copied!';
